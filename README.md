@@ -10,7 +10,7 @@
 
 - **Centralized updates**: Aggregates changelogs from numerous providers into a single feed that's refreshed daily
 - **Automatic classification**: Uses AI to tag each update (security patch, breaking change, performance improvement, etc.) and provide concise summaries
-- **Custom alerts**: Subscribe to specific providers and update types, with notifications via email, Slack, or webhook
+- **Custom alerts**: Subscribe to specific providers and update types, with notifications via email, Slack next, or webhook later
 - **Full transparency**: Every entry links back to the official source for verification
 
 ## Project Structure
@@ -19,8 +19,8 @@
 
 - **Frontend (app)**: Vue.js application for the user interface
 - **Backend**: Node.js API for managing sources, snapshots, and user preferences
-- **[Daily Snapshot](https://github.com/tgenaitay/daily-snapshot)**: Service that captures content from specified web pages
-- **[Daily Change](https://github.com/tgenaitay/daily-change)**: Service that computes differences between snapshots and classifies changes
+- **[Daily Snapshot](https://github.com/superchangeai/daily-snapshot)**: Service that captures content from specified web pages (changelogs, release notes, openAPI yml)
+- **[Daily Change](https://github.com/superchangeai/daily-change)**: Service that computes differences between snapshots and classifies changes
 
 ## Tech Stack
 
@@ -66,6 +66,7 @@ New providers are added based on community requests - if your stack relies on it
 
 ## Roadmap
 
+- ****Project-based feed
 - **CI/CD integration**: GitHub Actions support for automated update checks
 - **MCP compatibility**: Integration with Model Context Protocol
 - **Community-driven expansion**: Adding more providers based on user requests

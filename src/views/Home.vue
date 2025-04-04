@@ -1,16 +1,16 @@
 <template>
     <div class="flex flex-col min-h-screen bg-background text-foreground">
-    <header>
-      <div class="container header-content flex gap-2 items-center">
-        <div class="logo">
+    <header class="py-6 border-b border-border">
+      <div class="container mx-auto px-8 flex justify-between items-center">
+        <div class="flex items-center gap-2">
             <img src="/super.svg" alt="Superchange.ai logo" class="h-6" />
-            <span class="logo-text">superchange.ai</span>
+            <span class="font-semibold text-lg">superchange.ai</span>
         </div>
-        <nav class="nav">
-          <a href="#features" class="nav-link">Features</a>
-          <a href="#alerts" class="nav-link">Alerts</a>
-          <a href="#roadmap" class="nav-link">Roadmap</a>
-          <a href="https://github.com/superchangeai" class="nav-link flex gap-2"><Github class="xs" /> GitHub</a>
+        <nav class="flex gap-8 items-center">
+          <a href="#features" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Features</a>
+          <a href="#alerts" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Alerts</a>
+          <a href="#roadmap" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Roadmap</a>
+          <a href="https://github.com/superchangeai" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200 flex gap-2 items-center"><Github class="xs" /> GitHub</a>
           <router-link :to="'/feed/'">
             <Button size="xxl">
               Browse the changes (beta)
@@ -21,12 +21,12 @@
     </header>
 
     <main>
-      <section class="hero" ref="heroSection">
-        <div class="container flex gap-2 items-center justify-between">
+      <section class="relative bg-gradient-to-br from-[#0d0d0e] via-[#151b26] to-[#1a2540] bg-blend-overlay" ref="heroSection">
+        <div class="container mx-auto px-8 flex gap-2 items-center justify-between">
         <div class="w-[75%] text-left">
-                <h1>The changelog of changelogs.</h1>
-                <p class="py-2">One central feed for all the updates from the tech providers you depend on. <br> Never miss a breaking change again.</p>
-                <div class="flex gap-[1rem] buttons">
+                <h1 class="text-5xl font-extrabold mb-6 leading-tight">The changelog of changelogs.</h1>
+                <p class="py-2 text-xl text-muted-foreground max-w-3xl my-4">One central feed for all the updates from the tech providers you depend on. <br> Never miss a breaking change again.</p>
+                <div class="flex gap-4 mt-4">
                   <router-link :to="'/feed/'">
                     <Button size="xxl">
                       Browse the changes (beta)
@@ -41,6 +41,7 @@
         </div>
         <img src="/superchange.png" alt="Superchange.ai homepage" class="w-[35%]" />
         </div>
+        <div class="absolute top-1/2 right-[-16%] transform translate-y-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(0,136,255,0.3),transparent_70%)] z-0 pointer-events-none blur-[60px]"></div>
     </section>
 
       <section id="features" class="feature-section">
