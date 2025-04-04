@@ -84,17 +84,17 @@ const initialProviders = computed(() => {
     if (!routeProviders) return []
     
     const providers = Array.isArray(routeProviders) ? routeProviders : [routeProviders]
-    return providers.map(name => name.toLowerCase().replace(/[^a-z0-9]/g, ''))
+    return providers.map(name => String(name).toLowerCase().replace(/[^a-z0-9]/g, ''))
 })
 
 const initialUpdates = computed(() => {
     const routeUpdates = route.query.updates
     if (routeUpdates) {
         return Array.isArray(routeUpdates) 
-        ? routeUpdates
-        : [routeUpdates]
+        ? routeUpdates.map(update => String(update))
+        : [String(routeUpdates)]
     }
-    return []
+    return [] as string[]
 })
 
 const selectedProvidersValues = ref(new Set(initialProviders.value))
@@ -116,7 +116,24 @@ const fetchProviders = async () => {
   }
 }
 
-const channels = [
+// Define types for channel options
+type ChannelOptionObject = {
+  label: string;
+  value: string;
+  id: number;
+};
+
+type ChannelOption = string | ChannelOptionObject;
+
+type Channel = {
+  value: string;
+  label: string;
+  icon: any;
+  options: ChannelOption[];
+  disabled: boolean;
+};
+
+const channels: Channel[] = [
     { value: 'email', label: 'Email', icon: Inbox, options: [], disabled: false }, // Initialize with empty options
     { value: 'slack', label: 'Slack channel', icon: Slack, options: ['#general', '#updates', '#announcements'], disabled: true },
     { value: 'webhook', label: 'Incoming Webhook', icon: Webhook, options: ['https://webhook.site/123', 'https://api.example.com/webhook'], disabled: true }
@@ -183,15 +200,13 @@ const toggleUpdatesSelection = (optionValue: string) => {
   setFieldValue('classifications', updatesValue.value)
 }
 
-const { handleSubmit, setFieldValue, errors } = useForm({
+const { handleSubmit, setFieldValue } = useForm({
     validationSchema: formSchema,
     initialValues: {
         providers: [], // Will be populated with IDs
-        classifications: initialUpdates.value,
+        classifications: initialUpdates.value as string[],
         email_channel_id: undefined
-    },
-    validateOnChange: true,
-    validateOnBlur: true
+    }
 })
 
 const isLoading = ref(false)
@@ -201,7 +216,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     try {
         // Make API call
         await alertSubscriptionsService.create({
-            email_channel_id: values.email_channel_id,
+            email_channel_id: values.email_channel_id as number,
             providers: values.providers,
             classifications: values.classifications
         })
@@ -229,7 +244,7 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
     } finally {
         isLoading.value = false
     }
-}, (errors) => {
+}, () => {
     toast({
         title: 'Missing fields',
         description: 'Please complete all required fields * and submit again.',
@@ -262,17 +277,17 @@ onMounted(async () => {
     }
 
     if (initialUpdates.value.length > 0) {
-        updatesValue.value = initialUpdates.value
-        setFieldValue('classifications', initialUpdates.value)
+        updatesValue.value = initialUpdates.value as string[]
+        setFieldValue('classifications', initialUpdates.value as string[])
     }
 })
 
 watch(providerValue, (newValue) => {
-    setFieldValue('providers', newValue)
+    setFieldValue('providers', newValue.map(Number))
 }, { deep: true })
 
 watch(updatesValue, (newValue) => {
-    setFieldValue('updates', newValue)
+    setFieldValue('classifications', newValue)
 }, { deep: true })
 
 const openChannelDialog = (channelType: string) => {
@@ -280,9 +295,23 @@ const openChannelDialog = (channelType: string) => {
     showChannelDialog.value = true
 }
 
-const channelSelections = ref({})
+// Define a type for channel selections to fix indexing issues
+type ChannelSelections = Record<string, string[]>;
+const channelSelections = ref<ChannelSelections>({});
 
-const addChannel = (value: string) => {
+// Helper function to safely access channel selections
+const getChannelSelections = (channelValue: string): string[] => {
+  return channelSelections.value[channelValue] || [];
+};
+
+// Helper function to safely set channel selections
+const setChannelSelections = (channelValue: string, selections: string[]): void => {
+  channelSelections.value[channelValue] = selections;
+};
+
+// Update the addChannel function to handle AcceptableValue type
+const addChannel = (value: string | null) => {
+    if (value === null) return;
     if (selectedChannel.value === 'email') {
         const channelId = parseInt(value, 10)
         if (!isNaN(channelId)) {
@@ -290,12 +319,9 @@ const addChannel = (value: string) => {
             
             // For display purposes, store the selected channel label
             const emailChannel = channels.find(c => c.value === 'email')
-            const selectedOption = emailChannel?.options.find(opt => opt.value === value)
+            const selectedOption = emailChannel?.options.find(opt => typeof opt === 'object' && (opt as ChannelOptionObject).value === value) as ChannelOptionObject | undefined
             if (selectedOption) {
-                if (!channelSelections.value['email']) {
-                    channelSelections.value['email'] = []
-                }
-                channelSelections.value['email'] = [selectedOption.label]
+                setChannelSelections('email', [selectedOption.label])
             }
         }
     }
@@ -309,7 +335,7 @@ const clearProvidersSelections = () => {
 const clearUpdatesSelections = () => {
   selectedUpdatesValues.value.clear()
   updatesValue.value = []
-  setFieldValue('updates', [])
+  setFieldValue('classifications', [])
 }
 const hasProvidersSelections = computed(() => selectedProvidersValues.value.size > 0)
 const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0)
@@ -343,7 +369,7 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
                                         <Badge
                                           v-for="option in providersList.filter(o => selectedProvidersValues.has(o.value))"
                                           :key="option.value"
-                                          variant="primary"
+                                          variant="secondary"
                                           class="rounded-sm px-1 font-normal"
                                         >
                                           {{ option.label }}
@@ -362,7 +388,7 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
                                         <CommandItem
                                           v-for="option in providersList"
                                           :key="option.value"
-                                          :value="option"
+                                          :value="option.value"
                                           @select="toggleProvidersSelection(option.value)"
                                         >
                                         <div
@@ -383,6 +409,7 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
                                         <CommandSeparator />
                                         <CommandGroup>
                                         <CommandItem
+                                            value="clear-providers"
                                             class="justify-center text-center"
                                             @select="clearProvidersSelections"
                                         >
@@ -421,7 +448,7 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
                                         <Badge
                                           v-for="option in updatesList.filter(o => selectedUpdatesValues.has(o.value))"
                                           :key="option.value"
-                                          variant="primary"
+                                          variant="secondary"
                                           class="rounded-sm px-1 font-normal"
                                         >
                                           {{ option.label }}
@@ -440,7 +467,7 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
                                         <CommandItem
                                           v-for="option in updatesList"
                                           :key="option.value"
-                                          :value="option"
+                                          :value="option.value"
                                           @select="toggleUpdatesSelection(option.value)"
                                         >
                                         <div
@@ -461,6 +488,7 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
                                         <CommandSeparator />
                                         <CommandGroup>
                                         <CommandItem
+                                            value="clear-updates"
                                             class="justify-center text-center"
                                             @select="clearUpdatesSelections"
                                         >
@@ -480,7 +508,7 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
                 <FormMessage />
         </FormItem>
             </FormField>                
-    <FormField v-slot="{ field, errors }" name="channels">
+    <FormField name="channels">
         <FormItem>
             <FormLabel class="text-md"><h2 class="py-2">3. Select channels to route your alert *</h2></FormLabel>              
             <FormControl>
@@ -502,22 +530,22 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
                                 <Checkbox 
                                     class="ml-auto" 
                                     :disabled="channel.disabled"
-                                    :checked="channelSelections[channel.value] && channelSelections[channel.value].length > 0" 
-                                    @click="(e) => {
+                                    :checked="getChannelSelections(channel.value).length > 0" 
+                                    @click="() => {
                                         if (channel.disabled) return;
-                                        if (!channelSelections[channel.value] || channelSelections[channel.value].length === 0) {
+                                        if (getChannelSelections(channel.value).length === 0) {
                                             openChannelDialog(channel.value)
                                         } else {
-                                            channelSelections[channel.value] = []
-                                            setFieldValue('channels', channelSelections.value)
+                                            setChannelSelections(channel.value, [])
+                                            // Remove the channels field as it's not in the form schema
                                         }
                                     }" 
                                 />
                             </div>
-                            <template v-if="channelSelections[channel.value] && channelSelections[channel.value].length > 0">
+                            <template v-if="getChannelSelections(channel.value).length > 0">
                                 <Separator />
                                 <div class="text-sm text-muted-foreground truncate">
-                                    {{ channelSelections[channel.value].join(', ') }}
+                                    {{ getChannelSelections(channel.value).join(', ') }}
                                 </div>
                             </template>
                         </CardHeader>
@@ -530,7 +558,7 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
                     Manage your channels in the settings.
                 </router-link>
             </FormDescription>
-            <FormMessage :message="errors" />
+            <FormMessage />
         </FormItem>
     </FormField>    
     <Button type="submit">
@@ -550,16 +578,16 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
                         You do not have an email channel set up yet. <router-link to="/settings/channels/new" target="_blank" @click="showChannelDialog = false">Add an email now.</router-link>
                     </DialogDescription>
                 </DialogHeader>
-                <Select v-if="channels.find(c => c.value === 'email')?.options.length" @update:modelValue="addChannel">
+                <Select v-if="channels.find(c => c.value === 'email')?.options.length" @update:modelValue="(value) => addChannel(value as string)">
                     <SelectTrigger>
                         <SelectValue placeholder="Select a channel" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
                             <SelectItem v-for="option in channels.find(c => c.value === selectedChannel)?.options || []" 
-                                :key="typeof option === 'object' ? option.id : option" 
-                                :value="typeof option === 'object' ? option.value : option">
-                                {{ typeof option === 'object' ? option.label : option }}
+                                :key="typeof option === 'object' ? (option as ChannelOptionObject).id : option" 
+                                :value="typeof option === 'object' ? (option as ChannelOptionObject).value : option">
+                                {{ typeof option === 'object' ? (option as ChannelOptionObject).label : option }}
                             </SelectItem>
                         </SelectGroup>
                     </SelectContent>

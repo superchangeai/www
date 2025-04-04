@@ -1,115 +1,106 @@
 import apiClient from '../index';
+import { type ProfileData, type Identity, handleApiError } from '../types';
 
 export const profileService = {
 
    /**
    * Retrieve a user with the current existing session
+   * @returns {Promise<ProfileData>} The user profile data
    */
 
-   getProfile: async () => {
+   getProfile: async (): Promise<ProfileData> => {
       try {
          const response = await apiClient.get('/profile');
          return response.data;
-      } catch (error) {
-         console.error('Error fetching profile:', error);
-         throw error;
+      } catch (error: unknown) {
+         return handleApiError(error, 'Error fetching profile:');
       }
    },
 
 
    /**
    * Update a user
+   * @param {ProfileData} data - The profile data to update
+   * @returns {Promise<ProfileData>} The updated profile data
    */
 
-   updateProfile: async (data: any) => {
+   updateProfile: async (data: ProfileData): Promise<ProfileData> => {
       try {
          const response = await apiClient.put('/profile', data);
          return response.data;
-      } catch (error) {
-         console.error('Error updating profile:', error);
-         throw error;
+      } catch (error: unknown) {
+         return handleApiError(error, 'Error updating profile:');
       }
    },
 
    /** 
    * Retrieve identities linked to a user
+   * @returns {Promise<Identity[]>} The list of linked identities
    */
 
-   getIdentities: async () => {
+   getIdentities: async (): Promise<Identity[]> => {
       try {
          const response = await apiClient.get('/profile/identities');
          return response.data;
-      } catch (error) {
-         console.error('Error fetching identities:', error);
-         // Log more detailed information about the error
-         if (error.isAxiosError) {
-           console.error('Axios error details:', {
-             message: error.message,
-             status: error.response?.status,
-             statusText: error.response?.statusText,
-             data: error.response?.data,
-             config: {
-               url: error.config?.url,
-               method: error.config?.method,
-               headers: error.config?.headers
-             }
-           });
-         }
-         // Check if it's a session error and handle it specifically
-         if (error.response?.data?.message === 'No active session found') {
-           throw new Error('You need to be logged in to view identities');
-         }
-         throw error;
+      } catch (error: unknown) {
+         return handleApiError(error, 'Error fetching identities:');
       }
    },
 
    /**
     * Link a provider identity to a user
     * @param {string} provider - The provider to link (e.g., 'github', 'google')
-    * @returns {Promise<any>} - The linked identity
+    * @returns {Promise<Identity>} - The linked identity
     */
 
-   linkIdentity: async (provider: string) => {
+   linkIdentity: async (provider: string): Promise<Identity> => {
       try {
          const response = await apiClient.post('/profile/identities', { provider });
          return response.data;
-      } catch (error) {
-         console.error('Error linking identity:', error);
-         throw error;
+      } catch (error: unknown) {
+         return handleApiError(error, 'Error linking identity:');
       }
    },
    /**
     * Unlink a Github identity from a user
+    * @param {number} id - The ID of the identity to unlink
+    * @returns {Promise<void>} - Confirmation of successful unlinking
     */
-   unlinkIdentity: async (id: number) => {
+   unlinkIdentity: async (id: number): Promise<void> => {
       try {
          // The backend expects the full identity object, but we only have the ID
          // We'll let the backend handle finding the identity by ID
          const response = await apiClient.delete(`/profile/identities/${id}`);
          return response.data;
-      } catch (error) {
-         console.error('Error unlinking identity:', error);
-         throw error;
+      } catch (error: unknown) {
+         return handleApiError(error, 'Error unlinking identity:');
       }
    },
 
-   deleteProfile: async () => {
+   /**
+    * Delete the user's profile
+    * @returns {Promise<void>} - Confirmation of successful deletion
+    */
+   deleteProfile: async (): Promise<void> => {
       try {
          // The backend will extract userId from the authenticated request
          const response = await apiClient.delete('/profile');
          return response.data;
-      } catch (error) {
-         console.error('Error deleting profile:', error);
-         throw error;
+      } catch (error: unknown) {
+         return handleApiError(error, 'Error deleting profile:');
       }
    },
-   resetPassword: async (email: string) => {
+   /**
+    * Request a password reset for a user
+    * @param {string} email - The email address of the user
+    * @returns {Promise<void>} - Confirmation of password reset request
+    */
+   resetPassword: async (email: string): Promise<void> => {
       try {
          const response = await apiClient.post('/profile/reset-password', { email });
          return response.data;
-      } catch (error) {
-         console.error('Error resetting password:', error);
-         throw error;
+      } catch (error: unknown) {
+         return handleApiError(error, 'Error resetting password:');
       }
    }
 

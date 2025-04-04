@@ -5,6 +5,7 @@
         <div class="flex items-center gap-2">
             <img src="/super.svg" alt="Superchange.ai logo" class="h-6" />
             <span class="font-semibold text-lg">superchange.ai</span>
+            <Badge variant="outline">beta</Badge>
         </div>
         <nav class="flex gap-8 items-center">
           <a href="#features" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Features</a>
@@ -13,7 +14,7 @@
           <a href="https://github.com/superchangeai" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200 flex gap-2 items-center"><Github class="xs" /> GitHub</a>
           <router-link :to="'/feed/'">
             <Button size="xxl">
-              Browse the changes (beta)
+              Browse the changes
             </Button>
           </router-link>
         </nav>
@@ -24,12 +25,12 @@
       <section class="relative bg-gradient-to-br from-[#0d0d0e] via-[#151b26] to-[#1a2540] bg-blend-overlay" ref="heroSection">
         <div class="container mx-auto px-8 flex gap-2 items-center justify-between">
         <div class="w-[75%] text-left">
-                <h1 class="text-5xl font-extrabold mb-6 leading-tight">The changelog of changelogs.</h1>
-                <p class="py-2 text-xl text-muted-foreground max-w-3xl my-4">One central feed for all the updates from the tech providers you depend on. <br> Never miss a breaking change again.</p>
+                <h1 class="text-6xl font-extrabold mb-6 leading-tight">The changelog of changelogs.</h1>
+                <p class="py-2 text-md text-muted-foreground max-w-3xl mb-8">One central feed for all the updates from the tech providers you depend on. <br> Never miss a breaking change again.</p>
                 <div class="flex gap-4 mt-4">
                   <router-link :to="'/feed/'">
                     <Button size="xxl">
-                      Browse the changes (beta)
+                      Browse the changes
                     </Button>
                   </router-link>
                   <!-- <router-link :to="'/docs'">
@@ -110,28 +111,28 @@
             <div class="coming-soon-item">
               <div class="coming-soon-title">
                 <span>AI Agent-ready (<a href="https://api.superchange.ai/v1/llms.txt">LLMs.txt</a>)</span>
-                <Badge>Live</Badge>
+                <Badge>live</Badge>
               </div>
               <p class="coming-soon-description">Access changes through <a href="https://api.superchange.ai/v1/llms.txt">LLMs.txt</a>, making it easy for AI coding assistants and IDEs to consume Superchange.ai</p>
             </div>
             <div class="coming-soon-item">
               <div class="coming-soon-title">
                 <span>Community-driven expansion</span>
-                <Badge>Ongoing</Badge>
+                <Badge>ongoing</Badge>
               </div>
               <p class="coming-soon-description">New providers are added based on your requests – if your stack relies on it, we'll likely support it. (Contributions welcome, this is open source!)</p>
             </div>
             <div class="coming-soon-item">
               <div class="coming-soon-title">
                 <span>CI/CD integration</span>
-                <Badge variant="outline">Coming soon</Badge>
+                <Badge variant="outline">coming soon</Badge>
               </div>
               <p class="coming-soon-description">GitHub Actions support is planned, so you can automate update checks in your build or deployment pipeline.</p>
             </div>
             <div class="coming-soon-item">
               <div class="coming-soon-title">
                 <span>MCP compatibility</span>
-                <Badge variant="outline">Coming soon</Badge>
+                <Badge variant="outline">coming later</Badge>
               </div>
               <p class="coming-soon-description">Integration with Anthropic's Model Context Protocol (MCP), allowing AI agents to query your unified changelog directly.</p>
             </div>

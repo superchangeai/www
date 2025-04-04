@@ -53,7 +53,8 @@ export const router = createRouter({
     {
       path: '/verify-email',
       name: 'verify-email',
-      beforeEnter: (to, from, next) => {
+      redirect: '/settings/channels',
+      beforeEnter: (to, _, next) => {
         const token = to.query.token
         if (token) {
           next({ path: '/settings/channels', query: { token: token } })
@@ -101,7 +102,7 @@ export const router = createRouter({
     {
       path: '/signup',
       name: 'signup',
-      component: () => import('@/views/Signup.vue')
+      component: () => import('@/views/SignUp.vue')
     },
     {
       path: '/auth/callback',
@@ -109,13 +110,13 @@ export const router = createRouter({
       component: () => import('@/views/AuthCallback.vue')
     }
   ],
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior() {
     // Always scroll to top when navigating to a new route
     return { top: 0 }
   }
 })
 // Authentication middleware
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
   if (!requiresAuth) {

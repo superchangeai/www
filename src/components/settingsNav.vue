@@ -6,7 +6,7 @@
         :key="item.label"
         :to="item.route"
         custom
-        v-slot="{ navigate, isActive }"
+        v-slot="{ navigate }"
       >
         <Button
           :variant="$route.path.startsWith(item.route) ? 'secondary' : 'ghost'"
@@ -20,24 +20,16 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { Button } from '@/components/ui/button'
-import { useRouter } from 'vue-router'  
-export default {
-  name: 'LeftNav',
-  components: {
-    Button,
-  },
-  setup() {
-    const router = useRouter()
-    const navItems = [
-      { label: 'Profile', route: '/settings/profile' },
-      { label: 'Channels', route: '/settings/channels' },
-    ]
 
-    return {
-      navItems
-    }
-  },
+interface NavItem {
+  label: string
+  route: string
 }
+
+const navItems: NavItem[] = [
+  { label: 'Profile', route: '/settings/profile' },
+  { label: 'Channels', route: '/settings/channels' },
+]
 </script>

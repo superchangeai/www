@@ -15,8 +15,8 @@ const user = ref({
   name: '',
   email: '',
   emailVerified: false,
-  authMethods: [],
-  lastGithubConnection: ''
+  authMethods: [] as string[],
+  lastConnection: ''
 })
 
 const editedName = ref('')
@@ -24,7 +24,7 @@ const editedEmail = ref('')
 const isEditingName = ref(false)
 const isEditingEmail = ref(false)
 const isLoading = ref(false)
-const setSettingsLoading = inject('setSettingsLoading', null)
+const setSettingsLoading = inject('setSettingsLoading', null) as ((loading: boolean) => void) | null
 
 // Fetch user profile data when component mounts
 onMounted(async () => {
@@ -35,10 +35,10 @@ onMounted(async () => {
     
     // Update user data with API response
     user.value = {
-      name: profileData.name || profileData.user_metadata.name,
+      name: profileData.name || (profileData.user_metadata?.name || ''),
       email: profileData.email || '',
-      emailVerified: profileData.email_confirmed_at || false,
-      authMethods: profileData.identities ? profileData.identities.map(identity => identity.provider) : [],
+      emailVerified: Boolean(profileData.email_confirmed_at),
+      authMethods: profileData.identities ? profileData.identities.map(identity => identity.provider) : [] as string[],
       lastConnection: profileData.last_sign_in_at || ''
     }
     

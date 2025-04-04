@@ -78,18 +78,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { supabase } from '../lib/supabase'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormDescription } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Github, SquareUser } from 'lucide-vue-next'
 import { useColorMode } from '@vueuse/core'
 import Header from '@/components/Header.vue'
 
 const router = useRouter()
-const route = useRoute()
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')

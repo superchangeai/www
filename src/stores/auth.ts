@@ -15,6 +15,6 @@ supabase.auth.getSession().then(({ data: { session } }) => {
   authStore.session = session
 })
 
-supabase.auth.onAuthStateChange((event, session) => {
+supabase.auth.onAuthStateChange((_event, session) => {
   authStore.session = session
 })

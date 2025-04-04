@@ -121,6 +121,7 @@ const handleNotify = () => {
     window.location.href = redirectPath;
   } else {
     // User is not authenticated, open auth drawer
+    console.log("This should open");
     open({
       title: 'Stay on top of changes from selected providers',
       description: 'Superchange members can search history and create alerts',

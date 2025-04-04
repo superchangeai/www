@@ -51,9 +51,15 @@ export const emailChannelsService = {
     try {
       const response = await apiClient.get(`/email-channels/verify-email?token=${token}`);
       return response.data;
-    } catch (error) {
-      if (error.response?.status === 400) {
-        throw new Error('Invalid or expired verification token');
+    } catch (error: unknown) {
+      console.error('Error verifying email:', error);
+      
+      // Type guard to check if error is an object with response property
+      if (error && typeof error === 'object' && 'response' in error && 
+          error.response && typeof error.response === 'object' && 'status' in error.response) {
+        if (error.response.status === 400) {
+          throw new Error('Invalid or expired verification token');
+        }
       }
       throw new Error('Failed to verify email');
     }
