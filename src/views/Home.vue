@@ -47,7 +47,7 @@
 
       <section id="features" class="feature-section">
         <div class="container">
-          <h2 class="section-heading">One Changelog for Everything You Build On</h2>
+          <h2 class="section-heading">One changelog for everything you build on</h2>
           <p class="section-description">API changelogs, AI models lifecycle, Framework release notes – important updates are scattered everywhere. <br> Critical changes often get buried in documentation, and must-do migrations go unnoticed until it's too late.</p>
           
           <div class="features-grid">
@@ -64,7 +64,7 @@
             <div class="feature-card flex flex-col items-center text-center">
               <SearchCheck />
               <h3 class="feature-title">Full transparency</h3>
-              <p class="text-muted-foreground">Every entry links back to the official source. No black boxes – you can always verify details in the original release notes or docs.</p>
+              <p class="text-muted-foreground">Every entry links back to the official source. You can always get details in the original notes or docs.</p>
             </div>
           </div>
           <div class="changelog-demo">
@@ -75,7 +75,7 @@
 
       <section id="alerts" class="feature-section">
         <div class="container">
-          <h2 class="section-heading">Updates that actually update you.</h2>
+          <h2 class="section-heading">Updates that actually update you</h2>
           <p class="section-description">There's a fine line between missing crucial updates and getting drowned in noise. <br> Superchange.ai lets you control that balance with smart, filtered alerts.</p>
           
           <div class="alert-demo">

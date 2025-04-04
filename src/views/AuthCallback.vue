@@ -1,4 +1,11 @@
 <template>
+  <Header 
+      :title="'Redirection'"
+      :icon="Github"
+      :show-filter-button="false" 
+      :show-help-button="false"
+    >
+    </Header> 
   <div class="flex min-h-screen items-center justify-center bg-background p-4">
     <Card class="w-full max-w-md">
       <CardHeader>
@@ -21,9 +28,8 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../lib/supabase'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Loader2 } from 'lucide-vue-next'
-import { useColorMode } from '@vueuse/core'
-const mode = useColorMode()
+import { Loader2, Github } from 'lucide-vue-next'
+import Header from '@/components/Header.vue'
 
 const router = useRouter()
 

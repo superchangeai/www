@@ -43,7 +43,7 @@
     
       <!-- Bottom settings section -->
       <div class="mt-auto p-3 space-y-1 border-t border-border sticky bottom-0 bg-background">
-        <router-link :to="'/settings'" custom v-slot="{ navigate, isActive }">
+        <router-link v-if="authStore.session?.user" :to="'/settings'" custom v-slot="{ navigate, isActive }">
           <Button
                 variant="ghost"
                 class="w-full justify-start font-normal"
@@ -54,6 +54,17 @@
           Settings
         </Button>
       </router-link>
+        <router-link v-else :to="'/login'" custom v-slot="{ navigate, isActive }">
+          <Button
+                variant="secondary"
+                class="w-full justify-start font-normal"
+                :class="{ 'bg-accent': isActive }"
+                @click="navigate"
+            >
+          <SquareUser class="mr-2 h-4 w-4" />
+          Sign in
+        </Button>
+        </router-link>
         <Feedback />
       </div>
     </div>
@@ -78,6 +89,7 @@ import {
   // Search,
   LogOut,
   Settings,
+  SquareUser,
 } from 'lucide-vue-next'
 // import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
