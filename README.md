@@ -66,7 +66,7 @@ New providers are added based on community requests - if your stack relies on it
 
 ## Roadmap
 
-- ****Project-based feed
+- **Custom Feed**: Project-based curation of your providers
 - **CI/CD integration**: GitHub Actions support for automated update checks
 - **MCP compatibility**: Integration with Model Context Protocol
 - **Community-driven expansion**: Adding more providers based on user requests
