@@ -22,7 +22,7 @@
     </header>
 
     <main>
-      <section class="relative bg-gradient-to-br from-[#0d0d0e] via-[#151b26] to-[#1a2540] bg-blend-overlay" ref="heroSection">
+      <section class="relative bg-gradient-to-br from-[#0d0d0e] via-[#151b26] to-[#1a2540] bg-blend-overlay min-h-[450px]" ref="heroSection">
         <div class="container mx-auto px-8 flex gap-2 items-center justify-between">
         <div class="w-[75%] text-left">
                 <h1 class="text-6xl font-extrabold mb-6 leading-tight">The changelog of changelogs.</h1>

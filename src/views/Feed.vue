@@ -264,6 +264,16 @@ const provideFeedback = async (itemId, value) => {
         </div>
       </div>
     </div>
+    <!-- Empty state when no updates are available -->
+    <div v-else-if="Object.keys(groupedUpdates).length === 0" class="flex flex-col items-center justify-center py-12 px-4">
+        <div class="text-center">
+          <h3 class="text-lg font-semibold mb-2">No updates available</h3>
+          <p class="text-muted-foreground mb-4 text-sm">There are currently no changes listed in this category. We just started collecting early 2025 you know. <br> Check back later or explore other categories.</p>
+          <router-link to="/feed/all">
+            <Button variant="outline">View all changes</Button>
+          </router-link>
+        </div>
+      </div>
     <!-- Group updates by month -->
     <div v-else v-for="(monthUpdates, month) in groupedUpdates" :key="month" class="py-2">
       <div class="px-11 py-2 flex items-center">

@@ -178,7 +178,7 @@ const sendEmail = () => {
       <div v-else-if="providers.length === 0" class="flex flex-col items-center justify-center py-12 px-4">
         <div class="text-center">
           <h3 class="text-lg font-semibold mb-2">No providers available</h3>
-          <p class="text-muted-foreground mb-4">There are currently no providers listed in this category. Check back later or explore other categories.</p>
+          <p class="text-muted-foreground mb-4 text-sm">There are currently no providers listed in this category. Check back later or explore other categories.</p>
           <router-link to="/providers/all">
             <Button variant="outline">View all providers</Button>
           </router-link>

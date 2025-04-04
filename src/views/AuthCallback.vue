@@ -22,6 +22,8 @@ import { useRouter } from 'vue-router'
 import { supabase } from '../lib/supabase'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2 } from 'lucide-vue-next'
+import { useColorMode } from '@vueuse/core'
+const mode = useColorMode()
 
 const router = useRouter()
 
@@ -44,7 +46,7 @@ onMounted(async () => {
     if (redirectPath) {
       router.push(redirectPath)
     } else {
-      router.push('/')
+      router.push('/feed')
     }
   } catch (error: any) {
     console.error('Error in auth callback:', error.message)
