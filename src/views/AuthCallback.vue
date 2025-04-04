@@ -1,0 +1,54 @@
+<template>
+  <div class="flex min-h-screen items-center justify-center bg-background p-4">
+    <Card class="w-full max-w-md">
+      <CardHeader>
+        <CardTitle class="text-2xl font-bold text-center">Authenticating...</CardTitle>
+        <CardDescription class="text-center">
+          Please wait while we complete your authentication
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div class="flex justify-center py-4">
+          <Loader2 class="h-8 w-8 animate-spin" />
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { supabase } from '../lib/supabase'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Loader2 } from 'lucide-vue-next'
+
+const router = useRouter()
+
+onMounted(async () => {
+  try {
+    // Exchange the code for a session
+    const { error } = await supabase.auth.getSession()
+    
+    if (error) {
+      throw error
+    }
+    
+    // Check if we have a stored redirect path
+    const redirectPath = localStorage.getItem('auth_redirect')
+    
+    // Clear the stored redirect path
+    localStorage.removeItem('auth_redirect')
+    
+    // Redirect to the original requested URL or home if none
+    if (redirectPath) {
+      router.push(redirectPath)
+    } else {
+      router.push('/')
+    }
+  } catch (error: any) {
+    console.error('Error in auth callback:', error.message)
+    router.push('/login?error=callback')
+  }
+})
+</script>
