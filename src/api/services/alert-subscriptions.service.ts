@@ -2,7 +2,7 @@ import apiClient from '../index';
 
 export interface AlertSubscription {
   id: number;
-  channels: { email_channel_id: number; email_to: string }[];
+  channels: { email_channel_id: number; email_to: string, frequency_level: string }[];
   providers: Array<{
     id: number;
     name: string;

@@ -10,7 +10,7 @@
     <div class="absolute inset-0 z-0 bg-curves" :style="{ backgroundImage: `url(${backgroundSvg})` }"></div>
     <Card class="w-full max-w-md login-card relative h-screen shadow-xl">
       <CardHeader>
-        <CardTitle class="text-2xl text-left">Sign up (free)</CardTitle>
+        <CardTitle class="text-2xl text-left">Get started with Superchange (free)</CardTitle>
         <CardDescription class="text-left">
           Create an account to search history and create custom alerts.
         </CardDescription>

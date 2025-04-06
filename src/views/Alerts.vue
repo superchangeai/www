@@ -34,14 +34,28 @@ import {
   getSortedRowModel,
   useVueTable,
 } from '@tanstack/vue-table'
-import { ChevronDown, ChevronsUpDown } from 'lucide-vue-next'
+import { ChevronDown, ChevronsUpDown, Ellipsis } from 'lucide-vue-next'
 import { h, ref, onMounted, computed } from 'vue'
+import { Bell } from 'lucide-vue-next'
 import {
-  Bell,
-} from 'lucide-vue-next'
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import { alertSubscriptionsService } from '@/api/services/alert-subscriptions.service'
-
+import { useToast } from '@/components/ui/toast/use-toast'
+const { toast } = useToast()
 
 export interface AlertProvider {
   id: number
@@ -51,6 +65,7 @@ export interface AlertProvider {
 export interface AlertChannel {
   email_channel_id: number
   email_to: string
+  frequency_level: string
 }
 
 export interface AlertSubscription {
@@ -132,6 +147,33 @@ const columns = [
     header: () => h('div', { class: 'text-right' }, 'Created'),
     cell: ({ row }) => h('div', { class: 'text-right font-medium' }, row.getValue('created')),
   }),
+  columnHelper.display({
+    id: 'actions',
+    cell: ({ row }) => h('div', { class: 'text-right' }, [
+      h(Popover, {}, {
+        default: () => [
+          h(PopoverTrigger, { asChild: true }, () => [
+            h(Button, { variant: 'ghost', size: 'icon' }, () => [
+              h(Ellipsis, { class: 'h-3 w-3' })
+            ])
+          ]),
+          h(PopoverContent, { class: 'w-40 p-0' }, () => [
+            h('div', { class: 'flex flex-col' }, [
+              // TODO 
+              // h('router-link', {
+              //   to: `/alerts/edit/${row.original.id}`,
+              //   class: 'opacity-50 bg-muted cursor-not-allowed p-2 hover:bg-muted text-sm no-underline text-inherit'
+              // }, 'Edit'),
+              h('button', {
+                class: 'p-2 hover:bg-muted text-sm text-left text-destructive',
+                onClick: () => openDeleteDialog(row.original.id)
+              }, 'Delete')
+            ])
+          ])
+        ]
+      })
+    ])
+  }),
 ]
 
 const sorting = ref<SortingState>([])
@@ -163,6 +205,8 @@ const table = useVueTable({
 })
 const isLoading = ref(false)
 const error = ref<string | null>(null)
+const isDeleteDialogOpen = ref(false)
+const alertToDelete = ref<number | null>(null)
 
 // Skeleton loading state
 const skeletonRows = Array(2).fill(null)
@@ -178,8 +222,50 @@ const formatProviders = (providers: AlertProvider[]): string => {
     : displayItems.join(', ')
 }
 
+const formatFrequency = (frequencyLevel: string) => {
+    return frequencyLevel
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+}
+
 const formatChannels = (channels: AlertChannel[]): string => {
-  return channels.length ? channels[0].email_to : ''
+  return channels.length ? `${channels[0].email_to} (${formatFrequency(channels[0].frequency_level)})` : ''
+}
+
+// Function to open the delete dialog
+const openDeleteDialog = (alertId: number) => {
+  alertToDelete.value = alertId
+  isDeleteDialogOpen.value = true
+}
+
+// Function to confirm and execute the delete action
+const confirmDelete = async () => {
+  if (!alertToDelete.value) return
+  
+  try {
+    isLoading.value = true
+    await alertSubscriptionsService.delete(alertToDelete.value)
+    
+    // Refresh the alerts list
+    await fetchAlerts()
+    
+    toast({
+      title: 'Alert deleted',
+      description: 'The alert has been successfully deleted.',
+    })
+  } catch (error) {
+    console.error('Error deleting alert:', error)
+    toast({
+      title: 'Error',
+      description: 'Failed to delete the alert',
+      variant: 'destructive',
+    })
+  } finally {
+    isLoading.value = false
+    isDeleteDialogOpen.value = false
+    alertToDelete.value = null
+  }
 }
 
 const fetchAlerts = async () => {
@@ -194,6 +280,7 @@ const fetchAlerts = async () => {
       providers: formatProviders(alert.providers),
       updates: formatClassifications(alert.classifications)
     }));
+    console.log(data.value);
   } catch (err) {
     error.value = err instanceof Error ? err.message : null
   } finally {
@@ -228,7 +315,7 @@ const currentConfig = computed(() => ({
             <Bell class="mr-2 h-4 w-4" /> Create an alert
           </Button>
         </router-link>
-      </template>
+    </template>
     </Header>
   <div class="w-full py-2 px-11">
     <div class="flex gap-2 items-center py-4" v-if="table.getRowModel().rows?.length">
@@ -295,9 +382,8 @@ const currentConfig = computed(() => ({
               </TableRow>
             </template>
           </template>
-
           <!-- Skeleton loading state -->
-          <template v-if="isLoading">
+          <template v-if="isLoading && !table.getRowModel().rows?.length">
             <TableRow v-for="i in skeletonRows" :key="i">
               <TableCell v-for="column in columns" :key="column.id">
                 <Skeleton class="h-6 w-full" />
@@ -327,4 +413,21 @@ const currentConfig = computed(() => ({
       </div>
     </div>
   </div>
+    <!-- Alert Dialog for Delete Confirmation -->
+    <AlertDialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
+        <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure you want to delete this alert?</AlertDialogTitle>
+                <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete this alert.
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel @click="isDeleteDialogOpen = false">Cancel</AlertDialogCancel>
+                <AlertDialogAction @click="confirmDelete" class="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    Delete
+                </AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
 </template>

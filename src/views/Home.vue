@@ -8,26 +8,58 @@
             <Badge variant="outline">beta</Badge>
         </div>
         <nav class="flex gap-8 items-center">
-          <a href="#features" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Features</a>
-          <a href="#alerts" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Alerts</a>
-          <a href="#roadmap" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Roadmap</a>
-          <a href="https://github.com/superchangeai" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200 flex gap-2 items-center"><Github class="xs" /> GitHub</a>
-          <router-link :to="'/feed/'">
-            <Button size="xxl">
-              Browse the changes
+          <!-- Desktop Navigation -->
+          <div class="hidden md:flex gap-8 items-center">
+            <a href="#features" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Features</a>
+            <a href="#alerts" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Alerts</a>
+            <a href="#roadmap" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Roadmap</a>
+            <a href="https://github.com/superchangeai" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200 flex gap-2 items-center"><Github class="xs" /> GitHub</a>
+            <router-link :to="'/feed/'">
+              <Button size="xxl">
+                Browse the changes
+              </Button>
+            </router-link>
+          </div>
+          
+          <!-- Mobile Navigation -->
+          <div class="md:hidden flex items-center gap-4">
+            <Button @click="isMobileMenuOpen = true" variant="ghost" size="icon">
+              <Menu class="h-6 w-6" />
             </Button>
-          </router-link>
+            <router-link :to="'/feed/'">
+              <Button size="xxl">
+                Browse
+              </Button>
+            </router-link>
+          </div>
         </nav>
+        
+        <!-- Mobile Menu Sheet -->
+        <Sheet v-model:open="isMobileMenuOpen">
+          <SheetContent side="top" class="w-full sm:w-full">
+            <SheetHeader>
+              <SheetTitle>Superchange menu</SheetTitle>
+            </SheetHeader>
+            <div class="flex flex-col gap-4 py-4">
+              <a href="#features" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click="isMobileMenuOpen = false">Features</a>
+              <a href="#alerts" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click="isMobileMenuOpen = false">Alerts</a>
+              <a href="#roadmap" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click="isMobileMenuOpen = false">Roadmap</a>
+              <a href="https://github.com/superchangeai" class="text-muted-foreground hover:text-foreground transition-colors duration-200 flex gap-2 items-center" @click="isMobileMenuOpen = false">
+                <Github class="h-4 w-4" /> GitHub
+              </a>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
 
     <main>
-      <section class="relative bg-gradient-to-br from-[#0d0d0e] via-[#151b26] to-[#1a2540] bg-blend-overlay min-h-[450px]" ref="heroSection">
+      <section class="relative bg-gradient-to-br from-[#0d0d0e] via-[#151b26] to-[#1a2540] bg-blend-overlay min-h-[450px] flex flex-col justify-center" ref="heroSection">
         <div class="container mx-auto px-8 flex gap-2 items-center justify-between">
-        <div class="w-[75%] text-left">
+        <div class="w-full text-center md:w-[75%] md:text-left">
                 <h1 class="text-6xl font-extrabold mb-6 leading-tight">The changelog of changelogs.</h1>
-                <p class="py-2 text-md text-muted-foreground max-w-3xl mb-8">One central feed for all the updates from the tech providers you depend on. <br> Never miss a breaking change again.</p>
-                <div class="flex gap-4 mt-4">
+                <p class="py-2 text-center md:text-left text-md text-muted-foreground max-w-3xl mb-8">One central feed for all the updates from the tech providers you depend on. Never miss a breaking change again.</p>
+                <div class="flex gap-4 mt-4 items-center justify-center md:justify-start">
                   <router-link :to="'/feed/'">
                     <Button size="xxl">
                       Browse the changes
@@ -40,16 +72,22 @@
                   </router-link> -->
                 </div>
         </div>
-        <img src="/superchange.png" alt="Superchange.ai homepage" class="w-[35%]" />
+        <img src="/superchange.png" alt="Superchange.ai homepage" class="hidden md:block w-[35%]" />
         </div>
-        <div class="absolute top-1/2 right-[-16%] transform translate-y-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(0,136,255,0.3),transparent_70%)] z-0 pointer-events-none blur-[60px]"></div>
+        <div class="hidden md:block absolute top-1/2 right-[-16%] transform translate-y-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(0,136,255,0.3),transparent_70%)] z-0 pointer-events-none blur-[60px]"></div>
     </section>
 
       <section id="features" class="feature-section">
+        <h2 class="section-heading">One changelog for everything you build on</h2>
+
+        <div class="changelog-demo block md:hidden">
+            <img src="/ui-changes-feed.png" alt="Superchange.ai dashboard showing unified changelog" />
+        </div>
         <div class="container">
-          <h2 class="section-heading">One changelog for everything you build on</h2>
+          <div class="changelog-demo hidden md:block">
+            <img src="/ui-changes-feed.png" alt="Superchange.ai dashboard showing unified changelog" />
+          </div>
           <p class="section-description">API changelogs, AI models lifecycle, Framework release notes – important updates are scattered everywhere. <br> Critical changes often get buried in documentation, and must-do migrations go unnoticed until it's too late.</p>
-          
           <div class="features-grid">
             <div class="feature-card flex flex-col items-center text-center">
               <span><PanelsTopLeft /></span>
@@ -66,9 +104,6 @@
               <h3 class="feature-title">Full transparency</h3>
               <p class="text-muted-foreground">Every entry links back to the official source. You can always get details in the original notes or docs.</p>
             </div>
-          </div>
-          <div class="changelog-demo">
-            <img src="/ui-changes-feed.png" alt="Superchange.ai dashboard showing unified changelog" />
           </div>
         </div>
       </section>
@@ -143,7 +178,7 @@
       <section class="cta-section relative bg-background">
         <div class="container z-10 relative flex flex-col items-center">
           <h2>Boring Stuff, Done Better</h2>
-          <p>Superchange.ai was created by a product manager who spent a decade building APIs and developer platforms — and constantly struggled to keep up with others' changelogs. It's built to be transparent and reliable from day one.</p>
+          <p>Superchange.ai was vibe coded by a technical product manager who spent a decade building APIs and developer platforms — and constantly struggled to keep up with others' changelogs. It's built to be transparent and reliable from day one.</p>
           <div class="buttons z-10 relative">
             <a href="/feed" class="btn btn-primary">Join the Public Beta</a>
           </div>
@@ -154,13 +189,11 @@
 
     <footer>
       <div class="container">
-        <div class="footer-content">
-          <div class="footer-logo">
-            <div class="logo-icon flex gap-2 items-center">
-              <img src="/super.svg"> <span class="logo-text">superchange.ai</span>
-            </div>
+        <div class="flex flex-col items-center gap-4 md:flex-row md:justify-between md:items-center">
+          <div class="flex gap-2 items-center">
+            <img src="/super.svg" width="40" /> <span class="logo-text">superchange.ai</span>
           </div>
-          <div class="footer-links">
+          <div class="footer-links hidden md:flex gap-3 md:flex-row md:justify-between md:items-center">
             <a href="#features" class="footer-link">Features</a>
             <a href="#alerts" class="footer-link">Alerts</a>
             <a href="#roadmap" class="footer-link">Roadmap</a>
@@ -184,9 +217,26 @@
     import { useColorMode } from '@vueuse/core'
     import { Button } from '@/components/ui/button'
     import { Badge } from '@/components/ui/badge'
-    import { PanelsTopLeft, Sparkles, TriangleAlert, SearchCheck, Bot, Clock4, Github } from 'lucide-vue-next'
+    import {
+      PanelsTopLeft,
+      Sparkles,
+      TriangleAlert,
+      SearchCheck,
+      Bot,
+      Clock4,
+      Github,
+      Menu
+    } from 'lucide-vue-next'
     import { RouterLink } from 'vue-router'
+    import {
+      Sheet,
+      SheetContent,
+      SheetHeader,
+      SheetTitle
+    } from '@/components/ui/sheet'
+    
     const mode = useColorMode()
+    const isMobileMenuOpen = ref(false)
     
 </script>
   
@@ -538,18 +588,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .footer-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 2rem;
-    }
+    }    
 
     .footer-link {
       color: hsl(var(--muted-foreground));
@@ -597,16 +636,7 @@
         width: 100%;
         margin-bottom: 1rem;
       }
-      
-      .footer-content {
-        flex-direction: column;
-        gap: 2rem;
-      }
-      
-      .footer-links {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
+    
     }
 
     
