@@ -60,6 +60,16 @@ a:hover {
   
 }
 
+@media (max-width: 768px) {
+  body {
+    min-width: 100%;
+  }
+  
+  h1 {
+    font-size: 1.1em;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

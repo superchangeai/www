@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, watch, reactive } from 'vue'
+import { ref, computed, onMounted, watch, reactive, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { supabase } from '../lib/supabase';
 import Header from '@/components/Header.vue'
@@ -189,6 +189,12 @@ const renderMarkdown = (content) => {
   return md.render(content);
 }
 
+const isMobile = ref(false)
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 768
+}
+
 // Component mount
 onMounted(() => {
   // Load changes from DB
@@ -199,6 +205,13 @@ onMounted(() => {
       feedbackGiven[key] = localStorage.getItem(key)
     }
   })
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+})
+
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkMobile)
 })
 
 // refresh data when route changes
@@ -253,10 +266,10 @@ const provideFeedback = async (itemId, value) => {
     </Header> 
     <!-- Skeleton loading state -->
     <div v-if="isLoading" class="py-2">
-      <div class="px-11 py-2">
+      <div class="py-2 px-4 md:px-11">
         <Skeleton class="h-8 basis-1/6" />
       </div>
-      <div v-for="i in 5" :key="i" class="px-11 py-5">
+      <div v-for="i in 5" :key="i" class="py-5 px-4 md:px-11">
         <div class="flex items-center space-x-4">
           <Skeleton class="h-6 basis-1/6" />
           <Skeleton class="h-6 basis-4/6" />
@@ -276,7 +289,7 @@ const provideFeedback = async (itemId, value) => {
       </div>
     <!-- Group updates by month -->
     <div v-else v-for="(monthUpdates, month) in groupedUpdates" :key="month" class="py-2">
-      <div class="px-11 py-2 flex items-center">
+      <div class="py-2 flex items-center px-4 md:px-11">
         <h2 class="font-semibold cursor-pointer">
           <a :href="`#${month.toLowerCase().replace(' ', '-')}`" class="text-black dark:text-white">{{ month }}</a>
         </h2>
@@ -286,8 +299,8 @@ const provideFeedback = async (itemId, value) => {
       <div v-for="(item, index) in monthUpdates" :key="index" 
            class="hover:bg-accent/50 cursor-pointer py-5 transition-all duration-300 ease-in-out"
            @click="handleItemClick(item)">
-        <div class="px-11 pb-2 flex items-center">
-          <div class="text-sm font-medium shrink-0 pr-6 basis-1/6 text-left flex items-center gap-2">
+        <div class="pb-2 flex items-center px-4 md:px-11">
+          <div class="text-sm font-medium shrink-0 pr-6 text-left flex items-center gap-2 shrink-0 flex-none w-28 min-w-28">
             <Badge variant="outline" class="px-0.5">
               <TooltipProvider>
                 <Tooltip>
@@ -311,10 +324,14 @@ const provideFeedback = async (itemId, value) => {
           <div v-else class="text-sm text-muted-foreground truncate flex-1 text-left basis-4/6">
             <span class="flex items-center gap-2">
               <div class="relative inline-block">
-                Summary by
+                {{
+                  isMobile?
+                  'AI summary':
+                  'Summary by'
+                }}
                 <Badge 
                   variant="outline" 
-                  class="cursor-pointer"
+                  class="hidden md:inline cursor-pointer ml-1 px-1"
                   @mouseenter="item.showFeedback = true"
                   
                 >
@@ -356,7 +373,11 @@ const provideFeedback = async (itemId, value) => {
             </span>
           </div>
           <div class="flex justify-end items-center gap-2 text-xs text-muted-foreground whitespace-nowrap shrink-0 basis-1/6 text-right">
-            {{ new Date(item.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) }}
+            {{
+              isMobile?
+              new Date(item.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: 'short'}) : 
+              new Date(item.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) 
+            }}
             <ChevronDown v-if="expandedRowId !== item.id" class="h-4 w-4 transition-transform" />
             <ChevronUp v-if="expandedRowId === item.id" class="h-4 w-4 transition-transform" />
           </div>
@@ -365,16 +386,14 @@ const provideFeedback = async (itemId, value) => {
         <!-- Expandable content -->
         <div v-if="expandedRowId === item.id" 
              class="space-y-3 animate-in slide-in-from-top-2 duration-300">
-             <div class="px-11 pb-2 flex items-center">
-                <div class="text-sm font-medium shrink-0 pr-6 basis-1/6 text-left"> </div>
-                <div class="text-sm text-muted-foreground flex-1 text-left basis-4/6">
+             <div class="pb-2 flex items-center px-4 md:px-11">
+                <div class="hidden md:block text-sm font-medium shrink-0 flex-none w-28 min-w-28 text-left"></div>
+                <div class="text-sm text-muted-foreground flex-1 text-left basis-5/6 pt-3">
                   <div v-html="renderMarkdown(item.diff?.summary || item.explanation || 'No summary available')"></div>
                   <Separator class="my-2" />
                   <div>
                     Source <Badge variant="outline"><a :href="item.source.url" target="_blank" class="hover:underline text-black dark:text-white">{{ item.source.url }}</a></Badge>
                   </div>
-                </div>
-                <div class="flex items-center gap-2 text-xs text-muted-foreground whitespace-nowrap shrink-0 basis-1/6 text-right">
                 </div>
               </div>
         </div>

@@ -148,16 +148,17 @@ const sendEmail = () => {
       :icon="currentProviderConfig.icon"
       :is-loading="isLoading"
       :show-filter-button="false" 
-      :show-help-button="true"
+      :show-help-button="checkedProvidersCount === 0"
+      :show-toggle-button="checkedProvidersCount === 0"
     >
       <template #actions>
         <Button @click="handleNotify" v-if="checkedProvidersCount > 0">
-          <Bell class="mr-2 h-4 w-4" /> Create an alert <Badge>{{ checkedProvidersCount }}</Badge>
+          <Bell class="mr-2 h-4 w-4" /> Create alert <Badge>{{ checkedProvidersCount }}</Badge>
         </Button>
       </template>
     </Header>
   <div class="py-2">
-    <div class="px-11">
+    <div class="px-4 md:px-11">
       <!-- Skeleton loading state -->
       <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card v-for="i in 6" :key="i" class="provider-card">

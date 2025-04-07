@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,6 @@ import {
   Cloud,
   Contact,
   CreditCard,
-//   Ellipsis,
   FileText,
   Github,
   HeartCrack,
@@ -21,6 +20,8 @@ import {
   ServerCog,
   Zap
 } from 'lucide-vue-next'
+
+import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem } from '@/components/ui/menubar'
 
 defineOptions({
   name: 'Menu'
@@ -46,10 +47,27 @@ const Providers = ref([
 //   { type: 'more', label: 'More', icon: Ellipsis },
 ])
 
+const isMobile = ref(false)
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 768
+}
+
+onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkMobile)
+})
+
+
 </script>
 <template>
 
-<Accordion type="single" class="w-full" :default-value="'1'">
+<!-- Desktop menu accordion style -->
+<Accordion v-if="!isMobile" type="single" class="w-full" :default-value="'1'">
 <!-- Feed section -->
 <AccordionItem value="1">
     <AccordionTrigger class="text-[12px] text-muted-foreground pl-6 uppercase tracking-[.10em]">Feed</AccordionTrigger>
@@ -128,4 +146,93 @@ const Providers = ref([
     </AccordionContent>
 </AccordionItem>       
 </Accordion>
+
+<!-- Mobile menu menubar style -->
+<Menubar v-if="isMobile">
+    <MenubarMenu>
+        <MenubarTrigger>
+            Feed
+        </MenubarTrigger>
+        <MenubarContent>
+            <MenubarItem
+            v-for="item in feedItems"
+            >
+                <router-link
+                    :key="item.type"
+                    :to="`/feed/${item.type}`"
+                    custom
+                    v-slot="{ navigate, isActive }"
+                >
+                    <Button
+                        variant="ghost"
+                        class="w-full justify-start font-normal"
+                        :class="{ 'bg-accent': isActive }"
+                        @click="navigate"
+                    >
+                        <component :is="item.icon" class="mr-2 h-4 w-4" />
+                        {{ item.label }}
+                    </Button>
+                </router-link>
+            </MenubarItem>
+        </MenubarContent>
+    </MenubarMenu>
+    <MenubarMenu>
+        <MenubarTrigger>
+            Providers
+        </MenubarTrigger>
+        <MenubarContent>
+            <MenubarItem
+            v-for="provider in Providers"
+            >
+                <router-link
+                :key="provider.type"
+                :to="`/providers/${provider.type}`"
+                custom
+                v-slot="{ navigate, isActive }"
+                >
+                <Button
+                    variant="ghost"
+                    class="w-full justify-start font-normal"
+                    :class="{ 'bg-accent': isActive }"
+                    @click="navigate"
+                >
+                    <component :is="provider.icon" class="mr-2 h-4 w-4" />
+                    {{ provider.label }}
+                </Button>
+            </router-link>
+        </MenubarItem>
+        </MenubarContent>
+    </MenubarMenu>
+    <MenubarMenu>
+        <MenubarTrigger>
+            Actions
+        </MenubarTrigger>
+        <MenubarContent>
+            <MenubarItem>
+            <router-link :to="`/alerts/`" custom v-slot="{ navigate, isActive }">
+                <Button
+                variant="ghost"
+                class="w-full justify-start font-normal"
+                :class="{ 'bg-accent': isActive }"
+                @click="navigate"
+                ><Bell class="mr-2 h-4 w-4" /> Alerts
+                    <Badge variant="secondary" class="ml-auto">beta</Badge>
+                </Button>
+            </router-link>
+            </MenubarItem>
+            <MenubarItem>
+                <Button variant="ghost" class="w-full justify-start font-normal" disabled>
+                    <Github class="mr-2 h-4 w-4" />
+                    Github<Badge variant="secondary" class="ml-auto">soon</Badge>
+                </Button>
+            </MenubarItem>
+            <MenubarItem>
+                <Button variant="ghost" class="w-full justify-start font-normal" disabled>
+                    <ServerCog class="mr-2 h-4 w-4" />
+                    MCP<Badge variant="secondary" class="ml-auto">soon</Badge>
+                </Button>
+            </MenubarItem>  
+        </MenubarContent>
+    </MenubarMenu>
+</Menubar>
 </template>

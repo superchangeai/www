@@ -1,15 +1,15 @@
 <template>
-    <div class="border-b border-border pt-5 pb-4 px-10 flex items-center justify-between">
-      <h1 class="flex items-center gap-2 min-h-9">
-        <component :is="icon" class="w-5 h-5" />
+    <div class="border-b border-border pt-5 pb-4 flex items-center justify-between px-4 md:px-10">
+      <h1 class="flex items-center gap-2 min-h-9 shrink-none flex-none">
+        <component :is="icon" class="w-5 h-5 shrink-0" />
         <RouterLink 
           v-if="isDefaultTitle" 
-          to="/" 
+          to="/feed" 
           class="flex items-center gap-2"
         >
         <img src="/super.svg" alt="Superchange.ai logo" class="h-6" /><span> {{ title }}</span>
         </RouterLink>
-        <template v-else>
+        <template v-else class="truncate">
           {{ title }}
         </template>
         <span v-if="isLoading" class="ml-2">
@@ -93,7 +93,7 @@
               </div>
             </PopoverContent>
           </Popover>
-          <Button variant="ghost" size="sm" @click="toggleTheme">
+          <Button v-if="showToggleButton" variant="ghost" size="sm" @click="toggleTheme">
             <MoonStar class="h-5 w-5 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             <SunMedium class="h-5 w-5 absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           </Button>
@@ -125,7 +125,11 @@ const props = defineProps({
     },
     isLoading: Boolean,
     showFilterButton: Boolean,
-    showHelpButton: Boolean
+    showHelpButton: Boolean,
+    showToggleButton: {
+      type: Boolean,
+      default: true
+    }
   })
 
   const isDefaultTitle = computed(() => props.title === import.meta.env.VITE_APP_TITLE)

@@ -1,8 +1,40 @@
 <template>
-  <div class="flex bg-background text-foreground">
+  <div class="flex flex-col md:flex-row bg-background text-foreground">
     
-    <!-- Sidebar -->
-    <div v-if="showSidebar" class="w-64 border-r border-border bg-muted/30 flex flex-col min-h-screen">
+    <!-- Mobile Menubar -->
+    <div v-if="isMobile && showSidebar" class="md:hidden sticky top-0 z-50 w-full bg-background border-b border-border">
+      <div class="flex gap-2 items-center px-4 justify-between">
+          <span class="flex items-center">
+            <RouterLink to="/feed" class="flex items-center justify-center shrink-0">
+            <img src="/super.svg" alt="Superchange.ai logo" class="h-6 mr-2" />
+          </RouterLink>
+          <Menu></Menu>
+        </span>
+        <div v-if="authStore.session?.user" class="flex items-center gap-2">
+              <router-link to="/settings/profile" title="Go to your profile">
+                <div class="h-6 w-6 rounded-full bg-primary flex items-center justify-center text-xs font-medium text-primary-foreground cursor-pointer hover:opacity-80">
+                  {{ authStore.session?.user?.email?.[0].toUpperCase() || '?' }}
+                </div>
+              </router-link>
+              <button @click="logout" title="Sign out 👋"><LogOut class="h-4 w-4 opacity-70" /></button>
+        </div>
+        <div v-else>
+          <router-link to="/signup" custom v-slot="{ navigate, isActive }">
+            <Button
+                  variant="secondary"
+                  class="w-full justify-start font-normal"
+                  :class="{ 'bg-accent': isActive }"
+                  @click="navigate"
+              >
+            Sign up
+          </Button>
+          </router-link>      
+        </div>
+      </div>
+    </div>
+    
+    <!-- Desktop Sidebar -->
+    <div v-if="showSidebar" class="hidden md:flex w-64 border-r border-border bg-muted/30 flex-col min-h-screen">
       <!-- Sticky header section -->
       <div class="sticky top-0 z-10 bg-muted/30">
         <!-- User profile -->
@@ -54,7 +86,7 @@
           Settings
         </Button>
       </router-link>
-        <router-link v-else :to="'/login'" custom v-slot="{ navigate, isActive }">
+        <router-link v-else :to="'/signup'" custom v-slot="{ navigate, isActive }">
           <Button
                 variant="secondary"
                 class="w-full justify-start font-normal"
@@ -62,7 +94,7 @@
                 @click="navigate"
             >
           <SquareUser class="mr-2 h-4 w-4" />
-          Sign in
+          Sign up
         </Button>
         </router-link>
         <Feedback />
@@ -97,12 +129,27 @@ import Toaster from '@/components/ui/toast/Toaster.vue'
 import Feedback from '@/components/Feedback.vue'
 import { supabase } from './lib/supabase'
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { authStore } from './stores/auth'
+
 const router = useRouter()
 const showSidebar = ref(true)
+const isMobile = ref(false)
 
-const authRoutes = ['/login', '/signup', '/']
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 768
+}
+
+onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkMobile)
+})
+
+const authRoutes = ['/login', '/signup', '/', '/privacy']
 
 // Watch for route changes
 router.afterEach((to) => {
