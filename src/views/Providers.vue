@@ -135,7 +135,7 @@ const emailSubject = ref('')
 const sendEmail = () => {
   const subject = encodeURIComponent(emailSubject.value)
   const body = encodeURIComponent("I would like to see more API provider(s) added to the list, here's why: \n-\n-")
-  const mailto = atob('ZmVlZGJhY2tAYXBpd3RoLmFp')
+  const mailto = atob('ZmVlZGJhY2tAc3VwZXJjaGFuZ2UuYWk=')
   const mailtoLink = `mailto:${mailto}?subject=Want to track API provider(s): ${subject}&body=${body}`
   window.open(mailtoLink, '_blank')
 }

@@ -151,7 +151,7 @@ const groupedUpdates = computed(() => {
   
   updates.value.forEach(item => {
     const date = new Date(item.timestamp);
-    const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+    const monthYear = date.toLocaleString('en-GB', { month: 'long', year: 'numeric' });
     
     if (!groups[monthYear]) {
       groups[monthYear] = [];

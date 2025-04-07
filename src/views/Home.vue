@@ -41,9 +41,9 @@
               <SheetTitle><img src="/super.svg" alt="Superchange.ai logo" class="h-6" /></SheetTitle>
             </SheetHeader>
             <div class="flex flex-col gap-4 py-4">
-              <a href="#features" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click="isMobileMenuOpen = false">Features</a>
-              <a href="#alerts" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click="isMobileMenuOpen = false">Alerts</a>
-              <a href="#roadmap" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click="isMobileMenuOpen = false">Roadmap</a>
+              <a href="#features" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click.prevent="scrollToSection('#features')">Features</a>
+              <a href="#alerts" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click.prevent="scrollToSection('#alerts')">Alerts</a>
+              <a href="#roadmap" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click.prevent="scrollToSection('#roadmap')">Roadmap</a>
               <a href="https://github.com/superchangeai" class="text-muted-foreground hover:text-foreground transition-colors duration-200 flex gap-2 items-center" @click="isMobileMenuOpen = false">
                 <Github class="h-4 w-4" /> GitHub
               </a>
@@ -128,7 +128,18 @@
       mode.value = mode.value === 'light' ? 'dark' : 'light'
     }
     const isMobileMenuOpen = ref(false)
-    
+
+    const scrollToSection = (sectionId) => {
+      isMobileMenuOpen.value = false
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          const element = document.querySelector(sectionId)
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        })
+      }, 300)
+    }
 </script>
   
   <style>

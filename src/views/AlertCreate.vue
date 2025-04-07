@@ -351,8 +351,8 @@ const hasUpdatesSelections = computed(() => selectedUpdatesValues.value.size > 0
       :is-loading="isLoading"
     >
     </Header>
-    <div class="px-11 py-4 text-left">
-        <form class="w-3/4 space-y-6 pb-10" @submit="onSubmit">
+    <div class="py-4 text-left px-4 md:px-11">
+        <form class="w-full md:w-3/4 space-y-6 pb-10" @submit="onSubmit">
             <FormField name="providers">
                 <FormItem>
                     <FormLabel class="text-md"><h2 class="py-2">1. Pick providers you want to watch *</h2></FormLabel>              

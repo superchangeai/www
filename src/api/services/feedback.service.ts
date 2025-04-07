@@ -7,6 +7,12 @@ export interface GlobalFeedback {
   timestamp?: string;
 }
 
+export interface ProvidersFeedback {
+  providers: string;
+  userId?: string | null;
+  timestamp?: string;
+}
+
 export interface ChangeFeedback {
   changeId: string;
   feedback: number;
@@ -43,5 +49,18 @@ export const feedbackService = {
       userId
     });
     return response.data;
-  }
+  },
+  /**
+   * Submit global feedback about the application
+   * @param {string} providers - The providers text
+   * @param {string|null} userId - Optional user ID if authenticated
+   * @returns {Promise<Object>} The created feedback record
+   */
+  createProvidersFeedback: async ({ providers, userId }: ProvidersFeedback) => {
+    const response = await apiClient.post('/feedback/providers', {
+      providers,
+      userId
+    });
+    return response.data;
+  },
 };

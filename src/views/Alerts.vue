@@ -317,8 +317,8 @@ const currentConfig = computed(() => ({
         </router-link>
     </template>
     </Header>
-  <div class="w-full py-2 px-11">
-    <div class="flex gap-2 items-center py-4" v-if="table.getRowModel().rows?.length">
+  <div class="w-full py-2 px-3 md:px-11">
+    <div class="flex gap-2 items-center py-4" v-if="data.length > 0">
       <Input
         class="max-w-sm"
         placeholder="Filter providers..."
@@ -348,7 +348,7 @@ const currentConfig = computed(() => ({
     </div>
     <div class="rounded-md border">
       <Table>
-        <TableHeader v-if="table.getRowModel().rows?.length">
+        <TableHeader>
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <TableHead
               v-for="header in headerGroup.headers" :key="header.id" :data-pinned="header.column.getIsPinned()"
@@ -390,8 +390,8 @@ const currentConfig = computed(() => ({
               </TableCell>
             </TableRow>
           </template>
-          <!-- No data state -->
-          <TableRow v-else-if="!table.getRowModel().rows?.length">
+          <!-- No data state (only when API returns empty) -->
+          <TableRow v-else-if="data.length === 0">
             <TableCell
               :colspan="columns.length"
               class="text-center"
@@ -401,6 +401,16 @@ const currentConfig = computed(() => ({
                 <Button variant="secondary"><Bell class="mr-2 h-4 w-4"  />Create an alert</Button>
               </router-link>
               <p class="pt-4 mb-2"> </p> 
+            </TableCell>
+          </TableRow>
+          <!-- No results from filtering -->
+           
+          <TableRow v-else-if="data.length > 0 && !table.getRowModel().rows?.length">
+            <TableCell
+              :colspan="columns.length"
+              class="text-center"
+            >
+              <p class="pt-4 mb-4">No alerts match your current filters.</p>
             </TableCell>
           </TableRow>
         </TableBody>
