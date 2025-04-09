@@ -176,7 +176,7 @@ async function login() {
 async function signInWithGithub() {
   try {
     isLoading.value = true
-    const redirect = route.query.redirect?.toString() || '/'
+    const redirect = route.query.redirect?.toString() || '/feed'
     // Store the redirect path in localStorage so we can access it after OAuth callback
     if (redirect) {
       localStorage.setItem('auth_redirect', redirect)
