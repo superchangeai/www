@@ -1,5 +1,5 @@
 <template>
-    <div class="py-2 px-8">
+    <div class="py-2 px-3 md:px-8">
         <div v-if="isLoading" class="flex justify-center items-center py-10">
             <Loader2 class="h-8 w-8 animate-spin" />
         </div>

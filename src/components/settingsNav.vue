@@ -1,16 +1,17 @@
 <template>
-  <div class="w-64 border-r p-4 h-full min-h-full">
-    <nav class="space-y-2">
+  <div class="md:w-64 md:border-r px-4 md:py-4">
+    <nav class="flex flex-row items-center items-center justify-center md:flex-col md:space-y-2">
       <router-link
         v-for="item in navItems"
         :key="item.label"
         :to="item.route"
         custom
         v-slot="{ navigate }"
+        class="flex"
       >
         <Button
           :variant="$route.path.startsWith(item.route) ? 'secondary' : 'ghost'"
-          class="w-full justify-start"
+          class="w-full justify-start items-center"
           @click="navigate"
         >
           {{ item.label }}

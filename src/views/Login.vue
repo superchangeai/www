@@ -176,11 +176,17 @@ async function login() {
 async function signInWithGithub() {
   try {
     isLoading.value = true
+    const redirect = route.query.redirect?.toString() || '/'
+    // Store the redirect path in localStorage so we can access it after OAuth callback
+    if (redirect) {
+      localStorage.setItem('auth_redirect', redirect)
+    }
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
         queryParams: {
+          redirect: redirect,
           captchaToken: turnstileToken.value
         }
       }

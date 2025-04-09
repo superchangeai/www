@@ -6,13 +6,13 @@ import { providersService } from '@/api/services/providers.service';
 import { computed } from 'vue';
 import { useCheckedProviders } from '@/composables/useCheckedProviders';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuthDrawer } from '@/composables/useAuthDrawer';
 import { authStore } from '@/stores/auth';
 import AuthDrawer from '@/components/AuthDrawer.vue'
+import ProvidersFeedback from '@/components/ProvidersFeedback.vue'
 import {
   Tooltip,
   TooltipContent,
@@ -113,6 +113,7 @@ const currentProviderConfig = computed(() => providerTypeMap[providerType.value]
 // Auth drawer setup
 const { isOpen, options, open } = useAuthDrawer()
 const handleNotify = () => {
+  // Construct the redirect path
   const redirectPath = '/alerts/new' + checkedProvidersParams.value;
   
   // Check if user is authenticated
@@ -130,16 +131,6 @@ const handleNotify = () => {
   }
 }
 
-const emailSubject = ref('')
-
-const sendEmail = () => {
-  const subject = encodeURIComponent(emailSubject.value)
-  const body = encodeURIComponent("I would like to see more API provider(s) added to the list, here's why: \n-\n-")
-  const mailto = atob('ZmVlZGJhY2tAc3VwZXJjaGFuZ2UuYWk=')
-  const mailtoLink = `mailto:${mailto}?subject=Want to track API provider(s): ${subject}&body=${body}`
-  window.open(mailtoLink, '_blank')
-}
-
 </script>
 
 <template>
@@ -155,6 +146,7 @@ const sendEmail = () => {
         <Button @click="handleNotify" v-if="checkedProvidersCount > 0">
           <Bell class="mr-2 h-4 w-4" /> Create alert <Badge>{{ checkedProvidersCount }}</Badge>
         </Button>
+        <Button variant="secondary" v-if="checkedProvidersCount == 0"><a href="#more">Add providers</a></Button>
       </template>
     </Header>
   <div class="py-2">
@@ -216,20 +208,14 @@ const sendEmail = () => {
         </Card>
       </div>
       <br>
-      <Card class="providercta-card relative overflow-hidden">
+      <Card class="providercta-card relative overflow-hidden" id="more">
         <CardHeader class="relative z-10">
-          <h3 class="text-lg font-semibold">Bring more API providers here</h3>
+          <h3 class="text-lg font-semibold flex gap-2 items-center justify-center text-center"><img src="/super.svg" alt="Superchange.ai logo" class="h-6 mr-2" /> Bring more API providers here</h3>
           <p class="text-muted-foreground text-sm">We will grow this list with you. Please tell us what you would want to track!</p>
         </CardHeader>
         <CardContent class="flex gap-2 relative z-10">
-          <Input v-model="emailSubject" @keydown.enter="sendEmail" placeholder="What API do you want to see in this list?" class="basis-2/3"></Input>
-          <Button
-            class="shrink-0 basis-1/3"
-            variant="secondary"
-            @click="sendEmail"
-          >
-            Add provider
-          </Button>
+          
+          <ProvidersFeedback />
         </CardContent>
         <div class="providercta-card-bg absolute inset-0 pointer-events-none">
           <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" fill="none" class="w-full h-full">

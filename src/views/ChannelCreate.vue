@@ -1,5 +1,5 @@
 <template>
-    <div class="py-2 px-8">
+    <div class="py-2 px-4 md:px-8">
         <RadioGroup v-model="selectedChannel" class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
             <div v-for="channel in channels" :key="channel.value" class="relative">
                 <Card :class="[selectedChannel === channel.value ? 'border-primary bg-primary/5' : 'hover:bg-accent', channel.disabled ? 'opacity-50 bg-muted cursor-not-allowed' : '', 'transition-colors']">

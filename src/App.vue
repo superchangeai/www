@@ -39,7 +39,7 @@
       <div class="sticky top-0 z-10 bg-muted/30">
         <!-- User profile -->
         <div class="p-6 flex items-center justify-between border-b border-border">
-          <router-link to="/" class="flex items-center gap-2">
+          <router-link to="/feed" class="flex items-center gap-2">
             <img src="/super.svg" alt="Superchange.ai logo" class="h-6" /> superchange.ai
           </router-link>
           <div v-if="authStore.session?.user" class="flex items-center gap-2">

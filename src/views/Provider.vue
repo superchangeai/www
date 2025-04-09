@@ -86,7 +86,7 @@ const handleNotify = () => {
       </template>
     </Header>
   <div class="py-2">
-    <div class="px-11">
+    <div class="px-4 md:px-11">
       <div class="py-2 flex items-center">
         <h2 class="font-semibold" v-if="!isLoading">{{ currentProvider.title }} sources collected:</h2>
         <Skeleton class="h-6 w-48" v-else />
@@ -109,11 +109,11 @@ const handleNotify = () => {
       <!-- Actual content -->
       <div v-else-if="currentProvider.sources && currentProvider.sources.length > 0">
         <div v-for="(sourceItem, index) in currentProvider.sources" :key="index" class="py-2 border-b">
-          <div class="flex items-center">
-            <div class="text-sm text-muted-foreground flex-1 text-left">
+          <div class="flex flex-col items-left md:flex-row md:items-center justify-center text-left gap-2">
+            <div class="text-sm text-muted-foreground flex-1 text-left truncate">
               <a :href="sourceItem.source" target="_blank" class="hover:underline text-black dark:text-white">{{ sourceItem.source }}</a>
             </div>
-            <div class="text-xs text-muted-foreground whitespace-nowrap shrink-0 ml-4">
+            <div class="text-xs text-muted-foreground whitespace-nowrap shrink-0 text-left">
               Latest read: {{ new Date(sourceItem.last_snapshot_at).toLocaleString() }}
             </div>
           </div>

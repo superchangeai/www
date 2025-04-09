@@ -121,7 +121,7 @@ const saveEmail = async () => {
 </script>
 
 <template>
-  <div class="py-2 px-8 text-left space-y-6">
+  <div class="px-4 md:px-8 py-2 text-left space-y-6">
 
       <!-- Name Card -->
       <Card>

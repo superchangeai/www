@@ -88,7 +88,7 @@ a:hover {
     --secondary-foreground: 222.2 47.4% 11.2%;
   
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 215.4 16.3% 40.9%;
     --tiny: 0.625rem;
   
     --accent: 210 40% 96.1%;
@@ -129,7 +129,7 @@ a:hover {
     --secondary-foreground: 0 0% 83%;
   
     --muted: 0 0% 19%;
-    --muted-foreground: 0 0% 50%;
+    --muted-foreground: 0 0% 60%;
   
     --accent: 0 0% 22%;
     --accent-foreground: 0 0% 83%;

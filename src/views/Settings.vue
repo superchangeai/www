@@ -8,15 +8,15 @@
       :is-loading="isLoading"
     >
     </Header>
-    <div class="flex h-full min-h-full">
-      <LeftNav class="h-full min-h-full flex-0" />
+    <div class="flex flex-col md:flex-row h-full min-h-full">
+      <Nav class="flex-0 md:h-full min-h-full" />
       <router-view class="flex-1" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import LeftNav from '@/components/settingsNav.vue'
+import Nav from '@/components/settingsNav.vue'
 import Header from '@/components/Header.vue'
 import {
   Settings,

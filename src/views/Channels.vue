@@ -1,7 +1,7 @@
 <template>
     <div class="py-2 w-full">
         <!-- Emails -->
-        <div class="px-8">
+        <div class="px-4 md:px-8">
             <div class="mt-2 flex justify-between w-auto">
                 <span class="flex gap-3 items-center">
                     <Inbox class="h-4 w-4"/>
@@ -61,7 +61,7 @@
             </div>
         </div>
         <!-- Slack -->
-        <div class="px-8 opacity-50">
+        <div class="px-4 md:px-8 opacity-50">
             <div class="mt-6 flex justify-between w-auto">
                 <span class="flex gap-3 items-center">
                     <Slack class="h-4 w-4"/>
@@ -95,7 +95,7 @@
             </div> -->
         </div>
         <!-- Webhook -->
-        <div class="px-8 opacity-50">
+        <div class="px-4 md:px-8 opacity-50">
             <div class="mt-6 flex justify-between w-auto">
                 <span class="flex gap-3 items-center">
                     <Slack class="h-4 w-4"/>

@@ -388,7 +388,7 @@ const provideFeedback = async (itemId, value) => {
              class="space-y-3 animate-in slide-in-from-top-2 duration-300">
              <div class="pb-2 flex items-center px-4 md:px-11">
                 <div class="hidden md:block text-sm font-medium shrink-0 flex-none w-28 min-w-28 text-left"></div>
-                <div class="text-sm text-muted-foreground flex-1 text-left basis-5/6 pt-3">
+                <div class="text-sm flex-1 text-left basis-5/6 pt-3">
                   <div v-html="renderMarkdown(item.diff?.summary || item.explanation || 'No summary available')"></div>
                   <Separator class="my-2" />
                   <div>
