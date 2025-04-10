@@ -30,6 +30,7 @@ import { supabase } from '../lib/supabase'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2, Github } from 'lucide-vue-next'
 import Header from '@/components/Header.vue'
+import { userOnboardingService } from '@/api/services/user-onboarding.service'
 
 const router = useRouter()
 
@@ -40,6 +41,22 @@ onMounted(async () => {
     
     if (error) {
       throw error
+    }
+    
+    // Check if this is a new signup (not a login)
+    const isNewSignup = localStorage.getItem('is_new_signup')
+    
+    if (isNewSignup === 'true') {
+      // Create a default email channel for new users
+      try {
+        await userOnboardingService.createDefaultEmailChannel()
+      } catch (err) {
+        console.error('Error creating default email channel:', err)
+        // Continue with auth flow even if email channel creation fails
+      }
+      
+      // Clear the signup flag
+      localStorage.removeItem('is_new_signup')
     }
     
     // Check if we have a stored redirect path

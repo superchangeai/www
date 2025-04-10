@@ -160,6 +160,9 @@ async function signUp() {
 
     isLoading.value = true
     
+    // Set a flag to indicate this is a signup flow
+    localStorage.setItem('is_new_signup', 'true')
+    
     const { error } = await supabase.auth.signUp({
       email: email.value,
       password: password.value,
@@ -188,6 +191,10 @@ async function signUp() {
 async function signUpWithGithub() {
   try {
     isLoading.value = true
+    
+    // Set a flag to indicate this is a signup flow
+    localStorage.setItem('is_new_signup', 'true')
+    
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {

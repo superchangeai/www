@@ -26,7 +26,7 @@
                         <FormItem>
                             <FormLabel class="text-md"><h2 class="py-2">1. Shoot an email to:</h2></FormLabel>              
                             <FormControl>
-                                <Input placeholder="inbox@" v-model="emailTo" @input="setFieldValue('email-to', emailTo)"></Input>
+                                <Input placeholder="inbox@" v-model="emailTo" @change="setFieldValue('email-to', emailTo)"></Input>
                             </FormControl>
                             <!-- <FormDescription>
                                 Description here
@@ -44,7 +44,7 @@
                             <FormItem class="w-full">
                                 <FormLabel class="text-md"><h2 class="py-2">Cc:</h2></FormLabel>              
                                 <FormControl>
-                                    <Input placeholder="copy@, copy@" v-model="emailCc" @input="setFieldValue('email-cc', emailCc)"></Input>
+                                    <Input placeholder="copy@, copy@" v-model="emailCc" @change="setFieldValue('email-cc', emailCc)"></Input>
                                 </FormControl>
                                 <FormDescription>
                                     One to many emails separated by comma
@@ -56,7 +56,7 @@
                             <FormItem class="w-full">
                                 <FormLabel class="text-md"><h2 class="py-2">Custom subject:</h2></FormLabel>              
                                 <FormControl>
-                                    <Input placeholder="Custom subject field" v-model="emailSubject" @input="setFieldValue('email-subject', emailSubject)"></Input>
+                                    <Input placeholder="Custom subject field" v-model="emailSubject" @change="setFieldValue('email-subject', emailSubject)"></Input>
                                 </FormControl>
                                 <!-- <FormDescription>
                                     Description here
@@ -93,10 +93,10 @@
                         <Button type="submit" class="w-full md:w-auto">
                             <Loader2 v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
                             <Inbox v-else />
-                            Add and verify this email address
+                            {{ buttonText }}
                         </Button>
                     </div>
-                    <p class="mt-6 text-sm text-muted-foreground">A link will be sent to your email to confirm ownership. Click it to verify your email.</p>
+                    <p v-if="!isEmailVerified" class="mt-6 text-sm text-muted-foreground">A link will be sent to your email to confirm ownership. Click it to verify your email.</p>
 
                     
                 </form>
@@ -133,7 +133,7 @@ import {
 } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Card, CardHeader } from '@/components/ui/card'
-import { ref, h, watch, inject } from 'vue'
+import { ref, h, watch, inject, onMounted } from 'vue'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { ToastAction } from '@/components/ui/toast'
 import { useForm } from 'vee-validate'
@@ -150,6 +150,9 @@ const emailSubject = ref('')
 const { toast } = useToast()
 const isLoading = ref(false)
 const setSettingsLoading = inject('setSettingsLoading', null)
+const existingChannels = ref([])
+const isEmailVerified = ref(false)
+const buttonText = ref('Add and verify this email address')
 
 const channels = [
 { value: 'email', label: 'Email', icon: Inbox, disabled: false },
@@ -199,6 +202,37 @@ watch(frequencyValue, (newVal) => {
 // Set initial frequency value
 setFieldValue('email-frequency', frequencyValue.value[0])
 
+// Fetch all email channels when component is mounted
+onMounted(async () => {
+    try {
+        existingChannels.value = await emailChannelsService.getAll();
+        console.log(existingChannels.value);
+    } catch (error) {
+        console.error('Error fetching email channels:', error);
+    }
+});
+
+// Watch emailTo input to check if it's already verified
+watch(emailTo, (newEmail) => {
+    if (newEmail && existingChannels.value && existingChannels.value.length > 0) {
+        // Normalize the input email by trimming and converting to lowercase
+        const normalizedNewEmail = newEmail.trim().toLowerCase();
+        
+        const existingChannel = existingChannels.value.find(
+            channel => channel.email_to && 
+            channel.email_to.trim().toLowerCase() === normalizedNewEmail && 
+            channel.verified
+        );
+        console.log(existingChannel);
+        
+        isEmailVerified.value = !!existingChannel;
+        buttonText.value = isEmailVerified.value ? 'Use this email address' : 'Add and verify this email address';
+    } else {
+        isEmailVerified.value = false;
+        buttonText.value = 'Add and verify this email address';
+    }
+});
+
 const mapFrequencyToLevel = (value) => {
     const levels = ['weekly', 'daily', 'fire_hose'];
     return levels[value];
@@ -214,7 +248,8 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
             email_to: values['email-to'],
             email_cc: values['email-cc'] || undefined,
             custom_subject: values['email-subject'] || undefined,
-            frequency_level: mapFrequencyToLevel(values['email-frequency'])
+            frequency_level: mapFrequencyToLevel(values['email-frequency']),
+            skip_verification: isEmailVerified.value
         };
         
         await emailChannelsService.create(payload);
@@ -222,7 +257,9 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         // Show success toast
         toast({
             title: 'Channel created',
-            description: 'A link was sent to verify your email.',
+            description: isEmailVerified.value 
+                ? 'Your existing verified email has been used for this channel.' 
+                : 'A link was sent to verify your email.',
         });
 
         // Reset form and redirect after 3 seconds

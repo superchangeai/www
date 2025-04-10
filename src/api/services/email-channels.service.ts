@@ -30,8 +30,14 @@ export const emailChannelsService = {
 
   /**
    * Create a new email channel
+   * @param {Object} data - Email channel data
+   * @param {string} data.email_to - Primary email recipient
+   * @param {string} data.email_cc - CC email recipients (optional)
+   * @param {string} data.custom_subject - Custom email subject (optional)
+   * @param {string} data.frequency_level - Email frequency (weekly, daily, fire_hose)
+   * @param {boolean} data.skip_verification - Whether to skip email verification (optional)
    */
-  create: async (data: { email_to: string; email_cc?: string; custom_subject?: string; frequency_level: string }) => {
+  create: async (data: { email_to: string; email_cc?: string; custom_subject?: string; frequency_level: string; skip_verification?: boolean }) => {
     const response = await apiClient.post<EmailChannel>('/email-channels', data);
     return response.data;
   },
