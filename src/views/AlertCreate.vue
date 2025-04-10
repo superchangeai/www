@@ -235,12 +235,40 @@ const onSubmit = handleSubmit(async (values, { resetForm }) => {
         setTimeout(() => {
             router.push('/alerts')
         }, 5000)
-    } catch (err) {
-        toast({
-            title: 'Error',
-            description: 'Failed to create alert. Please try again.',
-            variant: 'destructive'
-        })
+    } catch (err: any) {
+        // Handle specific error cases based on status code or error message
+        const errorResponse = err.response?.data;
+        const status = err.response?.status;
+        
+        if (status === 409) {
+            // Duplicate alert error
+            toast({
+                title: 'Duplicate',
+                description: 'Oops. This alert already exists in your account! Double notifications might be a bit too much! 😅',
+                variant: 'destructive'
+            })
+        } else if (status === 400) {
+            // Validation error
+            toast({
+                title: 'Validation Error',
+                description: errorResponse?.error || 'Please check your input and try again.',
+                variant: 'destructive'
+            })
+        } else if (status === 403) {
+            // Permission error
+            toast({
+                title: 'Permission Error',
+                description: errorResponse?.error || 'You do not have permission to create this alert.',
+                variant: 'destructive'
+            })
+        } else {
+            // Generic error
+            toast({
+                title: 'Error',
+                description: 'Failed to create alert. Please try again.',
+                variant: 'destructive'
+            })
+        }
     } finally {
         isLoading.value = false
     }
