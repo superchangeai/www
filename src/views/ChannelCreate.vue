@@ -79,9 +79,30 @@
                                         @update:modelValue="handleFrequencyChange" 
                                     />
                                     <div class="flex justify-between text-sm text-muted-foreground">
-                                        <span :class="{ 'text-primary font-medium': frequencyValue[0] === 0 }" class="cursor-pointer" @click="handleFrequencyClick(0)">Weekly digest</span>
-                                        <span :class="{ 'text-primary font-medium': frequencyValue[0] === 1 }" class="cursor-pointer" style="position: relative; left:-10px;" @click="handleFrequencyClick(1)">Daily push</span>
-                                        <span :class="{ 'text-primary font-medium': frequencyValue[0] === 2 }" class="cursor-pointer" @click="handleFrequencyClick(2)">Fire hose</span>
+                                        <span :class="{ 'text-primary font-medium': frequencyValue[0] === 0 }" class="cursor-pointer" @click="handleFrequencyClick(0)">
+                                            <HoverCard>
+                                                <HoverCardTrigger>Weekly digest</HoverCardTrigger>
+                                                <HoverCardContent>
+                                                    Start each week with your Superchange wrap up!
+                                                </HoverCardContent>
+                                            </HoverCard>
+                                        </span>
+                                        <span :class="{ 'text-primary font-medium': frequencyValue[0] === 1 }" class="cursor-pointer" style="position: relative; left:-10px;" @click="handleFrequencyClick(1)">
+                                            <HoverCard>
+                                                <HoverCardTrigger>Daily push</HoverCardTrigger>
+                                                <HoverCardContent>
+                                                    Fresh updates delivered daily, like your morning coffee! ☕
+                                                </HoverCardContent>
+                                            </HoverCard>
+                                        </span>
+                                        <span :class="{ 'text-primary font-medium': frequencyValue[0] === 2 }" class="cursor-pointer" @click="handleFrequencyClick(2)">
+                                            <HoverCard>
+                                                <HoverCardTrigger>Fire hose</HoverCardTrigger>
+                                                <HoverCardContent>
+                                                    Brace yourself. Any new update get pushed your way right away!
+                                                </HoverCardContent>
+                                            </HoverCard>
+                                        </span>
                                     </div>
                                 </div>
                             </FormControl>
@@ -131,6 +152,11 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Card, CardHeader } from '@/components/ui/card'
 import { ref, h, watch, inject, onMounted } from 'vue'
