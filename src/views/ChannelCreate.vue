@@ -28,9 +28,6 @@
                             <FormControl>
                                 <Input placeholder="inbox@" v-model="emailTo" @change="setFieldValue('email-to', emailTo)"></Input>
                             </FormControl>
-                            <!-- <FormDescription>
-                                Description here
-                            </FormDescription> -->
                             <FormMessage />
                         </FormItem>
                     </FormField>

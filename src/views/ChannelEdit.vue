@@ -65,12 +65,13 @@
                         <Button type="submit" class="w-full md:w-auto">
                             <Loader2 v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
                             <Save v-else class="mr-2 h-4 w-4" />
-                            Save changes
+                            {{ buttonText }}
                         </Button>
                         <Button type="button" variant="outline" class="w-full md:w-auto" @click="goBack">
                             Cancel
                         </Button>
                     </div>
+                    <p v-if="!isEmailVerified" class="mt-6 text-sm text-muted-foreground">A link will be sent to your email to confirm ownership. Click it to verify your email.</p>
                 </form>
             </div>
             <div v-else class="text-left">
@@ -109,6 +110,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
 import { emailChannelsService } from '@/api/services/email-channels.service'
 import { useRoute, useRouter } from 'vue-router'
+import { authStore } from '@/stores/auth'
 
 const route = useRoute()
 const router = useRouter()
@@ -123,6 +125,9 @@ const { toast } = useToast()
 const isLoading = ref(true)
 const isSubmitting = ref(false)
 const setSettingsLoading = inject('setSettingsLoading', null)
+const existingChannels = ref([])
+const isEmailVerified = ref(false)
+const buttonText = ref('Save changes and verify')
 
 // Watch frequency value changes
 watch(frequencyValue, (newVal) => {
@@ -144,7 +149,7 @@ const formSchema = toTypedSchema(z.object({
     'email-frequency': z.number().min(0).max(2)
 }))
 
-const { handleSubmit, setFieldValue, errors, resetForm } = useForm({
+const { handleSubmit, setFieldValue, errors } = useForm({
     initialValues: {
         'email-to': '',
         'email-cc': '',
@@ -173,7 +178,10 @@ const goBack = () => {
 onMounted(async () => {
     if (setSettingsLoading) setSettingsLoading(true);
     isLoading.value = true;
-    
+    try {
+        existingChannels.value = await emailChannelsService.getAll();
+    } catch (error) {
+    }
     try {
         // Get channel ID from query params
         const emailParam = route.query.email;
@@ -189,7 +197,7 @@ onMounted(async () => {
         
         // Set form values
         emailTo.value = channelData.email_to;
-        setFieldValue('email-to', channelData.email_to);
+        setFieldValue('email-to', channelData.email_to.trim().toLowerCase());
         
         // Set frequency value
         const frequencyIndex = mapLevelToFrequency(channelData.frequency_level);
@@ -223,6 +231,29 @@ onMounted(async () => {
     }
 });
 
+// Watch emailTo input to check if it's already verified
+watch(emailTo, (newEmail) => {
+    if (newEmail && existingChannels.value && existingChannels.value.length > 0) {
+        // Normalize the input email by trimming and converting to lowercase
+        const normalizedNewEmail = newEmail.trim().toLowerCase();
+        console.log(authStore.session?.user.email);
+        // Check if email matches authenticated user's email or exists in verified channels
+        const isAuthUserEmail = authStore.session?.user?.email?.toLowerCase() === normalizedNewEmail;
+        const existingChannel = existingChannels.value.find(
+            channel => channel.email_to && 
+            channel.email_to.trim().toLowerCase() === normalizedNewEmail && 
+            channel.verified
+        );
+        
+        isEmailVerified.value = isAuthUserEmail || !!existingChannel;
+        buttonText.value = isEmailVerified.value ? 'Save changes' : 'Save changes and verify';
+    } else {
+        isEmailVerified.value = false;
+        buttonText.value = 'Save changes and verify';
+    }
+});
+
+
 const onSubmit = handleSubmit(async (values) => {
 
     if (!channelId.value) return;
@@ -236,7 +267,7 @@ const onSubmit = handleSubmit(async (values) => {
         
         // Prepare payload for update
         const payload = {
-            email_to: values['email-to'],
+            email_to: values['email-to'].trim().toLowerCase(),
             email_cc: values['email-cc'] || undefined,
             custom_subject: values['email-subject'] || undefined,
             frequency_level: mapFrequencyToLevel(currentFrequency)
