@@ -77,34 +77,22 @@
                                     />
                                     <div class="flex justify-between text-sm text-muted-foreground">
                                         <span :class="{ 'text-primary font-medium': frequencyValue[0] === 0 }" class="cursor-pointer" @click="handleFrequencyClick(0)">
-                                            <HoverCard>
-                                                <HoverCardTrigger>Weekly digest</HoverCardTrigger>
-                                                <HoverCardContent>
-                                                    Start each week with your Superchange wrap up!
-                                                </HoverCardContent>
-                                            </HoverCard>
+                                            Weekly digest
                                         </span>
                                         <span :class="{ 'text-primary font-medium': frequencyValue[0] === 1 }" class="cursor-pointer" style="position: relative; left:-10px;" @click="handleFrequencyClick(1)">
-                                            <HoverCard>
-                                                <HoverCardTrigger>Daily push</HoverCardTrigger>
-                                                <HoverCardContent>
-                                                    Fresh updates delivered daily, like your morning coffee! ☕
-                                                </HoverCardContent>
-                                            </HoverCard>
+                                            Daily push
                                         </span>
                                         <span :class="{ 'text-primary font-medium': frequencyValue[0] === 2 }" class="cursor-pointer" @click="handleFrequencyClick(2)">
-                                            <HoverCard>
-                                                <HoverCardTrigger>Fire hose</HoverCardTrigger>
-                                                <HoverCardContent>
-                                                    Brace yourself. Any new update get pushed your way right away!
-                                                </HoverCardContent>
-                                            </HoverCard>
+                                            Fire hose
                                         </span>
                                     </div>
                                 </div>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
+                        <p class="text-sm text-muted-foreground mt-3" v-show="frequencyValue[0] === 0">Start each week with your Superchange wrap up!</p>
+                        <p class="text-sm text-muted-foreground mt-3 text-center" v-show="frequencyValue[0] === 1">Fresh updates delivered daily, like your morning coffee! ☕</p>
+                        <p class="text-sm text-muted-foreground mt-3 text-right" v-show="frequencyValue[0] === 2">Any new update gets pushed your way right away!</p>
                     </FormField>
                     <!-- Submit button -->
                     <div class="mt-8 flex justify-start">
@@ -149,11 +137,6 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Card, CardHeader } from '@/components/ui/card'
 import { ref, h, watch, inject, onMounted } from 'vue'
@@ -163,6 +146,7 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
 import { emailChannelsService } from '@/api/services/email-channels.service'
+import { authStore } from '@/stores/auth'
 
 const selectedChannel = ref('email')
 const showOptionalFields = ref(false)
@@ -229,7 +213,6 @@ setFieldValue('email-frequency', frequencyValue.value[0])
 onMounted(async () => {
     try {
         existingChannels.value = await emailChannelsService.getAll();
-        console.log(existingChannels.value);
     } catch (error) {
         console.error('Error fetching email channels:', error);
     }
@@ -240,15 +223,14 @@ watch(emailTo, (newEmail) => {
     if (newEmail && existingChannels.value && existingChannels.value.length > 0) {
         // Normalize the input email by trimming and converting to lowercase
         const normalizedNewEmail = newEmail.trim().toLowerCase();
-        
+        // Check if email matches authenticated user's email or exists in verified channels
+        const isAuthUserEmail = authStore.session?.user?.email?.toLowerCase() === normalizedNewEmail;
         const existingChannel = existingChannels.value.find(
             channel => channel.email_to && 
             channel.email_to.trim().toLowerCase() === normalizedNewEmail && 
             channel.verified
         );
-        console.log(existingChannel);
-        
-        isEmailVerified.value = !!existingChannel;
+        isEmailVerified.value = isAuthUserEmail || !!existingChannel;
         buttonText.value = isEmailVerified.value ? 'Use this email address' : 'Add and verify this email address';
     } else {
         isEmailVerified.value = false;

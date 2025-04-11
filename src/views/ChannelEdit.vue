@@ -101,7 +101,6 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
-import { Card, CardHeader } from '@/components/ui/card'
 import { ref, h, watch, inject, onMounted } from 'vue'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { ToastAction } from '@/components/ui/toast'
@@ -236,7 +235,6 @@ watch(emailTo, (newEmail) => {
     if (newEmail && existingChannels.value && existingChannels.value.length > 0) {
         // Normalize the input email by trimming and converting to lowercase
         const normalizedNewEmail = newEmail.trim().toLowerCase();
-        console.log(authStore.session?.user.email);
         // Check if email matches authenticated user's email or exists in verified channels
         const isAuthUserEmail = authStore.session?.user?.email?.toLowerCase() === normalizedNewEmail;
         const existingChannel = existingChannels.value.find(
