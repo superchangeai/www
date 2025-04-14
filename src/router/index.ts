@@ -49,6 +49,12 @@ export const router = createRouter({
       props: true
     },
     {
+      path: '/changes/:id',
+      name: 'changes-details',
+      component: () => import('@/views/Change.vue'),
+      props: true
+    },
+    {
       path: '/alerts/',
       name: 'alerts',
       component: () => import('@/views/Alerts.vue'),
