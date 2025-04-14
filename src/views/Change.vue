@@ -16,9 +16,9 @@ import {
   Package,
   FileText,
   Library,
-  Bell,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
+  FileWarning
 } from 'lucide-vue-next'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -98,10 +98,13 @@ onMounted(async () => {
     isLoading.value = true;
     const data = await changesService.getById(Number(change.value));
     if (!data || typeof data !== 'object') {
+      changelog.value = undefined;
+      isLoading.value = false;
       throw new Error('Invalid change data received');
     }
+    
     changelog.value = {
-      id: change.value,
+      id: change.value || '0',
       diff: data.diff.summary || 'No summary available',
       explanation: data.explanation || 'No explanation available',
       classification: data.classification || 'Other',
@@ -113,6 +116,7 @@ onMounted(async () => {
     console.log(changelog.value);
   } catch (error) {
     console.error('Error fetching change:', error);
+    changelog.value = undefined;
   } finally {
     isLoading.value = false;
   }
@@ -127,8 +131,8 @@ onBeforeUnmount(() => {
 
 <template>
   <Header 
-      :title="isLoading ? '' : changelog.classificationTitle"
-      :icon="isLoading ? '' : changelog.classificationIcon"
+      :title="isLoading ? '' : (changelog ? changelog.classificationTitle : 'Error')"
+      :icon="isLoading ? '' : (changelog ? changelog.classificationIcon : FileWarning)"
       :show-filter-button="false" 
       :show-help-button="true"
       :is-loading="isLoading"
@@ -158,7 +162,7 @@ onBeforeUnmount(() => {
               isMobile?
               new Date(changelog.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: 'short'}) : 
               new Date(changelog.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) 
-            }}
+              }}
             </div>
           </div>
           <div>
