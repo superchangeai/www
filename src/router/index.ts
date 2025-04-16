@@ -215,5 +215,5 @@ router.beforeEach(async (to, _, next) => {
 router.afterEach((to) => {
   // Use meta.title if set, otherwise fallback to a default
   const defaultTitle = 'Superchange.ai | Your many changelogs in one source of truth';
-  document.title = to.meta && to.meta.title ? to.meta.title : defaultTitle;
+  document.title = to.meta?.title ? String(to.meta.title) : defaultTitle;
 });
