@@ -1,13 +1,22 @@
 <script setup>
 import { ref, computed, onMounted, watch, reactive, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
 import { supabase } from '../lib/supabase';
 import Header from '@/components/Header.vue'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuthDrawer } from '@/composables/useAuthDrawer'
 import AuthDrawer from '@/components/AuthDrawer.vue'
 import { changesService } from '@/api/services/changes.service'
+import { changelogsService } from '@/api/services/changelogs.service'
 import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { 
@@ -40,19 +49,41 @@ import { toast } from '@/components/ui/toast'
 const getFeedbackKey = (changeId) => `feedback_${changeId}`
 const feedbackGiven = reactive({});
 
-
-// derive title and icon based on params
-const route = useRoute()
-
 // Prop declaration from router
 const props = defineProps({
   type: {
     type: String,
     default: 'all'
+  },
+  changelogId: {
+    type: String,
+    default: null
   }
 })
 
+// Local storage key for persisting selected changelog
+const SELECTED_CHANGELOG_KEY = 'superchange_selected_changelog'
+
+// Get saved changelog from localStorage or use default
+const getSavedChangelogId = () => {
+  // If props.changelogId is provided, it takes precedence
+  if (props.changelogId) return props.changelogId
+  
+  // Check if we're on a public changelog route
+  const isPublicChangelogRoute = window.location.pathname.startsWith('/changelog/');
+  
+  // Don't use localStorage for public changelog routes
+  if (isPublicChangelogRoute) return 'default';
+  
+  // Otherwise try to get from localStorage
+  const saved = localStorage.getItem(SELECTED_CHANGELOG_KEY)
+  return saved || 'default'
+}
+
+// Props
+const selectedChangelogId = ref(getSavedChangelogId())
 const feedType = computed(() => props.type || 'all')
+
 const feedTypeMap = {
   all: {
     title: 'All updates',
@@ -120,10 +151,87 @@ const updates = ref([])
 const isLoading = ref(false)
 const error = ref(null)
 const limit = ref(3) // 3 months limit by default
+const userChangelogs = ref([])
 
 // Detail view state
 const selectedChangeId = ref(null)
 const expandedRowId = ref(null)
+
+// Fetch changelogs from API
+const fetchChangelogs = async () => {
+  // Only fetch changelogs if user is authenticated
+  if (!authStore.session) {
+    userChangelogs.value = []
+    // Clean up localStorage when logged out
+    localStorage.removeItem(SELECTED_CHANGELOG_KEY)
+    return
+  }
+  
+  isLoading.value = true
+  try {
+    const logs = await changelogsService.getAll()
+    userChangelogs.value = logs
+    // Clean up invalid changelog ID from localStorage
+    const savedChangelogId = localStorage.getItem(SELECTED_CHANGELOG_KEY)
+    if (savedChangelogId && savedChangelogId !== 'default') {
+      const changelogExists = logs.some(log => log.changelog_id === savedChangelogId)
+      if (!changelogExists) {
+        localStorage.removeItem(SELECTED_CHANGELOG_KEY)
+        selectedChangelogId.value = 'default'
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch changelogs:', error)
+    userChangelogs.value = [] // Set empty array on error
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// Creation of changelog dropdown menu
+const changelogSelectItems = computed(() => {
+  // Check if we're on a public changelog route
+  const isPublicChangelogRoute = window.location.pathname.startsWith('/changelog/');
+  
+  // For public routes, fetch the public changelog info
+  if (isPublicChangelogRoute && props.changelogId) {
+    // Return minimal items while loading
+    if (isLoading.value) {
+      return {
+        items: [{ value: 'default', label: 'Superchange (default)' }],
+        buttonText: 'Loading...'
+      };
+    }
+    
+    // Return public changelog info
+    return {
+      items: [
+        { value: 'default', label: 'Superchange (default)' },
+        { value: props.changelogId, label: `${props.changelogId} (shared)` }
+      ],
+      buttonText: 'Create a changelog'
+    };
+  }
+  
+  // For authenticated users, show their changelogs
+  if (!userChangelogs.value || userChangelogs.value.length === 0) {
+    return {
+      items: [{ value: 'default', label: 'Superchange (default)' }],
+      buttonText: 'Customize this log!'
+    };
+  }
+  
+  return {
+    items: [
+      { value: 'default', label: 'Superchange (default)' },
+      ...userChangelogs.value.map(log => ({
+        value: log.changelog_id,
+        label: log.name
+      }))
+    ],
+    buttonText: 'Add a changelog'
+  };
+});
 
 // Fetch changes from API
 const fetchChanges = async () => {
@@ -133,7 +241,42 @@ const fetchChanges = async () => {
     const classification = feedType.value === 'all' || !feedTypeMap[feedType.value] 
       ? undefined 
       : feedTypeMap[feedType.value].slug;
-    const changes = await changesService.getAll({ classification, limit: limit.value })
+    
+    // Check if we're on a public changelog route
+    const isPublicChangelogRoute = window.location.pathname.startsWith('/changelog/');
+    
+    // Prepare params for API request
+    const params = { classification, limit: limit.value };
+    
+    // Verify public access for shared changelogs
+    if (isPublicChangelogRoute && selectedChangelogId.value !== 'default') {
+      try {
+        const { is_public } = await changelogsService.isPublic(selectedChangelogId.value);
+        if (!is_public) {
+          console.log('This changelog is not available for public viewing');
+          error.value = 'This changelog is not available for public viewing';
+          isLoading.value = false;
+          return;
+        }
+      } catch (err) {
+        error.value = 'Unable to verify changelog access';
+        isLoading.value = false;
+        return;
+      }
+    }
+    
+    let changes = [];
+    
+    // Handle different API calls based on route and authentication
+    if (selectedChangelogId.value && selectedChangelogId.value !== 'default') {
+      // Showing a specific changelog
+      params.changelogId = selectedChangelogId.value;
+      changes = await changesService.getAll(params);
+    } else {
+      // Default feed - no specific changelog
+      changes = await changesService.getAll(params);
+    }
+    
     // Add showFeedback property to each item
     updates.value = changes.map(item => ({
       ...item,
@@ -165,7 +308,7 @@ const groupedUpdates = computed(() => {
   );
 });
 
-// Initialize markdown parser
+// Markdown parser for beautiful changes
 const md = new MarkdownIt({
   html: false,
   breaks: true,
@@ -189,6 +332,7 @@ const renderMarkdown = (content) => {
   return md.render(content);
 }
 
+// Detecting layout
 const isMobile = ref(false)
 
 const checkMobile = () => {
@@ -197,7 +341,9 @@ const checkMobile = () => {
 
 // Component mount
 onMounted(() => {
-  // Load changes from DB
+  // Load changelogs owned by user
+  fetchChangelogs()
+  // Load changes
   fetchChanges()
   // Load existing feedback from storage
   Object.keys(localStorage).forEach(key => {
@@ -218,6 +364,76 @@ onBeforeUnmount(() => {
 watch(feedType, () => {
   fetchChanges()
 })
+
+// Watch for route changes to ensure we're showing the right data
+watch(
+  () => [props.type, props.changelogId],
+  () => {
+    // Update local state to match route params
+    if (props.changelogId && props.changelogId !== selectedChangelogId.value) {
+      selectedChangelogId.value = props.changelogId
+    }
+    fetchChanges()
+  }
+)
+
+// Watch for route changes to update selectedChangelogId
+watch(
+  () => props.changelogId,
+  (newChangelogId) => {
+    if (newChangelogId) {
+      selectedChangelogId.value = newChangelogId
+      // Only update localStorage if user is authenticated
+      if (authStore.session) {
+        localStorage.setItem(SELECTED_CHANGELOG_KEY, newChangelogId)
+      }
+    } else {
+      selectedChangelogId.value = 'default'
+    }
+  }
+)
+
+// Refresh data when changelog is switching
+watch(selectedChangelogId, () => {
+  // Check if we're on a public changelog route
+  const isPublicChangelogRoute = window.location.pathname.startsWith('/changelog/');
+  
+  // Only save to localStorage if user is authenticated and not on public route
+  if (authStore.session && !isPublicChangelogRoute) {
+    localStorage.setItem(SELECTED_CHANGELOG_KEY, selectedChangelogId.value)
+  }
+  
+  // If the user selects a changelog, redirect to the appropriate URL
+  if (selectedChangelogId.value !== 'default') {
+    // If we're already on a feed type page, maintain the type
+    if (feedType.value) {
+      // Navigate to /changelogs/:changelogId/:type for authenticated users
+      if (authStore.session) {
+        router.push(`/changelogs/${selectedChangelogId.value}/${feedType.value}`);
+      } else {
+        // For non-authenticated users, use the public route
+        router.push(`/changelog/${selectedChangelogId.value}`);
+      }
+    } else {
+      // Navigate to /changelogs/:changelogId for authenticated users
+      if (authStore.session) {
+        router.push(`/changelogs/${selectedChangelogId.value}`);
+      } else {
+        // For non-authenticated users, use the public route
+        router.push(`/changelog/${selectedChangelogId.value}`);
+      }
+    }
+  } else {
+    // If user selects 'default', go back to the main feed with current type
+    router.push(`/feed/${feedType.value || 'all'}`);
+  }
+  // Fetch changes will be triggered by the route change
+});
+
+
+// Import router
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 // Handle item click
 const handleItemClick = (item) => {
@@ -263,6 +479,34 @@ const provideFeedback = async (itemId, value) => {
       :show-filter-button="true" 
       :show-help-button="true"
     >
+      <template #actions>
+        <Badge v-if="!isMobile" variant="secondary">beta</Badge>
+        <Select class="shadow-none" v-model="selectedChangelogId">
+          <SelectTrigger class="pl-6 shadow-none">
+            <Skeleton v-if="isLoading" class="h-4 w-20" />
+            <div v-else>
+              Changelog: <SelectValue placeholder="default" />
+            </div>
+          </SelectTrigger>
+          <SelectContent class="border-0 text-xs">
+            <SelectGroup>
+              <SelectLabel>Changelogs</SelectLabel>
+              <template v-for="item in changelogSelectItems.items" :key="item.value">
+                <SelectItem :value="item.value">
+                  {{ item.label }}
+                </SelectItem>
+              </template>
+            </SelectGroup>
+            <SelectGroup>
+              <Router-link to="/changelogs/new">
+                <Button class="w-full">
+                  {{ changelogSelectItems.buttonText }}
+                </Button>
+              </Router-link>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </template>
     </Header> 
     <!-- Skeleton loading state -->
     <div v-if="isLoading" class="py-2">
@@ -277,6 +521,12 @@ const provideFeedback = async (itemId, value) => {
         </div>
       </div>
     </div>
+    <!-- Empty state when errors occur -->
+    <div v-else-if="error" class="flex flex-col items-center justify-center py-12 px-4">
+        <div class="text-center">
+          <h3 class="text-lg font-semibold mb-2">Oops! {{ error }}</h3>
+        </div>
+      </div>
     <!-- Empty state when no updates are available -->
     <div v-else-if="Object.keys(groupedUpdates).length === 0" class="flex flex-col items-center justify-center py-12 px-4">
         <div class="text-center">

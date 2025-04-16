@@ -3,7 +3,7 @@
         <div class="container mx-auto px-8 flex gap-2 items-center justify-between">
         <div class="w-full text-center md:w-[75%] md:text-left">
                 <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight" style="color:#d4d4d4;">The changelog of changelogs.</h1>
-                <p class="py-2 text-center md:text-left text-md text-muted-foreground max-w-3xl mb-8">One central feed for all the updates from the tech providers you depend on. <span class="hidden md:block">Never miss a breaking change again.</span></p>
+                <p class="py-2 text-center md:text-left text-md text-muted-foreground max-w-3xl mb-8">Superchange is your source of truth for everything your tech providers ship. <span class="hidden md:block">Never miss a breaking change again!</span></p>
                 <div class="flex gap-4 mt-4 items-center justify-center md:justify-start">
                   <router-link :to="'/feed/'">
                     <Button size="xxl">
@@ -23,7 +23,7 @@
     </section>
 
       <section id="features" class="feature-section">
-        <h2 class="section-heading px-3">One changelog for everything you build on</h2>
+        <h2 class="section-heading px-3">One single changelog for everything you build on</h2>
 
         <div class="changelog-demo block md:hidden">
             <img src="/ui-changes-feed.png" alt="Superchange.ai dashboard showing unified changelog" />
@@ -82,6 +82,38 @@
               <p class="feature-description">Decide how and when updates get delivered. Get instant notifications in Slack, a daily email digest, a weekly summary, or even route updates to a custom webhook.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="custom" class="feature-section">
+        <h2 class="section-heading px-3">The ultimate source of truth based on your exact needs.</h2>
+        <div class="alert-demo block md:hidden">
+          <img src="/ui-changelog-create.png" alt="Creating a custom changelog in Superchange.ai" />
+        </div>
+        <div class="container">
+          <p class="section-description hidden md:block">Watch the providers you really care about. <br> Superchange.ai lets you create and share dedicated changelogs for your projects.</p>
+          
+          <div class="alert-demo hidden md:block">
+            <img src="/ui-changelog-create.png" alt="Creating a custom changelog in Superchange.ai" />
+          </div>
+          
+          <p class="section-description">Sounds good? Hear what our users say:</p>
+
+          <div class="testimonials-grid">
+            <div class="testimonials-card flex flex-col items-left text-left">
+              <p class="testimonials-description">"We are looking at Superchange in our weekly sessions to see if there are any changes we need to watch out for."</p>
+              <p class="testimonials-author">Alex, Product at Kawo</p>
+            </div>
+            <div class="testimonials-card flex flex-col items-left text-left">
+              <p class="testimonials-description">"There were so many times when a random update threw us into a panic. Won't happen again."</p>
+              <p class="testimonials-author">Edward, VP engineering at Le Wagon</p>
+            </div>
+            <div class="testimonials-card flex flex-col items-left text-left">
+              <p class="testimonials-description">"No need to go through my RSS feeds one by one anymore, I use Superchange to get a small condensed summary."</p>
+              <p class="testimonials-author">Antoine, Lead architect at Scaleway</p>
+            </div>
+          </div>
+          
         </div>
       </section>
 

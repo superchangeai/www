@@ -69,6 +69,45 @@ export const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/changelogs',
+      name: 'changelogs',
+      component: () => import('@/views/Feed.vue'),
+      props: { type: 'changelogs' },
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/changelogs/new',
+      name: 'create-changelog',
+      component: () => import('@/views/ChangelogCreate.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/changelogs/:changelogId',
+      name: 'changelog-details',
+      component: () => import('@/views/Feed.vue'),
+      props: true,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/changelogs/:changelogId/:type',
+      name: 'changelog-details-type',
+      component: () => import('@/views/Feed.vue'),
+      props: true,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/changelog/:changelogId',
+      name: 'public-changelog',
+      component: () => import('@/views/Feed.vue'),
+      props: true
+    },
+    {
+      path: '/changelog/:changelogId/:type',
+      name: 'public-changelog-type',
+      component: () => import('@/views/Feed.vue'),
+      props: true
+    },
+    {
       path: '/verify-email',
       name: 'verify-email',
       redirect: '/settings/channels',
@@ -94,6 +133,11 @@ export const router = createRouter({
           path: 'profile',
           name: 'settings-profile',
           component: () => import('@/views/Profile.vue'),
+        },
+        {
+          path: 'changelogs',
+          name: 'settings-changelogs',
+          component: () => import('@/views/Changelogs.vue'),
         },
         {
           path: 'channels',
@@ -166,3 +210,10 @@ router.beforeEach(async (to, _, next) => {
     })
   }
 })
+
+// Dynamically update document.title after each route change
+router.afterEach((to) => {
+  // Use meta.title if set, otherwise fallback to a default
+  const defaultTitle = 'Superchange.ai | Your many changelogs in one source of truth';
+  document.title = to.meta && to.meta.title ? to.meta.title : defaultTitle;
+});

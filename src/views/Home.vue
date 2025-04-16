@@ -340,6 +340,32 @@
       font-size: 0.95rem;
     }
 
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .testimonials-card {
+      background-color: hsl(var(--card));
+      border-radius: 0.5rem;
+      padding: 2rem;
+      border: 1px solid hsl(var(--border));
+    }
+
+    .testimonials-description {
+      font-size: 0.95rem;
+    }
+
+    .testimonials-author {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
     .changelog-demo {
       margin: 4rem 0;
       border-radius: 0.5rem;

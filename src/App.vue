@@ -171,6 +171,8 @@ const logout = async () => {
       console.error('Logout failed:', error.message)
       alert('Failed to log out. Please try again.')
     } else {
+      // Clean up localStorage
+      localStorage.removeItem('superchange_selected_changelog')
       // Redirect to current page instead of always going to login
       router.push(currentRoute);
     }

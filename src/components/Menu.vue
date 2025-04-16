@@ -23,6 +23,7 @@ import {
 
 import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem } from '@/components/ui/menubar'
 
+
 defineOptions({
   name: 'Menu'
 })
@@ -69,14 +70,14 @@ onBeforeUnmount(() => {
 <!-- Desktop menu accordion style -->
 <Accordion v-if="!isMobile" type="single" class="w-full" :default-value="'1'">
 <!-- Feed section -->
-<AccordionItem value="1">
+    <AccordionItem value="1">
     <AccordionTrigger class="text-[12px] text-muted-foreground pl-6 uppercase tracking-[.10em]">Feed</AccordionTrigger>
     <AccordionContent>
         <div class="px-3 space-y-1">
         <router-link
             v-for="item in feedItems"
             :key="item.type"
-            :to="`/feed/${item.type}`"
+            :to="$route.path.includes('/changelog/') ? `/changelog/${$route.params.changelogId}/${item.type}` : $route.path.includes('/changelogs/') ? `/changelogs/${$route.params.changelogId}/${item.type}` : `/feed/${item.type}`"
             custom
             v-slot="{ navigate, isActive }"
         >
@@ -159,7 +160,7 @@ onBeforeUnmount(() => {
             >
                 <router-link
                     :key="item.type"
-                    :to="`/feed/${item.type}`"
+                    :to="$route.path.includes('/changelog/') ? `/changelog/${$route.params.changelogId}/${item.type}` : $route.path.includes('/changelogs/') ? `/changelogs/${$route.params.changelogId}/${item.type}` : `/feed/${item.type}`"
                     custom
                     v-slot="{ navigate, isActive }"
                 >

@@ -13,7 +13,7 @@
       <CardHeader>
         <CardTitle class="text-xl text-left">Sign in</CardTitle>
         <CardDescription class="text-left">
-          Members can search history and create custom alerts.
+          Build your own changelogs and create custom alerts.
         </CardDescription>
       </CardHeader>
       <CardContent>

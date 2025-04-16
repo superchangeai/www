@@ -39,6 +39,7 @@ function isPublicRoute(url: string): boolean {
   const publicRoutes = [
     '/public',
     '/changes',
+    '/public-changelogs',
     // Add more public routes later
   ];
   

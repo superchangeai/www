@@ -15,9 +15,9 @@ export interface Change {
 
 export const changesService = {
   /**
-   * Get all changes with optional pagination
+   * Get all changes with optional pagination and filtering
    */
-  getAll: async (params?: { limit?: number; classification?: string }) => {
+  getAll: async (params?: { limit?: number; classification?: string; changelogId?: string }) => {
     const response = await apiClient.get<Change[]>('/changes', { params });
     return response.data;
   },

@@ -12,7 +12,7 @@
       <CardHeader>
         <CardTitle class="text-xl text-left">Get started with Superchange (free)</CardTitle>
         <CardDescription class="text-left">
-          Create an account to search history and create custom alerts.
+          Build your own changelogs and create custom alerts.
         </CardDescription>
       </CardHeader>
       <CardContent>

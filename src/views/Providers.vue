@@ -125,7 +125,7 @@ const handleNotify = () => {
     console.log("This should open");
     open({
       title: 'Stay on top of changes from selected providers',
-      description: 'Superchange members can search history and create alerts',
+      description: 'Superchange members can create custom alerts.',
       redirectPath: redirectPath
     })
   }
