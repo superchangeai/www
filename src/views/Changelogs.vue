@@ -50,13 +50,13 @@
                                             View
                                         </router-link>
                                         <button 
-                                            @click="shareChangelog(changelog.id)" 
+                                            @click="openShareDialog(changelog.id, changelog.changelog_id)" 
                                             class="p-2 hover:bg-muted text-sm text-left"
                                         >
                                             Sharing
                                         </button>
                                         <button 
-                                            @click="openRemoveDialog(changelog.id)" 
+                                            @click="openRemoveDialog(changelog.id, changelog.changelog_id)" 
                                             class="p-2 hover:bg-muted text-sm text-left text-destructive"
                                         >
                                             Remove
@@ -93,19 +93,22 @@
     </AlertDialog>
 
     <!-- Share URL Dialog -->
-    <Dialog :open="isShareDialogOpen" @update:open="isShareDialogOpen = $event">
+    <Dialog :open="isShareDialogOpen" @update:open="(val) => { isShareDialogOpen = val; if (!val) fetchChangelogs(); }">
         <DialogContent class="sm:max-w-md">
             <DialogHeader>
-                <DialogTitle>Sharing settings</DialogTitle>
+                <DialogTitle>
+                  Sharing settings
+                  <Loader2 v-if="isSaving" class="ml-2 inline h-4 w-4 animate-spin align-middle" />
+                </DialogTitle>
                 <DialogDescription>
                     {{ isPublicAccess ? 'Anyone with this link can view this changelog.' : 'Only you have access to view this changelog.' }}
                 </DialogDescription>
             </DialogHeader>
             <div class="flex items-center space-x-2 mb-4">
-                <Switch v-model="isPublicAccess" />
+                <Switch v-model="isPublicAccess" @update:modelValue="handleVisibilitySwitch" :disabled="isSaving" />
                 <Label>Public access</Label>
             </div>
-            <div v-if="isPublicAccess" class="flex items-center space-x-2">
+            <div v-if="isPublicAccess && shareUrl" class="flex items-center space-x-2">
                 <div class="grid flex-1 gap-2">
                     <Label for="link" class="sr-only">Link</Label>
                     <Input
@@ -120,74 +123,39 @@
                 </Button>
             </div>
             <DialogFooter class="sm:justify-between">
-                <DialogClose asChild>
+                <DialogClose asChild :disabled="isSaving">
                     <Button type="button" variant="secondary">Close</Button>
                 </DialogClose>
-                <Button 
-                    v-if="hasVisibilityChanged" 
-                    type="button" 
-                    variant="default" 
-                    @click="saveVisibilityChanges"
-                    :disabled="isSaving"
-                >
-                    {{ isSaving ? 'Saving...' : 'Save' }}
-                </Button>
             </DialogFooter>
         </DialogContent>
     </Dialog>
 </template>
 
 <script setup>
-import {
-    Plus,
-    Ellipsis,
-    FileText,
-    Copy
-} from 'lucide-vue-next'
+import { Plus, Ellipsis, FileText, Copy, Loader2 } from 'lucide-vue-next'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { 
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
-import { ref, onMounted, inject, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { ref, onMounted, inject } from 'vue'
 import { changelogsService } from '@/api/services/changelogs.service'
 import { useToast } from '@/components/ui/toast/use-toast'
 
 const { toast } = useToast()
-
-const route = useRoute()
 const isLoading = ref(false)
 const setSettingsLoading = inject('setSettingsLoading', null)
 const changelogs = ref([])
 
 // Remove dialog state
 const isRemoveDialogOpen = ref(false)
-const changelogToRemove = ref(null)
+const changelogToRemove = ref({
+    id: null,
+    changelog_id: null
+})
 
 // Share dialog state
 const isShareDialogOpen = ref(false)
@@ -195,36 +163,33 @@ const shareUrl = ref('')
 const isPublicAccess = ref(true)
 const originalIsPublic = ref(false)
 const isSaving = ref(false)
-const hasVisibilityChanged = computed(() => isPublicAccess.value !== originalIsPublic.value)
 const changelogToChange = ref(null)
 
 // Function to open the remove dialog
-const openRemoveDialog = (changelogId) => {
-    changelogToRemove.value = changelogId
+const openRemoveDialog = (id, changelog_id) => {
+    changelogToRemove.value = { id, changelog_id }
     isRemoveDialogOpen.value = true
 }
 
 // Function to confirm and execute the remove action
 const confirmRemove = async () => {
-    if (!changelogToRemove.value) return
-    
+    if (!changelogToRemove.value.id) return
     try {
         isLoading.value = true
         if (setSettingsLoading) setSettingsLoading(true)
-        await changelogsService.delete(changelogToRemove.value)
-
+        // Delete the changelog from DB
+        await changelogsService.delete(changelogToRemove.value.id)
         // Clean up localStorage if the deleted changelog was selected
+        // This is to avoid having a selected changelog that no longer exists
         const selectedChangelog = localStorage.getItem('superchange_selected_changelog')
-        if (selectedChangelog === changelogToRemove.value) {
+        if (selectedChangelog === changelogToRemove.value.changelog_id) {
             localStorage.removeItem('superchange_selected_changelog')
         }
-        
         // Refresh the changelogs list
         await fetchChangelogs()
-        
         toast({
             title: 'Changelog removed',
-            description: 'The changelog has been successfully removed.',
+            description: 'Your changelog has been successfully removed.',
         })
     } catch (error) {
         console.error('Error removing changelog:', error)
@@ -238,54 +203,37 @@ const confirmRemove = async () => {
         // Update parent loading state
         if (setSettingsLoading) setSettingsLoading(false)
         isRemoveDialogOpen.value = false
-        changelogToRemove.value = null
+        changelogToRemove.value = { id: null, changelog_id: null }
     }
 }
 
-// Function to share a changelog
-const shareChangelog = async (changelogId) => {
-    changelogToChange.value = changelogId
-    isLoading.value = true
-    try {
-        const response = await changelogsService.share(changelogId)
-        shareUrl.value = response.share_url
-        isShareDialogOpen.value = true
-        // Store the original public state
-        const changelog = changelogs.value.find(c => c.id === changelogId)
-        if (changelog) {
-            originalIsPublic.value = changelog.is_public
-            isPublicAccess.value = changelog.is_public
-        }
-    } catch (error) {
-        console.error('Error sharing changelog:', error)
-        toast({
-            title: 'Error',
-            description: 'Failed to generate share URL',
-            variant: 'destructive',
-        })
-    } finally {
-        isLoading.value = false
+// Function to edit the visibility of a changelog
+const openShareDialog = (id, changelog_id) => {
+    changelogToChange.value = id
+    isShareDialogOpen.value = true
+    shareUrl.value = `https://superchange.ai/changelog/${changelog_id}`
+    const changelog = changelogs.value.find(c => c.id === id)
+    if (changelog) {
+        originalIsPublic.value = changelog.is_public
+        isPublicAccess.value = changelog.is_public
     }
 }
 
-// Function to save visibility changes
-const saveVisibilityChanges = async () => {
-    isLoading.value = true
+// Function to handle visibility changes
+const handleVisibilitySwitch = async () => {
+    isSaving.value = true
     try {
-        isSaving.value = true
         const changelog = changelogs.value.find(c => c.id === changelogToChange.value)
         if (changelog) {
             await changelogsService.update(changelog.id, {
                 name: changelog.name,
                 is_public: isPublicAccess.value
             })
-            // Refresh the changelogs list
-            await fetchChangelogs()
-            toast({
-                title: 'Success',
-                description: 'Changelog visibility updated successfully.'
-            })
-            isShareDialogOpen.value = false
+            if (isPublicAccess.value) {
+                shareUrl.value = `https://superchange.ai/changelog/${changelog.changelog_id}`
+            } else {
+                shareUrl.value = ''
+            }
         }
     } catch (error) {
         console.error('Error updating changelog visibility:', error)
@@ -296,7 +244,6 @@ const saveVisibilityChanges = async () => {
         })
     } finally {
         isSaving.value = false
-        isLoading.value = false
     }
 }
 
@@ -314,7 +261,7 @@ onMounted(async () => {
     await fetchChangelogs()
 })
 
-// Function to fetch changelogs
+// Function to fetch changelogs in the view
 const fetchChangelogs = async () => {
     try {
         isLoading.value = true

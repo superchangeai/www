@@ -79,7 +79,9 @@ export const changelogsService = {
   },
 
   /**
-   * Update an existing changelog
+   * Update an existing changelog.
+   * Can update name, list or providers, or is_public status.
+   * Takes an id as key, not a changelog_id
    */
   update: async (id: number, data: { name?: string; provider_ids?: number[]; is_public?: boolean; }) => {
     try {
@@ -104,6 +106,7 @@ export const changelogsService = {
 
   /**
    * Generate a share URL for a changelog
+   * Takes an id as key, not a changelog_id
    */
   share: async (id: number) => {
     try {
@@ -115,7 +118,7 @@ export const changelogsService = {
   },
 
   /**
-   * View a public changelog by its unique ID
+   * View a public changelog by its changelog_id
    */
   getPublic: async (changelogId: string, params?: { page?: number; limit?: number; classification?: string }) => {
     try {

@@ -33,7 +33,8 @@ import {
   CreditCard,
   Mail,
   Library,
-  Zap
+  Zap,
+  Database
 } from 'lucide-vue-next'
 import Header from '@/components/Header.vue'
 
@@ -60,6 +61,10 @@ const providerTypeMap = {
   crm: {
     title: 'CRM providers',
     icon: Contact
+  },
+  databases: {
+    title: 'Database providers',
+    icon: Database
   },
   email: {
     title: 'Email providers',

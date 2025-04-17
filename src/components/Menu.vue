@@ -18,7 +18,8 @@ import {
   Library,
   ShieldPlus,
   ServerCog,
-  Zap
+  Zap,
+  Database
 } from 'lucide-vue-next'
 
 import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem } from '@/components/ui/menubar'
@@ -43,6 +44,7 @@ const Providers = ref([
   { type: 'ai', label: 'AI', icon: Bot },
   { type: 'cloud', label: 'Cloud', icon: Cloud },
   { type: 'crm', label: 'CRM', icon: Contact },
+  { type: 'databases', label: 'Databases', icon: Database },
   { type: 'email', label: 'Email', icon: Mail },
   { type: 'payment', label: 'Payment', icon: CreditCard },
 //   { type: 'more', label: 'More', icon: Ellipsis },
