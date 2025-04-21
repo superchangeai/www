@@ -7,7 +7,7 @@
             <div class="container mx-auto px-8 py-8 text-left">
                 <h1 class="text-3xl font-bold mb-4">Latest</h1>
                 <ul>
-                    <li v-for="post in posts" :key="post.slug" class="mb-2">
+                    <li v-for="post in posts" :key="post.slug" class="mb-2 text-xxl">
                         <router-link :to="`/blog/${post.slug}`">
                             {{ post.title }}
                         </router-link>

@@ -1,5 +1,5 @@
 ---
-title: "Fastest-moving APIs: understanding LLM lifecycles"
+title: "Fastest-moving APIs in tech: understanding LLM lifecycles"
 description: "A deep dive into the fast-paced lifecycle of AI models by OpenAI, Google, Anthropic, and Amazon. Learn why managing LLMs today is like running cloud infrastructure."
 tags: [AI lifecycle, LLM management, OpenAI models, Claude, Gemini, infrastructure]
 date: "2025-04-21"
@@ -8,7 +8,7 @@ author: "Superchange.ai"
 
 Between 2023 and 2025, the big players — OpenAI, Anthropic, Google, and Amazon — have been churning out new large language models (LLMs) and vision-language models (VLMs) faster than you can update your resume. For product managers and software engineers, this means constantly adapting to new APIs, features, and deprecations. It sounds like managing cloud infrastructure, but with even greater speed.
 
-In this post, we’ll map out the major API-available model announcements, analyze their shelf lives and deprecation timelines, and look at AI lifecycle management. Plus, we’ll show you how to implement dynamic model routing with a real-world example. Buckle up and get ready for a wild ride through the AI model zoo!
+In this post, we’ll map out the major API-available model announcements, analyze their shelf lives and deprecation timelines, and look at AI lifecycle management. Plus, we’ll show you how to track changes and implement dynamic model routing.
 
 ---
 
@@ -63,9 +63,9 @@ Here’s how long some of the major models lasted before being replaced:
 | GPT-4o → GPT-4.5    | May 2024 → Feb 2025       | ~9 months              |
 | GPT-4.5 → GPT-4.1   | Feb 2025 → Apr 2025       | ~2 months              |
 | Claude 3 → Claude 3.7 | Mar 2024 → Feb 2025     | ~11 months             |
-| Gemini 1 → Gemini 2.5 | Dec 2023 → Mar 2025     | ~15 months             |
-| Titan → Nova        | Apr 2023 → Dec 2024       | ~20 months             |
+| Gemini 1 → Gemini 2.5 | Dec 2023 → Mar 2025     | ~15 months             |          |
 
+> ### Stats 📊
 - **Average shelf life:** 6–9 months
 - **Typical deprecation notice window:** 2–3 months, barely enough time to update your pipelines.
 
