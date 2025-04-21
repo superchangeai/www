@@ -5,15 +5,31 @@
         </header>
         <main>
             <div class="container mx-auto px-8 py-8 text-left">
-                <h1 class="text-3xl font-bold mb-4">Latest</h1>
                 <ul>
-                    <li v-for="post in posts" :key="post.slug" class="mb-2 text-xxl">
-                        <router-link :to="`/blog/${post.slug}`">
+                    <li v-for="post in posts" :key="post.slug" class="mb-6 border-b py-10">
+                        <!-- Category tag with gradient -->
+                        <div v-if="post.tags && post.tags.length" class="mb-1">
+                            <span class="text-xs font-medium category-tag">
+                                {{ post.tags[0] }}
+                            </span>
+                        </div>
+                        
+                        <!-- Post title -->
+                        <router-link :to="`/blog/${post.slug}`" class="block">
+                            <h2 class="text-xxl font-semibold">
                             {{ post.title }}
+                            </h2>
                         </router-link>
-                        <span v-if="post.date" class="text-sm text-muted-foreground ml-2">
-                            ({{ new Date(post.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric'}) }})
+                        
+                        <!-- Post date -->
+                        <span v-if="post.date" class="text-sm text-muted-foreground">
+                            {{ new Date(post.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric'}) }}
                         </span>
+                        
+                        <!-- Post description -->
+                        <p v-if="post.description" class="mt-2 text-muted-foreground">
+                            {{ post.description }}
+                        </p>
                     </li>
                 </ul>
             </div>
@@ -44,6 +60,8 @@ onMounted(async () => {
         const slug = path.split('/').pop().replace('.md', '');
         let title = 'Untitled Post'; // Default title
         let date = null; // Default date
+        let description = null; // Default description
+        let tags = []; // Default tags
 
         // --- Manual Frontmatter Parsing ---
         const match = rawContent.match(frontmatterRegex);
@@ -57,6 +75,12 @@ onMounted(async () => {
                     if (frontmatter.date) {
                         date = frontmatter.date;
                     }
+                    if (frontmatter.description) {
+                        description = frontmatter.description;
+                    }
+                    if (frontmatter.tags && Array.isArray(frontmatter.tags)) {
+                        tags = frontmatter.tags;
+                    }
                 }
             } catch (e) {
                 console.error(`Error parsing frontmatter for ${slug}.md:`, e);
@@ -64,7 +88,24 @@ onMounted(async () => {
             }
         }
 
-        return { slug, title, date };
+        return { slug, title, date, description, tags };
     });
 });
 </script>
+
+<style scoped>
+.category-tag {
+    background-image: linear-gradient(90deg, #285FFD 0%, #A32ED0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 600;
+    display: inline-block;
+}
+
+:deep(h2) {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+}
+</style>

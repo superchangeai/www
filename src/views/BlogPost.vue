@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col bg-background text-foreground">
+  <div class="flex flex-col min-h-screen bg-background text-foreground">
     <header class="py-6 border-b border-border">
       <BlogHeader />
     </header>
-    <main>
+    <main class="flex-grow">
       <div class="container mx-auto px-8 py-8 text-left">
         <!-- Breadcrumb added here -->
         <Breadcrumb class="mb-4">
@@ -21,9 +21,9 @@
         </Breadcrumb>
 
         <!-- 2/3 - 1/3 Layout -->
-        <div class="flex flex-col md:flex-row gap-8">
+        <div class="flex flex-col md:flex-row gap-8 relative">
           <!-- Left column (2/3) - Blog content -->
-          <div class="w-full md:w-2/3">
+          <div class="content w-full md:w-2/3">
             <h1 v-if="post">{{ post.title }}</h1>
             <div v-if="post" class="text-sm text-muted-foreground mb-4">
               <span v-if="post.author">By {{ post.author }}</span>
@@ -36,7 +36,7 @@
           
           <!-- Right column (1/3) - Sidebar -->
           <div class="w-full md:w-1/3">
-            <div class="top-8 space-y-6">
+            <div class="md:sticky md:top-8 space-y-6">
               <!-- Tags section -->
               <div v-if="post && post.tags && post.tags.length > 0" class="p-4 border border-border rounded-md">
                 <h3 class="text-lg font-semibold mb-2">Tags</h3>
@@ -302,6 +302,10 @@ watch(() => props.slug, (newSlug) => {
   margin-top: 2rem;
   margin-bottom: 2rem;
   border-top-width: 1px;
+}
+
+:deep(main .content a) {
+  color: hsl(var(--primary));
 }
 
 :deep(p) {
