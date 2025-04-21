@@ -76,7 +76,7 @@ Managing AI models today is like herding cats — each has its own personality, 
 
 
 ### 1. **Tracking model changelogs**
-Every LLM vendor now maintains changelogs or deprecation calendars. Tools like [Superchange.ai](https://www.superchange.ai) aggregate these, letting you build your own model changelog, share it with your team, and automate alerts. Because who doesn’t love a 3 AM ping about a model deprecation?
+Every LLM vendor now maintains changelogs or deprecation calendars. Tools like [Superchange.ai](https://www.superchange.ai) aggregate these, letting you build your own model changelog, share it with your team, and automate alerts. 
 
 ### 2. **Version pinning & controlled rollouts**
 Pin models to specific versions, like `gpt-4-0613`, until you’ve validated the new hotness. Use shadow traffic or blue/green deployments to test new versions without disrupting users. It’s like dating: you don’t commit until you’re sure it’s the one.
