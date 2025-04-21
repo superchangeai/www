@@ -1,6 +1,8 @@
 <template>
     <div class="border-b border-border pt-5 pb-4 flex items-center justify-between px-4 md:px-10">
       <h1 class="flex items-center gap-2 min-h-9 shrink-none flex-none">
+        <slot name="changelog">
+        </slot>
         <component :is="icon" class="w-5 h-5 shrink-0" />
         <RouterLink 
           v-if="isDefaultTitle" 
@@ -9,7 +11,7 @@
         >
         <img src="/super.svg" alt="Superchange.ai logo" class="h-6" /><span> {{ title }}</span>
         </RouterLink>
-        <template v-else class="truncate">
+        <template v-else-if="!isDefaultTitle && title!='none'" class="truncate">
           {{ title }}
         </template>
         <span v-if="isLoading" class="ml-2">

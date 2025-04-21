@@ -473,22 +473,22 @@ const provideFeedback = async (itemId, value) => {
 <template>
 
     <Header 
-      :title="currentFeedConfig.title"
-      :icon="currentFeedConfig.icon"
+      :title="'none'"
+      :icon="false"
       :is-loading="currentFeedConfig.isLoading"
       :show-filter-button="false" 
       :show-help-button="true"
     >
-      <template #actions>
-        <Badge v-if="!isMobile" variant="secondary">beta</Badge>
+      <template #changelog>
+        <h3 class="text-sm">Changelog:</h3>
         <Select class="shadow-none" v-model="selectedChangelogId">
           <SelectTrigger class="pl-6 shadow-none">
             <Skeleton v-if="isLoading" class="h-4 w-20" />
             <div v-else>
-              Changelog: <SelectValue placeholder="default" />
+              <SelectValue placeholder="default" />
             </div>
           </SelectTrigger>
-          <SelectContent class="border-0 text-xs">
+          <SelectContent class="border-0">
             <SelectGroup>
               <SelectLabel>Changelogs</SelectLabel>
               <template v-for="item in changelogSelectItems.items" :key="item.value">
