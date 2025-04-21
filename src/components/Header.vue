@@ -100,79 +100,79 @@
     </div>
   </template>
   
-  <script setup lang="ts">
-  import { ListFilter, HelpCircle, X, Loader2} from 'lucide-vue-next'
-  import { Button } from '@/components/ui/button'
-  import { Badge } from '@/components/ui/badge'
-  import { Input } from '@/components/ui/input'
-  import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-  import { useColorMode } from '@vueuse/core'
-  import { ref, computed } from 'vue'
-  import { RouterLink } from 'vue-router'
-  
+<script setup lang="ts">
+import { ListFilter, HelpCircle, X, Loader2} from 'lucide-vue-next'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useColorMode } from '@vueuse/core'
+import { ref, computed } from 'vue'
+import { RouterLink } from 'vue-router'
+
 const props = defineProps({
-    title: {
-      type: String,
-      default: import.meta.env.VITE_APP_TITLE
-    },
-    icon: {
-      type: Function,
-      default: undefined
-    },
-    isLoading: Boolean,
-    showFilterButton: Boolean,
-    showHelpButton: Boolean
-  })
+  title: {
+    type: String,
+    default: import.meta.env.VITE_APP_TITLE
+  },
+  icon: {
+    type: Function,
+    default: undefined
+  },
+  isLoading: Boolean,
+  showFilterButton: Boolean,
+  showHelpButton: Boolean
+})
 
-  const isDefaultTitle = computed(() => props.title === import.meta.env.VITE_APP_TITLE)
+const isDefaultTitle = computed(() => props.title === import.meta.env.VITE_APP_TITLE)
 
-  
+
 // Define emits
 const emit = defineEmits(['filter-applied', 'filter-cleared'])
-  
-  // Filter state
-  const providerFilter = ref('')
-  const dateFilter = ref('')
-  const activeFilters = ref(0)
 
-  // Computed properties
-  const canApplyFilter = computed(() => {
-    return providerFilter.value.trim() !== '' || dateFilter.value.trim() !== ''
+// Filter state
+const providerFilter = ref('')
+const dateFilter = ref('')
+const activeFilters = ref(0)
+
+// Computed properties
+const canApplyFilter = computed(() => {
+  return providerFilter.value.trim() !== '' || dateFilter.value.trim() !== ''
+})
+
+// Methods
+const clearProviderFilter = () => {
+  providerFilter.value = ''
+  if (activeFilters.value > 0) {
+    activeFilters.value--
+  }
+}
+
+const clearDateFilter = () => {
+  dateFilter.value = ''
+  if (activeFilters.value > 0) {
+    activeFilters.value--
+  }
+}
+
+const applyFilters = () => {
+  // Count active filters
+  activeFilters.value = 0
+  if (providerFilter.value.trim() !== '') {
+    activeFilters.value++
+  }
+  if (dateFilter.value.trim() !== '') {
+    activeFilters.value++
+  }
+  
+  // Emit event to the parent component to apply the filters
+  emit('filter-applied', { 
+    provider: providerFilter.value.trim(), 
+    date: dateFilter.value.trim() 
   })
+}
 
-  // Methods
-  const clearProviderFilter = () => {
-    providerFilter.value = ''
-    if (activeFilters.value > 0) {
-      activeFilters.value--
-    }
-  }
+// Theme toggle
+useColorMode()
 
-  const clearDateFilter = () => {
-    dateFilter.value = ''
-    if (activeFilters.value > 0) {
-      activeFilters.value--
-    }
-  }
-
-  const applyFilters = () => {
-    // Count active filters
-    activeFilters.value = 0
-    if (providerFilter.value.trim() !== '') {
-      activeFilters.value++
-    }
-    if (dateFilter.value.trim() !== '') {
-      activeFilters.value++
-    }
-    
-    // Emit event to the parent component to apply the filters
-    emit('filter-applied', { 
-      provider: providerFilter.value.trim(), 
-      date: dateFilter.value.trim() 
-    })
-  }
-  
-  // Theme toggle
-  const mode = useColorMode()
-
-  </script>
+</script>
