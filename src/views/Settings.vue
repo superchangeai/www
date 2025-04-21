@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import Nav from '@/components/settingsNav.vue'
+import Nav from '@/components/SettingsNav.vue'
 import Header from '@/components/Header.vue'
 import {
   Settings,

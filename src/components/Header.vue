@@ -93,10 +93,6 @@
               </div>
             </PopoverContent>
           </Popover>
-          <Button v-if="showToggleButton" variant="ghost" size="sm" @click="toggleTheme">
-            <MoonStar class="h-5 w-5 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <SunMedium class="h-5 w-5 absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          </Button>
           <Button v-if="showHelpButton" variant="ghost" size="icon">
             <HelpCircle class="h-5 w-5" />
           </Button>
@@ -105,7 +101,7 @@
   </template>
   
   <script setup lang="ts">
-  import { MoonStar, SunMedium, ListFilter, HelpCircle, X, Loader2} from 'lucide-vue-next'
+  import { ListFilter, HelpCircle, X, Loader2} from 'lucide-vue-next'
   import { Button } from '@/components/ui/button'
   import { Badge } from '@/components/ui/badge'
   import { Input } from '@/components/ui/input'
@@ -125,11 +121,7 @@ const props = defineProps({
     },
     isLoading: Boolean,
     showFilterButton: Boolean,
-    showHelpButton: Boolean,
-    showToggleButton: {
-      type: Boolean,
-      default: true
-    }
+    showHelpButton: Boolean
   })
 
   const isDefaultTitle = computed(() => props.title === import.meta.env.VITE_APP_TITLE)
@@ -182,7 +174,5 @@ const emit = defineEmits(['filter-applied', 'filter-cleared'])
   
   // Theme toggle
   const mode = useColorMode()
-  const toggleTheme = () => {
-    mode.value = mode.value === 'light' ? 'dark' : 'light'
-  }
+
   </script>

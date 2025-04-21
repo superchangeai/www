@@ -5,7 +5,7 @@
             <div class="mt-2 flex justify-between w-auto">
                 <span class="flex gap-3 items-center">
                     <Inbox class="h-4 w-4"/>
-                    <h2 class="font-semibold">Emails</h2>
+                    <h2 class="font-semibold">Your emails</h2>
                 </span>
                 <router-link :to="`/settings/channels/new`" class="no-underline text-inherit">
                     <Button variant="ghost" size="icon">

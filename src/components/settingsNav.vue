@@ -33,5 +33,6 @@ const navItems: NavItem[] = [
   { label: 'Profile', route: '/settings/profile' },
   { label: 'Changelogs', route: '/settings/changelogs' },
   { label: 'Channels', route: '/settings/channels' },
+  { label: 'Theme', route: '/settings/theme' },
 ]
 </script>

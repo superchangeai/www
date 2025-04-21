@@ -156,7 +156,7 @@ const saveEmail = async () => {
      <!-- Email Card -->
        <Card>
          <CardHeader>
-           <CardTitle>Your email</CardTitle>
+           <CardTitle>Your account email</CardTitle>
          </CardHeader>
          <CardContent class="flex items-center gap-2">
            <Input
@@ -259,8 +259,8 @@ const saveEmail = async () => {
        <!-- Password Card -->
        <Card>
          <CardHeader>
-           <CardTitle>Password</CardTitle>
-           <CardDescription>
+           <CardTitle>Your account password</CardTitle>
+           <CardDescription v-if="user.authMethods.includes('password')">
              Your password can be reset by clicking the button below. <br> A link will be sent to your email with instructions.
            </CardDescription>
          </CardHeader>

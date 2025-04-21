@@ -132,17 +132,22 @@ export const router = createRouter({
         {
           path: 'profile',
           name: 'settings-profile',
-          component: () => import('@/views/Profile.vue'),
+          component: () => import('@/views/SettingsProfile.vue'),
+        },
+        {
+          path: 'theme',
+          name: 'settings-theme',
+          component: () => import('@/views/SettingsTheme.vue'),
         },
         {
           path: 'changelogs',
           name: 'settings-changelogs',
-          component: () => import('@/views/Changelogs.vue'),
+          component: () => import('@/views/SettingsChangelogs.vue'),
         },
         {
           path: 'channels',
           name: 'settings-channels',
-          component: () => import('@/views/Channels.vue'),
+          component: () => import('@/views/SettingsChannels.vue'),
         },
         {
           path: 'channels/new',
