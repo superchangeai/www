@@ -42,35 +42,10 @@
           <router-link to="/feed" class="flex items-center gap-2">
             <img src="/super.svg" alt="Superchange.ai logo" class="h-6" /> superchange.ai
           </router-link>
-          <div v-if="authStore.session?.user" class="flex items-center gap-2">
-            <router-link to="/settings/profile" title="Go to your profile">
-              <div class="h-6 w-6 rounded-full bg-primary flex items-center justify-center text-xs font-medium text-primary-foreground cursor-pointer hover:opacity-80">
-                {{ authStore.session?.user?.email?.[0].toUpperCase() || '?' }}
-              </div>
-            </router-link>
-            <button @click="logout" title="Sign out 👋"><LogOut class="h-4 w-4 opacity-70" /></button>
-          </div>
         </div>
-    
-        <!-- Search box
-        <div class="p-3 border-b border-border">
-          <div class="relative">
-            <Search class="absolute left-4 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search"
-              class="pl-12 border-none h-9"
-            />
-          </div>
-        </div> -->
     
         <!-- Accordion navigation menu -->
         <Menu></Menu>
-      </div>
-    
-      <!-- Scrollable content area -->
-      <div class="flex-1 overflow-y-auto">
-        <!-- Content that can scroll (empty in current implementation) -->
       </div>
     
       <!-- Bottom settings section -->
@@ -118,12 +93,10 @@
 <script setup lang="ts">
 
 import {
-  // Search,
   LogOut,
   Settings,
   SquareUser,
 } from 'lucide-vue-next'
-// import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Toaster from '@/components/ui/toast/Toaster.vue'
 import Feedback from '@/components/Feedback.vue'

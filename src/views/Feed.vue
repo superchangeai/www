@@ -476,7 +476,7 @@ const provideFeedback = async (itemId, value) => {
       :title="currentFeedConfig.title"
       :icon="currentFeedConfig.icon"
       :is-loading="currentFeedConfig.isLoading"
-      :show-filter-button="true" 
+      :show-filter-button="false" 
       :show-help-button="true"
     >
       <template #actions>

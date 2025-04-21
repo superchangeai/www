@@ -17,8 +17,8 @@
         </span>
       </h1>
       <div class="flex items-center gap-2">
-        <slot name="actions">
-        </slot>
+          <slot name="actions">
+          </slot>
           <Popover v-if="showFilterButton">
             <PopoverTrigger>
               <Button 
@@ -96,19 +96,32 @@
           <Button v-if="showHelpButton" variant="ghost" size="icon">
             <HelpCircle class="h-5 w-5" />
           </Button>
+          <div v-if="authStore.session?.user && !isMobile" class="flex items-center gap-2">
+            <router-link to="/settings/profile" title="Go to your profile">
+              <div class="h-6 w-6 rounded-full bg-primary flex items-center justify-center text-xs font-medium text-primary-foreground cursor-pointer hover:opacity-80">
+                {{ authStore.session?.user?.email?.[0].toUpperCase() || '?' }}
+              </div>
+            </router-link>
+            <button @click="logout" title="Sign out 👋"><LogOut class="h-4 w-4 opacity-70" /></button>
+          </div>
       </div>
     </div>
   </template>
   
 <script setup lang="ts">
-import { ListFilter, HelpCircle, X, Loader2} from 'lucide-vue-next'
+import { ListFilter, HelpCircle, X, Loader2, LogOut} from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useColorMode } from '@vueuse/core'
-import { ref, computed } from 'vue'
-import { RouterLink } from 'vue-router'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
+import { authStore } from '../stores/auth'
+import { supabase } from '../lib/supabase'
+
+const router = useRouter()
+
 
 const props = defineProps({
   title: {
@@ -172,7 +185,43 @@ const applyFilters = () => {
   })
 }
 
-// Theme toggle
-useColorMode()
+// Detecting layout
+const isMobile = ref(false)
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 768
+}
+
+// Define logout method
+const logout = async () => {
+  try {
+    // Store current route before logout
+    const currentRoute = router.currentRoute.value.path;
+    
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      console.error('Logout failed:', error.message)
+      alert('Failed to log out. Please try again.')
+    } else {
+      // Clean up localStorage
+      localStorage.removeItem('superchange_selected_changelog')
+      // Redirect to current page instead of always going to login
+      router.push(currentRoute);
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+}
+
+onMounted(() => {
+  // Theme toggle
+  useColorMode()
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkMobile)
+})
 
 </script>
