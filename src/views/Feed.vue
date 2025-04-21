@@ -626,7 +626,7 @@ const provideFeedback = async (itemId, value) => {
             {{
               isMobile?
               new Date(item.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: 'short'}) : 
-              new Date(item.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) 
+              new Date(item.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: 'long'}) 
             }}
             <ChevronDown v-if="expandedRowId !== item.id" class="h-4 w-4 transition-transform" />
             <ChevronUp v-if="expandedRowId === item.id" class="h-4 w-4 transition-transform" />
