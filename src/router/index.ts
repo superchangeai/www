@@ -175,7 +175,18 @@ export const router = createRouter({
       path: '/auth/callback',
       name: 'auth-callback',
       component: () => import('@/views/AuthCallback.vue')
-    }
+    },
+    {
+      path: '/blog',
+      name: 'BlogIndex',
+      component: () => import('@/views/BlogIndex.vue')
+    },
+    {
+      path: '/blog/:slug',
+      name: 'BlogPost',
+      component: () => import('@/views/BlogPost.vue'),
+      props: true,
+    },
   ],
   scrollBehavior() {
     // Always scroll to top when navigating to a new route

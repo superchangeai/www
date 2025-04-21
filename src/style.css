@@ -30,6 +30,11 @@ h1 {
   font-size: 1.5em;
 }
 
+h2 {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
 .card {
   padding: 2em;
   background-color: #252525;
@@ -162,4 +167,32 @@ a:hover {
     background-color: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
   }
+}
+
+footer {
+  padding: 3rem 0;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}    
+
+.footer-link {
+  color: hsl(var(--muted-foreground));
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.footer-link:hover {
+  color: hsl(var(--foreground));
+}
+
+.copyright {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  margin-top: 2rem;
+  text-align: center;
 }

@@ -104,6 +104,7 @@ import { supabase } from './lib/supabase'
 import { useRouter } from 'vue-router'
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { authStore } from './stores/auth'
+import Menu from '@/components/Menu.vue'
 
 const router = useRouter()
 const showSidebar = ref(true)
@@ -122,16 +123,28 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', checkMobile)
 })
 
-const authRoutes = ['/login', '/signup', '/', '/privacy']
+// Define the prefixes/paths where the sidebar should be hidden
+const noSidebarPrefixes = ['/login', '/signup', '/privacy', '/blog']
+
+// Helper function to determine if the sidebar should be hidden
+const shouldHideSidebar = (path: string): boolean => {
+  // Hide if the path is exactly '/'
+  if (path === '/') {
+    return true;
+  }
+  // Hide if the path starts with any of the defined prefixes
+  return noSidebarPrefixes.some(prefix => path.startsWith(prefix));
+};
 
 // Watch for route changes
 router.afterEach((to) => {
-  showSidebar.value = !authRoutes.includes(to.path)
+  // Use the helper function to decide whether to show the sidebar
+  showSidebar.value = !shouldHideSidebar(to.path)
 })
 
 // Initialize based on current route
-showSidebar.value = !authRoutes.includes(router.currentRoute.value.path)
-import Menu from '@/components/Menu.vue'
+// Use the helper function for the initial check as well
+showSidebar.value = !shouldHideSidebar(router.currentRoute.value.path)
 
 // Define logout method
 const logout = async () => {

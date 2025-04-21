@@ -11,11 +11,19 @@ export default defineConfig({
     },
   },
   plugins: [vue()],
+  assetsInclude: ['**/*.md'],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
-  // Add base URL configuration for production
   base: '/',
+  optimizeDeps: {
+    exclude: ['fsevents']
+  },
+  build: {
+    rollupOptions: {
+      external: ['fsevents']
+    }
+  },
 })

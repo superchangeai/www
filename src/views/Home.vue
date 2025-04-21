@@ -10,10 +10,20 @@
         <nav class="flex gap-4 items-center">
           <!-- Desktop Navigation -->
           <div class="hidden md:flex gap-6 items-center">
-            <a href="#features" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Features</a>
-            <a href="#alerts" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Alerts</a>
+            <a href="#features" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">AI classification</a>
+            <a href="#alerts" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Smart alerts</a>
+            <a href="#custom" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Custom changelog</a>
             <a href="#roadmap" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Roadmap</a>
-            <a href="https://github.com/superchangeai" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200 flex gap-2 items-center"><Github class="xs" /> GitHub</a>
+            <a href="https://github.com/superchangeai" class="hidden md:flex text-muted-foreground text-sm hover:text-foreground transition-colors duration-200 flex gap-2 items-center">
+                            <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                            >
+                            <path :d="siGithub.path" /></svg>
+                        </a>
             <router-link :to="'/feed/'">
               <Button size="xxl">
                 Browse the changes
@@ -41,12 +51,20 @@
               <SheetTitle><img src="/super.svg" alt="Superchange.ai logo" class="h-6" /></SheetTitle>
             </SheetHeader>
             <div class="flex flex-col gap-4 py-4">
-              <a href="#features" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click.prevent="scrollToSection('#features')">Features</a>
-              <a href="#alerts" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click.prevent="scrollToSection('#alerts')">Alerts</a>
-              <a href="#roadmap" class="text-muted-foreground hover:text-foreground transition-colors duration-200" @click.prevent="scrollToSection('#roadmap')">Roadmap</a>
-              <a href="https://github.com/superchangeai" class="text-muted-foreground hover:text-foreground transition-colors duration-200 flex gap-2 items-center" @click="isMobileMenuOpen = false">
-                <Github class="h-4 w-4" /> GitHub
-              </a>
+              <a href="#features" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200" @click.prevent="scrollToSection('#features')">AI classification</a>
+              <a href="#alerts" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200" @click.prevent="scrollToSection('#alerts')">Smart alerts</a>
+              <a href="#custom" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200" @click.prevent="scrollToSection('#custom')">Custom changelog</a>
+              <a href="#roadmap" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200" @click.prevent="scrollToSection('#roadmap')">Roadmap</a>
+              <a href="https://github.com/superchangeai" class="md:flex text-muted-foreground text-sm hover:text-foreground transition-colors duration-200 flex gap-2 items-center" @click="isMobileMenuOpen = false">
+                            <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                            >
+                            <path :d="siGithub.path" /></svg> Github
+                        </a>
             </div>
           </SheetContent>
         </Sheet>
@@ -60,61 +78,20 @@
     </main>
 
     <footer>
-      <div class="container">
-        <div class="flex flex-col items-center gap-4 md:flex-row md:justify-between md:items-center">
-          <div class="flex gap-2 items-center">
-            <img src="/super.svg" width="40" /> <span class="logo-text">superchange.ai</span>
-          </div>
-          <div class="footer-links hidden md:flex gap-3 md:flex-row md:justify-between md:items-center">
-            <Button variant="ghost" size="sm" @click="toggleTheme">
-            <MoonStar class="h-5 w-5 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <SunMedium class="h-5 w-5 absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          </Button>
-            <a href="#features" class="footer-link">Features</a>
-            <a href="#alerts" class="footer-link">Alerts</a>
-            <a href="#roadmap" class="footer-link">Roadmap</a>
-            <a href="https://github.com/superchangeai" class="footer-link">GitHub</a>
-            <router-link to="/docs" class="footer-link">Documentation</router-link>
-            <router-link to="/privacy" class="footer-link">Privacy</router-link>
-            <!-- <router-link to="/terms" class="footer-link">Terms</router-link> -->
-          </div>
-        </div>
-        <div class="copyright">
-          &copy; 2025 Superchange.ai. All rights reserved.
-        </div>
-      </div>
+      <Footer />
     </footer>
-    <!-- Privacy Sheet -->
-    <Sheet v-model:open="isPrivacyOpen">
-      <SheetContent side="right" class="w-full sm:max-w-2xl overflow-y-auto">
-        
-        <div class="py-4">
-          <Privacy />
-        </div>
-      </SheetContent>
-    </Sheet>
 
   </div>
   </template>
   
   <script setup>
-    import { ref } from 'vue'
-    import { useColorMode } from '@vueuse/core'
     import { Button } from '@/components/ui/button'
     import { Badge } from '@/components/ui/badge'
-    import Privacy from './Privacy.vue'
+    import Footer from '@/components/Footer.vue'
     import {
-      PanelsTopLeft,
-      Sparkles,
-      TriangleAlert,
-      SearchCheck,
-      Bot,
-      Clock4,
-      Github,
       Menu,
-      MoonStar,
-      SunMedium
     } from 'lucide-vue-next'
+    import { siGithub } from 'simple-icons';
     import { RouterLink } from 'vue-router'
     import {
       Sheet,
@@ -122,12 +99,9 @@
       SheetHeader,
       SheetTitle
     } from '@/components/ui/sheet'
-
-    const mode = useColorMode()
-    const toggleTheme = () => {
-      mode.value = mode.value === 'light' ? 'dark' : 'light'
-    }
+    import { ref } from 'vue'
     const isMobileMenuOpen = ref(false)
+
 
     const scrollToSection = (sectionId) => {
       isMobileMenuOpen.value = false
@@ -505,34 +479,6 @@
         background-size: 100% 100%;
         opacity: 0.1;
         transform: rotate(180deg)
-    }
-
-    footer {
-      padding: 3rem 0;
-    }
-
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }    
-
-    .footer-link {
-      color: hsl(var(--muted-foreground));
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-
-    .footer-link:hover {
-      color: hsl(var(--foreground));
-    }
-
-    .copyright {
-      color: hsl(var(--muted-foreground));
-      font-size: 0.9rem;
-      margin-top: 2rem;
-      text-align: center;
     }
 
     /* Responsive adjustments */
