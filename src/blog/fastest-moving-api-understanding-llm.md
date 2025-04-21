@@ -67,7 +67,7 @@ Here’s how long some of the major models lasted before being replaced:
 
 > ### Stats from research 📊
 - **Average shelf life:** 6–9 months
-- **Typical deprecation notice window:** 3 months
+- **Deprecation notice window:** 3 months (preview models) to 6 months (GA models)
 
 
 ## Treat models like services
