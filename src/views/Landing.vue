@@ -170,7 +170,7 @@
       <section class="cta-section relative bg-background">
         <div class="container z-10 relative flex flex-col items-center">
           <h2>Boring stuff, done better</h2>
-          <p>Superchange.ai was vibe coded by a technical product manager who spent a decade building APIs and developer platforms — and constantly struggled to keep up with others' changelogs. It's built to be transparent and reliable from day one.</p>
+          <p class="text-md">Superchange.ai was vibe coded by a technical product manager who spent a decade building APIs and developer platforms — and constantly struggled to keep up with others' changelogs. It's built to be transparent and reliable from day one.</p>
           <div class="buttons z-10 relative">
             <router-link to="/feed">
             <Button size="xxl">Join the Public Beta</Button>
@@ -181,17 +181,6 @@
     </section>
 </template>
 <script setup>
-import {
-      PanelsTopLeft,
-      Sparkles,
-      TriangleAlert,
-      SearchCheck,
-      Bot,
-      Clock4,
-      Github,
-      Menu
-    } from 'lucide-vue-next'
     import { Button } from '@/components/ui/button'
     import { Badge } from '@/components/ui/badge'
-
 </script>

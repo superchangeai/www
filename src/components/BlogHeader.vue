@@ -8,7 +8,7 @@
         <nav class="flex gap-4 items-center">
             <!-- Desktop Navigation -->
             <div class="flex gap-6 items-center">
-                <a href="https://github.com/superchangeai" class="hidden md:flex text-muted-foreground text-sm hover:text-foreground transition-colors duration-200 flex gap-2 items-center">
+                <a href="https://github.com/superchangeai" class="flex text-muted-foreground text-sm hover:text-foreground transition-colors duration-200 flex gap-2 items-center">
                     <svg
                     width="24"
                     height="24"
@@ -18,9 +18,9 @@
                     >
                     <path :d="siGithub.path" /></svg>
                 </a>
-                <router-link :to="'/feed/'">
+                <router-link :to="'/feed/'" class="hidden md:flex">
                     <Button size="">
-                        Browse the changes
+                        Browse changes
                     </Button>
                 </router-link>
             </div>

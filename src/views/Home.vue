@@ -4,12 +4,12 @@
       <div class="container mx-auto px-8 flex justify-between items-center">
             <router-link :to="'/'" class="flex items-center gap-2">
               <img src="/super.svg" alt="Superchange.ai logo" class="h-6" />
-            <span class="font-semibold text-lg">superchange.ai</span>
+            <span class="font-semibold">superchange.ai</span>
             <Badge variant="outline" class="hidden md:block">beta</Badge>
           </router-link>
         <nav class="flex gap-4 items-center">
           <!-- Desktop Navigation -->
-          <div class="hidden md:flex gap-6 items-center">
+          <div class="hidden md:hidden lg:flex gap-6 items-center">
             <a href="#features" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">AI classification</a>
             <a href="#alerts" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Smart alerts</a>
             <a href="#custom" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Custom changelog</a>
@@ -25,14 +25,14 @@
                             <path :d="siGithub.path" /></svg>
                         </a>
             <router-link :to="'/feed/'">
-              <Button size="xxl">
+              <Button size="lg">
                 Browse the changes
               </Button>
             </router-link>
           </div>
           
           <!-- Mobile Navigation -->
-          <div class="md:hidden flex items-center gap-4">
+          <div class="lg:hidden flex items-center gap-4">
             <Button @click="isMobileMenuOpen = true" variant="ghost" size="icon">
               <Menu class="h-6 w-6" />
             </Button>
@@ -239,7 +239,6 @@
     }
 
     .section-description {
-      font-size: 1.125rem;
       color: hsl(var(--muted-foreground));
       margin-bottom: 3rem;
     }
@@ -258,15 +257,16 @@
       background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.1),
-        rgba(255, 255, 255, 0.3),
-        rgba(255, 255, 255, 0.1),
+        hsl(var(--primary) / 0.2),
+        hsl(var(--primary) / 0.5),
+        hsl(var(--primary) / 0.2),
         transparent
       );
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
+      box-shadow: 0 0 15px hsl(var(--primary) / 0.3);
     }
 
     .cta-section h2 {
@@ -276,7 +276,6 @@
     }
 
     .cta-section p {
-      font-size: 1.125rem;
       color: hsl(var(--muted-foreground));
       max-width: 800px;
       margin: 0 auto;

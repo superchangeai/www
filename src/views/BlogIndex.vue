@@ -9,7 +9,7 @@
                     <li v-for="post in posts" :key="post.slug" class="mb-6 border-b py-10">
                         <!-- Category tag with gradient -->
                         <div v-if="post.tags && post.tags.length" class="mb-1">
-                            <span class="text-xs font-medium category-tag">
+                            <span class="text-sm font-medium category-tag">
                                 {{ post.tags[0] }}
                             </span>
                         </div>

@@ -106,7 +106,7 @@
         </div>
       </div>
     </main>
-    <footer class="container mx-auto px-8 py-8 text-left">
+    <footer class="container mx-auto px-8 py-8 text-left border-t">
       <Footer />
     </footer>
   </div>
@@ -285,7 +285,7 @@ watch(() => props.slug, (newSlug) => {
 :deep(h1) {
   font-size: 2.5em;
   margin-bottom: 1rem;
-  font-weight: 900;
+  font-weight: 800;
 }
 :deep(h2) {
   font-size: 1.9em;
