@@ -77,10 +77,10 @@
     </div>
 
     <!-- Main content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col" :class="{ 'overflow-hidden': showSidebar }">
 
       <!-- Content -->
-      <div class="flex-1 overflow-auto">
+      <div class="flex-1" :class="{ 'overflow-auto': showSidebar }">
         
         <router-view></router-view>
         

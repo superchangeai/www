@@ -21,7 +21,7 @@
         </Breadcrumb>
 
         <!-- 2/3 - 1/3 Layout -->
-        <div class="flex flex-col md:flex-row gap-8 relative">
+        <div class="flex flex-col md:flex-row gap-8 relative overflow-none">
           <!-- Left column (2/3) - Blog content -->
           <div class="content w-full md:w-2/3">
             <h1 v-if="post">{{ post.title }}</h1>
@@ -35,8 +35,8 @@
           </div>
           
           <!-- Right column (1/3) - Sidebar -->
-          <div class="w-full md:w-1/3">
-            <div class="md:sticky md:top-8 space-y-6">
+          <div class="w-full md:w-1/3 relative">
+            <div class="space-y-6 md:sticky md:top-8">
               <!-- Tags section -->
               <div v-if="post && post.tags && post.tags.length > 0" class="p-4 border border-border rounded-md">
                 <h3 class="text-lg font-semibold mb-2">Tags</h3>
