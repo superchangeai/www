@@ -17,7 +17,7 @@
                   </router-link> -->
                 </div>
         </div>
-        <img src="/superchange.webp" alt="Superchange.ai homepage" class="hidden md:hidden lg:block" />
+        <img src="/superchange.webp" alt="Superchange.ai homepage" class="hidden md:hidden lg:block" width="400" />
         </div>
         <div class="hidden md:block absolute top-1/2 right-[-16%] transform translate-y-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(0,136,255,0.3),transparent_70%)] z-0 pointer-events-none blur-[60px]"></div>
     </section>
