@@ -5,7 +5,7 @@
                 <router-link to="/" class="flex gap-2 items-center"><img src="/super.svg" width="40" alt="Superchange.ai logo" /> <span class="logo-text">superchange.ai</span></router-link>
             </div>
             <div class="footer-links hidden md:flex gap-3 md:flex-row md:justify-between md:items-center">
-                <Button variant="ghost" size="sm" @click="toggleTheme">
+                <Button variant="ghost" size="sm" @click="toggleTheme" aria-label="Change theme">
                     <MoonStar class="h-5 w-5 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                     <SunMedium class="h-5 w-5 absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                 </Button>
