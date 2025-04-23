@@ -18,12 +18,17 @@ import { useAuthDrawer } from '@/composables/useAuthDrawer'
 import AuthDrawer from '@/components/AuthDrawer.vue'
 import { Skeleton } from '@/components/ui/skeleton'
 import { authStore } from '@/stores/auth'
+import { useHead } from '@unhead/vue';
 
 
 const route = useRoute();
 const provider = computed(() => route.params.id);
 const currentProvider = ref({ title: '', sources: [] });
 const isLoading = ref(true);
+const headData = ref({});
+// Initialize head in setup context
+useHead(headData);
+
 
 onMounted(async () => {
   try {
@@ -42,6 +47,16 @@ onMounted(async () => {
       })) : [],
       changes: (data.source_count || 0).toString()
     };
+    // Update head metadata when post is loaded
+    headData.value = {
+        title: `Superchange.ai | Never miss critical updates from ${currentProvider.value.title}` || 'Superchange.ai | Provider',
+        meta: [
+          { name: 'description', content: `Dependance on ${currentProvider.value.title}? No stress. Updates from ${currentProvider.value.title} are tracked and classified by Superchange.ai` || `Depending on ${currentProvider.value.title}? Features, breaking changes and hot fixes are all centralized on Superchange.ai.` },
+          { property: 'og:title', content: `Superchange.ai | Never miss an update from ${currentProvider.value.title}` || 'Superchange.ai | Your changelog of changelogs' },
+          { property: 'og:description', content: `Updates from ${currentProvider.value.title} are tracked and classified by Superchange.ai` || `New features, breaking changes and hot fixes are all centralized on Superchange.ai.` }
+          
+        ]
+      };
   } catch (error) {
     console.error('Error fetching provider:', error);
     currentProvider.value = { title: 'Error loading provider', sources: [] };

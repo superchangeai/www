@@ -3,7 +3,7 @@
     <header class="py-6 border-b border-border">
       <div class="container mx-auto px-8 flex justify-between items-center">
             <router-link :to="'/'" class="flex items-center gap-2">
-              <img src="/super.svg" alt="Superchange.ai logo" class="h-6" />
+              <img src="/super.svg" class="h-6" alt="Superchange.ai logo" />
             <span class="font-semibold">superchange.ai</span>
             <Badge variant="outline" class="hidden md:block">beta</Badge>
           </router-link>

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { authStore } from '../stores/auth'
 import { supabase } from '../lib/supabase'
+import { useHead } from '@unhead/vue';
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,6 +18,12 @@ export const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/views/Home.vue'),
+      meta: {
+        title: 'Superchange.ai | Your many changelogs in one source of truth',
+        description: 'One central feed for all the updates from the tech providers you depend on.',
+        ogImage: 'https://superchange.ai/superchange-small.png',
+        ogUrl: 'https://superchange.ai',
+      },
       children: [
         {
           path: '/',
@@ -26,7 +33,13 @@ export const router = createRouter({
         {
           path: '/privacy',
           name: 'privacy-policy',
-          component: () => import('@/views/Privacy.vue')
+          component: () => import('@/views/Privacy.vue'),
+          meta: {
+            title: 'Superchange.ai | Privacy Policy',
+            description: 'Read our privacy policy to understand how we handle your data.',
+            ogImage: 'https://superchange.ai/superchange-small.png',
+            ogUrl: 'https://superchange.ai/privacy',
+          },
         },
       ]
     },
@@ -34,13 +47,23 @@ export const router = createRouter({
       path: '/feed/:type',
       name: 'feed',
       component: () => import('@/views/Feed.vue'),
-      props: true
+      props: true,
+      meta: {
+        title: 'Superchange.ai | Changelog Feed',
+        description: 'Explore the latest changelog updates from various providers.',
+        ogImage: 'https://superchange.ai/superchange-small.png',
+      },
     },
     {
       path: '/providers/:type',
       name: 'providers',
       component: () => import('@/views/Providers.vue'),
-      props: true
+      props: true,
+      meta: {
+        title: 'Superchange.ai | Providers',
+        description: 'Browse all tech providers and their changelog updates.',
+        ogImage: 'https://superchange.ai/superchange-small.png',
+      },
     },
     {
       path: '/providers/:type/:id',
@@ -52,21 +75,34 @@ export const router = createRouter({
       path: '/changes/:id',
       name: 'changes-details',
       component: () => import('@/views/Change.vue'),
-      props: true
+      props: true,
+      meta: {
+        title: 'Superchange.ai | Change recorded and classified with AI',
+        description: 'Find out what this tech provider shipped!',
+        ogImage: 'https://superchange.ai/superchange-small.png'
+      }
     },
     {
       path: '/alerts/',
       name: 'alerts',
       component: () => import('@/views/Alerts.vue'),
       props: true,
-      meta: { requiresAuth: true }
+      meta: {
+        requiresAuth: true,
+        title: 'Superchange.ai | Smart alerts',
+        description: 'Keep up with your providers, never miss a critical change again!',
+        ogImage: 'https://superchange.ai/superchange-small.png',
+        ogUrl: 'https://superchange.ai/alerts',
+      }
     },
     {
       path: '/alerts/new',
       name: 'create an alert',
       component: () => import('@/views/AlertCreate.vue'),
       props: true,
-      meta: { requiresAuth: true }
+      meta: { 
+        requiresAuth: true,
+        title: 'Superchange.ai | Create an alert' }
     },
     {
       path: '/changelogs',
@@ -79,27 +115,40 @@ export const router = createRouter({
       path: '/changelogs/new',
       name: 'create-changelog',
       component: () => import('@/views/ChangelogCreate.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true, title: 'Superchange.ai | Create a custom changelog', }
     },
     {
       path: '/changelogs/:changelogId',
       name: 'changelog-details',
       component: () => import('@/views/Feed.vue'),
       props: true,
-      meta: { requiresAuth: true }
+      meta: { 
+        requiresAuth: true, 
+        title: 'Superchange.ai | A changelog for everything you build on', 
+        description: 'Keep up with your providers, never miss a critical change again!',
+        ogImage: 'https://superchange.ai/superchange-small.png' }
     },
     {
       path: '/changelogs/:changelogId/:type',
       name: 'changelog-details-type',
       component: () => import('@/views/Feed.vue'),
       props: true,
-      meta: { requiresAuth: true }
+      meta: { 
+        requiresAuth: true, 
+        title: 'Superchange.ai | A changelog for everything you build on', 
+        description: 'Keep up with your providers, never miss a critical change again!',
+        ogImage: 'https://superchange.ai/superchange-small.png' }
     },
     {
       path: '/changelog/:changelogId',
       name: 'public-changelog',
       component: () => import('@/views/Feed.vue'),
-      props: true
+      props: true,
+      meta: { 
+        title: 'Superchange.ai | A changelog for everything you build on', 
+        description: 'Keep up with your providers, never miss a critical change again!',
+        ogImage: 'https://superchange.ai/superchange-small.png'
+      }
     },
     {
       path: '/changelog/:changelogId/:type',
@@ -123,7 +172,7 @@ export const router = createRouter({
     {
       path: '/settings',
       component: () => import('@/views/Settings.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, title: 'Superchange.ai | Settings'},
       children: [
         {
           path: '/settings',
@@ -164,12 +213,24 @@ export const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/Login.vue')
+      component: () => import('@/views/Login.vue'),
+      meta: {
+        title: 'Superchange.ai | Login',
+        description: 'Log in to access your personalized changelog feed.',
+        ogImage: 'https://superchange.ai/superchange-small.png',
+        ogUrl: 'https://superchange.ai/login',
+      },
     },
     {
       path: '/signup',
       name: 'signup',
-      component: () => import('@/views/SignUp.vue')
+      component: () => import('@/views/SignUp.vue'),
+      meta: {
+        title: 'Superchange.ai | Signup',
+        description: 'Get started with Superchange: build your own changelogs and create custom alerts.',
+        ogImage: 'https://superchange.ai/superchange-small.png',
+        ogUrl: 'https://superchange.ai/signup',
+      },
     },
     {
       path: '/auth/callback',
@@ -179,13 +240,24 @@ export const router = createRouter({
     {
       path: '/blog',
       name: 'BlogIndex',
-      component: () => import('@/views/BlogIndex.vue')
+      component: () => import('@/views/BlogIndex.vue'),
+      meta: {
+        title: 'Superchange.ai | Blog',
+        description: 'Read the latest blog posts from Superchange.ai.',
+        ogImage: 'https://superchange.ai/superchange-small.png',
+      },
     },
     {
       path: '/blog/:slug',
       name: 'BlogPost',
       component: () => import('@/views/BlogPost.vue'),
       props: true,
+      meta: {
+        // Dynamic title and description will be set in navigation guard or component
+        title: 'Superchange.ai | Blog',
+        description: 'Read the latest news and research published on Superchange.ai.',
+        ogImage: 'https://superchange.ai/superchange-small.png',
+      },
     },
   ],
   scrollBehavior() {
@@ -229,7 +301,15 @@ router.beforeEach(async (to, _, next) => {
 
 // Dynamically update document.title after each route change
 router.afterEach((to) => {
-  // Use meta.title if set, otherwise fallback to a default
-  const defaultTitle = 'Superchange.ai | Your many changelogs in one source of truth';
-  document.title = to.meta?.title ? String(to.meta.title) : defaultTitle;
+  useHead({
+    title: to.meta.title || 'Superchange.ai | Your many changelogs in one source of truth',
+    meta: [
+      { name: 'description', content: String(to.meta.description || 'One central feed for all the updates from the tech providers you depend on.') },
+      { property: 'og:title', content: String(to.meta.title || 'Superchange.ai - Your changelog of all changelogs') },
+      { property: 'og:description', content: String(to.meta.description || 'One central feed for all the updates from the tech providers you depend on.') },
+      { property: 'og:image', content: String(to.meta.ogImage || 'https://superchange.ai/superchange-small.png') },
+      { property: 'og:url', content: String(to.meta.ogUrl || `https://superchange.ai${to.fullPath}`) },
+      { name: 'twitter:image', content: String(to.meta.ogImage || 'https://superchange.ai/superchange-small.png') },
+    ],
+  });
 });

@@ -1,7 +1,7 @@
 ---
 title: "Fastest-moving APIs in tech: understanding LLM lifecycles"
 description: "A deep dive into the fast-paced lifecycle of AI models by OpenAI, Google, Anthropic, and Amazon. Learn why managing LLMs today is like running cloud infrastructure."
-tags: [AI lifecycle management, LLM, OpenAI, Anthropic, Google, Amazon]
+tags: [Lifecycle management, LLM, OpenAI, Anthropic, Google, Amazon]
 date: "2025-04-21"
 author: "Superchange.ai"
 ---

@@ -35,17 +35,17 @@
           <p class="section-description">API specs, AI models lifecycle, devtools release notes – important updates are scattered everywhere. <br> Critical changes often get buried in documentation, and must-do migrations go unnoticed until it's too late.</p>
           <div class="features-grid">
             <div class="feature-card flex flex-col items-center text-center">
-              <img src="/central.png" width="60" class="mb-4">
+              <img src="/central.png" width="60" class="mb-4" alt="Central feed">
               <h3 class="feature-title">Centralized updates</h3>
               <p class="text-muted-foreground">Superchange.ai aggregates changelogs from countless providers into a single feed, refreshed daily.</p>
             </div>
             <div class="feature-card flex flex-col items-center text-center">
-              <img src="/ai.png" width="60" class="mb-4">
+              <img src="/ai.png" width="60" class="mb-4" alt="AI classification">
               <h3 class="feature-title">Automatic classification</h3>
               <p class="text-muted-foreground">Your central changelog is using AI to tag each update (e.g security patch, breaking change, minor fix, etc.) and provide a concise summary for quick scanning.</p>
             </div>
             <div class="feature-card flex flex-col items-center text-center">
-              <img src="/transparency.png" width="60" class="mb-4">
+              <img src="/transparency.png" width="60" class="mb-4" alt="Detailed source">
               <h3 class="feature-title">Full transparency</h3>
               <p class="text-muted-foreground">Every entry links back to the official source. You can always get details in the original notes or docs.</p>
             </div>
@@ -67,17 +67,17 @@
           
           <div class="features-grid">
             <div class="feature-card flex flex-col items-center text-center">
-              <img src="/bot.png" width="65" class="mb-4">
+              <img src="/bot.png" width="65" class="mb-4" alt="Your providers">
               <h3 class="feature-title flex items-center gap-2"><Badge variant="outline">1</Badge> Your providers</h3>
               <p class="feature-description">Select the services, APIs, libraries, or platforms you care about. We curate what we use and love – you too can <br>contribute with providers you need.</p>
             </div>
             <div class="feature-card flex flex-col items-center text-center">
-              <img src="/alert.png" width="60" class="mb-4">
+              <img src="/alert.png" width="60" class="mb-4" alt="Your alerts">
               <h3 class="feature-title flex items-center gap-2"><Badge variant="outline">2</Badge> Your priorities</h3>
               <p class="feature-description">Choose the types of updates you want to know about – security fixes, breaking changes, performance improvements, new features – and skip the rest.</p>
             </div>
             <div class="feature-card flex flex-col items-center text-center">
-              <img src="/schedule.png" width="60" class="mb-4">
+              <img src="/schedule.png" width="60" class="mb-4" alt="Your schedule">
               <h3 class="feature-title flex items-center gap-2"><Badge variant="outline">3</Badge> Your schedule</h3>
               <p class="feature-description">Decide how and when updates get delivered. Get instant notifications in Slack, a daily email digest, a weekly summary, or even route updates to a custom webhook.</p>
             </div>

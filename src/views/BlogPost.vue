@@ -118,6 +118,7 @@ import { marked } from 'marked';
 import yaml from 'js-yaml';
 import BlogHeader from '../components/BlogHeader.vue';
 import Footer from '../components/Footer.vue';
+import { useHead } from '@unhead/vue';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -139,6 +140,10 @@ const props = defineProps({
 const post = ref(null);
 const error = ref(null);
 const tableOfContents = ref([]);
+const headData = ref({});
+
+// Initialize head in setup context
+useHead(headData);
 
 // Computed property to format the date
 const formattedDate = computed(() => {
@@ -253,10 +258,24 @@ const fetchPost = async (slug) => {
 
       post.value = {
         title: frontmatter.title || 'Untitled Post',
+        description: frontmatter.description || '',
         author: frontmatter.author || null,
         date: parsedDate,
         tags: frontmatter.tags || [], // Extract tags from frontmatter
         content: htmlWithIds, // Use the HTML with IDs already applied
+      };
+      
+      // Update head metadata when post is loaded
+      headData.value = {
+        title: `Superchange.ai | ${post.value.title}` || 'Superchange.ai | Blog Post',
+        meta: [
+          { name: 'description', content: post.value.description || 'Read this blog post on Superchange.ai.' },
+          { property: 'og:title', content: `Superchange.ai | ${post.value.title}` || 'Blog Post' },
+          { property: 'og:description', content: post.value.description || 'Read this blog post on Superchange.ai.' },
+          { property: 'og:type', content: 'article' },
+          { property: 'article:published_time', content: post.value.date?.toISOString() || '' },
+          { property: 'article:tag', content: post.value.tags?.join(', ') || '' }
+        ]
       };
       
     } else {
