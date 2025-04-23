@@ -1,10 +1,10 @@
 <template>
     <section class="relative bg-gradient-to-br from-[#0d0d0e] via-[#151b26] to-[#1a2540] bg-blend-overlay min-h-[450px] flex flex-col justify-center" ref="heroSection">
         <div class="container mx-auto px-8 flex gap-2 items-center justify-between">
-        <div class="w-full text-center md:w-[75%] md:text-left">
-                <h1 class="text-4xl md:text-6xl font-semibold mb-6 leading-tight" style="color:#d4d4d4;">The changelog of changelogs.</h1>
-                <p class="py-2 text-center md:text-left text-md text-muted-foreground max-w-3xl mb-8">Superchange is your source of truth for everything your tech providers ship. <span class="hidden md:block">Never miss a breaking change again!</span></p>
-                <div class="flex gap-4 mt-4 items-center justify-center md:justify-start">
+        <div class="w-full text-center lg:w-[75%] lg:text-left">
+                <h1 class="text-5xl md:text-6xl font-semibold mb-6 leading-tight" style="color:#d4d4d4;">The changelog of changelogs.</h1>
+                <p class="py-2 text-center md:text-center lg:text-left text-md text-muted-foreground max-w-3xl mb-8">Superchange is your source of truth for everything your tech providers ship. <span class="hidden lg:block">Never miss a breaking change again!</span></p>
+                <div class="flex gap-4 mt-4 items-center justify-center lg:justify-start">
                   <router-link :to="'/feed/'">
                     <Button size="xxl" aria-label="Browse the changes">
                       Browse the changes
@@ -17,7 +17,7 @@
                   </router-link> -->
                 </div>
         </div>
-        <img src="/superchange.webp" alt="Superchange.ai homepage" class="hidden md:block w-[35%]" />
+        <img src="/superchange.webp" alt="Superchange.ai homepage" class="hidden md:hidden lg:block" />
         </div>
         <div class="hidden md:block absolute top-1/2 right-[-16%] transform translate-y-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(0,136,255,0.3),transparent_70%)] z-0 pointer-events-none blur-[60px]"></div>
     </section>
