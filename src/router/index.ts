@@ -259,6 +259,17 @@ export const router = createRouter({
         ogImage: 'https://superchange.ai/superchange-small.png',
       },
     },
+    {
+      path: '/:pathMatch(.*)*', // Catch-all route for 404
+      name: 'not-found',
+      component: () => import('@/views/NotFound.vue'),
+      meta: {
+        title: 'Superchange.ai | Page Not Found',
+        description: 'The page you are looking for does not exist.',
+        ogImage: 'https://superchange.ai/superchange-small.png',
+        ogUrl: 'https://superchange.ai/404',
+      },
+    },
   ],
   scrollBehavior() {
     // Always scroll to top when navigating to a new route

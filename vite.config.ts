@@ -12,7 +12,18 @@ export default defineConfig({
       plugins: [tailwind(), autoprefixer()],
     },
   },
-  plugins: [vue(),Sitemap()],
+  plugins: [vue(),Sitemap(
+    {
+      hostname: 'https://www.superchange.ai',
+      dynamicRoutes: ['/', '/blog', '/privacy', '/feed', '/providers'],
+      exclude: ['/signup', '/login', '/alerts'],
+      changefreq: 'daily',
+      priority: 1.0,
+      robots: [
+        { userAgent: '*', allow: '/' },
+        { userAgent: '*', disallow: ['/signup', '/login'] }, 
+      ],
+    })],
   assetsInclude: ['**/*.md'],
   resolve: {
     alias: {

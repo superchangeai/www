@@ -127,24 +127,31 @@ onBeforeUnmount(() => {
 const noSidebarPrefixes = ['/login', '/signup', '/privacy', '/blog']
 
 // Helper function to determine if the sidebar should be hidden
-const shouldHideSidebar = (path: string): boolean => {
+const shouldHideSidebar = (path: string, routeName: string | symbol | null | undefined): boolean => {
   // Hide if the path is exactly '/'
   if (path === '/') {
     return true;
   }
   // Hide if the path starts with any of the defined prefixes
-  return noSidebarPrefixes.some(prefix => path.startsWith(prefix));
+  if (noSidebarPrefixes.some(prefix => path.startsWith(prefix))) {
+    return true;
+  }
+  // Hide if the route is the 404 page
+  if (routeName === 'not-found') {
+    return true;
+  }
+  return false;
 };
 
 // Watch for route changes
 router.afterEach((to) => {
   // Use the helper function to decide whether to show the sidebar
-  showSidebar.value = !shouldHideSidebar(to.path)
+  showSidebar.value = !shouldHideSidebar(to.path, to.name)
 })
 
 // Initialize based on current route
 // Use the helper function for the initial check as well
-showSidebar.value = !shouldHideSidebar(router.currentRoute.value.path)
+showSidebar.value = !shouldHideSidebar(router.currentRoute.value.path, router.currentRoute.value.name);
 
 // Define logout method
 const logout = async () => {
