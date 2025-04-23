@@ -1,8 +1,8 @@
 <template>
     <div class="container">
         <div class="flex flex-col items-center gap-4 md:flex-row md:justify-between md:items-center">
-            <div class="flex gap-2 items-center">
-                <img src="/super.svg" width="40" /> <span class="logo-text">superchange.ai</span>
+            <div class="">
+                <router-link to="/" class="flex gap-2 items-center"><img src="/super.svg" width="40" /> <span class="logo-text">superchange.ai</span></router-link>
             </div>
             <div class="footer-links hidden md:flex gap-3 md:flex-row md:justify-between md:items-center">
                 <Button variant="ghost" size="sm" @click="toggleTheme">
@@ -17,7 +17,7 @@
                 <!-- <router-link to="/terms" class="footer-link">Terms</router-link> -->
             </div>
         </div>
-        <div class="copyright">
+        <div class="copyright pb-10">
             &copy; 2025 Superchange.ai. All rights reserved.
         </div>
     </div>

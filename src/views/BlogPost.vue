@@ -325,6 +325,7 @@ watch(() => props.slug, (newSlug) => {
   border: 1px solid hsl(var(--border));
   padding: 8px 12px;
   text-align: left;
+  font-size: 0.8em;
 }
 
 :deep(th) {
@@ -333,9 +334,6 @@ watch(() => props.slug, (newSlug) => {
   font-weight: bold;
 }
 
-:deep(tr:nth-child(even)) {
-  background-color: hsl(var(--secondary));
-}
 /* --- End Table Styles --- */
 
 /* --- List Styles --- */
