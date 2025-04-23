@@ -235,7 +235,7 @@
     .section-heading {
       font-size: 2.25rem;
       margin-bottom: 1.5rem;
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .section-description {
@@ -272,7 +272,7 @@
     .cta-section h2 {
       font-size: 2.5rem;
       margin-bottom: 1.5rem;
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .cta-section p {
