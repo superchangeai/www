@@ -25,7 +25,7 @@
                             <path :d="siGithub.path" /></svg>
                         </a>
             <router-link :to="'/feed/'">
-              <Button size="lg">
+              <Button size="lg" aria-label="Browse the changes">
                 Browse the changes
               </Button>
             </router-link>
@@ -33,11 +33,11 @@
           
           <!-- Mobile Navigation -->
           <div class="lg:hidden flex items-center gap-4">
-            <Button @click="isMobileMenuOpen = true" variant="ghost" size="icon">
+            <Button @click="isMobileMenuOpen = true" variant="ghost" size="icon" aria-label="Open menu">
               <Menu class="h-6 w-6" />
             </Button>
             <router-link :to="'/feed/'">
-              <Button size="lg">
+              <Button size="lg" aria-label="Browse">
                 Browse
               </Button>
             </router-link>

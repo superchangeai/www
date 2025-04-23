@@ -6,7 +6,7 @@
                 <p class="py-2 text-center md:text-left text-md text-muted-foreground max-w-3xl mb-8">Superchange is your source of truth for everything your tech providers ship. <span class="hidden md:block">Never miss a breaking change again!</span></p>
                 <div class="flex gap-4 mt-4 items-center justify-center md:justify-start">
                   <router-link :to="'/feed/'">
-                    <Button size="xxl">
+                    <Button size="xxl" aria-label="Browse the changes">
                       Browse the changes
                     </Button>
                   </router-link>
@@ -17,7 +17,7 @@
                   </router-link> -->
                 </div>
         </div>
-        <img src="/superchange.png" alt="Superchange.ai homepage" class="hidden md:block w-[35%]" />
+        <img src="/superchange.webp" alt="Superchange.ai homepage" class="hidden md:block w-[35%]" />
         </div>
         <div class="hidden md:block absolute top-1/2 right-[-16%] transform translate-y-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(0,136,255,0.3),transparent_70%)] z-0 pointer-events-none blur-[60px]"></div>
     </section>
@@ -26,11 +26,11 @@
         <h2 class="section-heading px-3">One single changelog for everything you build on</h2>
 
         <div class="changelog-demo block md:hidden">
-            <img src="/ui-changes-feed.png" alt="Superchange.ai dashboard showing unified changelog" />
+            <img src="/ui-changes-feed.webp" alt="Superchange.ai dashboard showing unified changelog" />
         </div>
         <div class="container">
           <div class="changelog-demo hidden md:block">
-            <img src="/ui-changes-feed.png" alt="Superchange.ai dashboard showing unified changelog" />
+            <img src="/ui-changes-feed.webp" alt="Superchange.ai dashboard showing unified changelog" />
           </div>
           <p class="section-description">API specs, AI models lifecycle, devtools release notes – important updates are scattered everywhere. <br> Critical changes often get buried in documentation, and must-do migrations go unnoticed until it's too late.</p>
           <div class="features-grid">
@@ -56,13 +56,13 @@
       <section id="alerts" class="feature-section">
         <h2 class="section-heading px-3">Updates that actually update you</h2>
         <div class="alert-demo block md:hidden">
-          <img src="/ui-alert-action.png" alt="Creating a custom alert in Superchange.ai" />
+          <img src="/ui-alert-action.webp" alt="Creating a custom alert in Superchange.ai" />
         </div>
         <div class="container">
           <p class="section-description hidden md:block">There's a fine line between missing crucial updates and getting drowned in noise. <br> Superchange.ai lets you control that balance with smart, filtered alerts.</p>
           
           <div class="alert-demo hidden md:block">
-            <img src="/ui-alert-action.png" alt="Creating a custom alert in Superchange.ai" />
+            <img src="/ui-alert-action.webp" alt="Creating a custom alert in Superchange.ai" />
           </div>
           
           <div class="features-grid">
@@ -88,13 +88,13 @@
       <section id="custom" class="feature-section">
         <h2 class="section-heading px-3">The ultimate source of truth based on your exact needs.</h2>
         <div class="alert-demo block md:hidden">
-          <img src="/ui-changelog-create.png" alt="Creating a custom changelog in Superchange.ai" />
+          <img src="/ui-changelog-create.webp" alt="Creating a custom changelog in Superchange.ai" />
         </div>
         <div class="container">
           <p class="section-description hidden md:block">Watch the providers you really care about. <br> Superchange.ai lets you create and share dedicated changelogs for your projects.</p>
           
           <div class="alert-demo hidden md:block">
-            <img src="/ui-changelog-create.png" alt="Creating a custom changelog in Superchange.ai" />
+            <img src="/ui-changelog-create.webp" alt="Creating a custom changelog in Superchange.ai" />
           </div>
           
           <p class="section-description">Sounds good? Hear what our users say:</p>
@@ -173,7 +173,7 @@
           <p class="text-md">Superchange.ai was vibe coded by a technical product manager who spent a decade building APIs and developer platforms — and constantly struggled to keep up with others' changelogs. It's built to be transparent and reliable from day one.</p>
           <div class="buttons z-10 relative">
             <router-link to="/feed">
-            <Button size="xxl">Join the Public Beta</Button>
+            <Button size="xxl" aria-label="Join Superchange beta">Join the Public Beta</Button>
             </router-link>
           </div>
         </div>
