@@ -3,7 +3,7 @@
         <Input
         v-model="providers"
         class="basis-3/4 w-full min-h-[30px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed"
-        placeholder="Which API provider(s) would you like to see on Superchange?"
+        placeholder="Which provider(s) would you like to see on Superchange?"
         />
         <Button variant="secondary" class="basis-1/4 w-full m-0 py-2 font-normal">
             <MessageSquare class="h-4 w-4" />
