@@ -19,6 +19,7 @@ import {
   ShieldPlus,
   ServerCog,
   Zap,
+  Hammer,
   Database
 } from 'lucide-vue-next'
 
@@ -46,6 +47,7 @@ const Providers = ref([
   { type: 'crm', label: 'CRM', icon: Contact },
   { type: 'databases', label: 'Databases', icon: Database },
   { type: 'email', label: 'Email', icon: Mail },
+  { type: 'tools', label: 'Frameworks & Tools', icon: Hammer },
   { type: 'payment', label: 'Payment', icon: CreditCard },
 //   { type: 'more', label: 'More', icon: Ellipsis },
 ])

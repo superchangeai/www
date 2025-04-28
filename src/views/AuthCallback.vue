@@ -9,7 +9,7 @@
   <div class="flex min-h-screen items-center justify-center bg-background p-4">
     <Card class="w-full max-w-md">
       <CardHeader>
-        <CardTitle class="text-2xl font-bold text-center">Authenticating...</CardTitle>
+        <CardTitle class="text-2xl text-center">Authenticating...</CardTitle>
         <CardDescription class="text-center">
           Please wait while we complete your authentication
         </CardDescription>

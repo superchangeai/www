@@ -89,7 +89,7 @@ const categories = computed(() => {
       uniqueCategories.add(provider.category.name)
     }
   })
-  return Array.from(uniqueCategories)
+  return Array.from(uniqueCategories).sort((a, b) => a.localeCompare(b))
 })
 
 // Filter providers based on selected category
@@ -174,7 +174,7 @@ const onSubmit = form.handleSubmit(async (values) => {
       v-slot="{ field, errorMessage }"
       >
       <FormItem>
-        <Label class="text-md"><h2 class="py-2">Name this changelog *</h2></Label>
+        <Label class="text-md"><h2 class="py-2">1. Name this changelog *</h2></Label>
         <FormControl>
           <Input 
           :placeholder="('e.g. '+authStore.session?.user?.email?.split('@')[0] + '\'s changelog')|| 'My changelog'"
@@ -187,7 +187,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     </FormField>
     
     <div class="space-y-2">
-      <Label class="text-md"><h2 class="py-2">Pick the providers you care about</h2></Label>
+      <Label class="text-md"><h2 class="py-2">2. Pick the providers you care about</h2></Label>
       
       <!-- Tabs of categories to filter down the divs shown below -->
       <Tabs v-model="activeTab" class="w-full mb-4 overflow-auto" v-if="!isLoading">
@@ -235,17 +235,20 @@ const onSubmit = form.handleSubmit(async (values) => {
       </div>
     </div>
   </div>
-  <div class="flex justify-start space-x-4 mt-2 pt-2 text-xs">
-    <a href="#" @click.prevent="selectAllInCurrentTab" class="hover:underline">Select all</a>
-    <a href="#" @click.prevent="clearSelectionInCurrentTab" class="hover:underline">Clear selection</a>
+  <div class="flex justify-between items-center gap-2">
+    <div class="flex justify-start space-x-4 mt-2 pt-2 text-xs">
+      <a href="#" @click.prevent="selectAllInCurrentTab" class="hover:underline">Select all</a>
+      <a href="#" @click.prevent="clearSelectionInCurrentTab" class="hover:underline">Clear selection</a>
+    </div>
+    <Router-link to="/providers/all#more" class="text-xs text-muted-foreground space-x-4 mt-2 pt-2 ">Can't find the provider you need? Make a request here.</Router-link>
   </div>
   <FormMessage v-if="form.errors['provider_ids']">{{ form.errors['provider_ids'] }}</FormMessage>            </div>
   
   <div class="flex justify-between items-center gap-2">
-    <Router-link to="/providers/all#more" class="text-xs text-muted-foreground">Can't find the provider you need? Make a request here.</Router-link>
-    <Button type="submit" :disabled="isLoading">
+    <Button type="submit" :disabled="isLoading" variant="">
       <Loader2 v-if="isCreating" class="mr-2 h-4 w-4 animate-spin" />
-      Create Changelog
+      <FileText v-else class="mr-2 h-4 w-4" />
+      Create changelog
     </Button>
   </div>
 </form>

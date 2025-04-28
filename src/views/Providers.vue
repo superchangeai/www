@@ -34,6 +34,7 @@ import {
   Mail,
   Library,
   Zap,
+  Hammer,
   Database
 } from 'lucide-vue-next'
 import Header from '@/components/Header.vue'
@@ -47,34 +48,47 @@ const route = useRoute()
 const providerType = computed(() => route.params.type || 'all')
 const providerTypeMap = {
   all: {
+    id: null,
     title: 'All providers',
     icon: Zap
   },
   ai: {
+    id: 1,
     title: 'AI providers',
     icon: Bot
   },
   cloud: {
+    id: 2,
     title: 'Cloud service providers',
     icon: Cloud
   },
   crm: {
+    id: 3, 
     title: 'CRM providers',
     icon: Contact
   },
   databases: {
+    id: 8,
     title: 'Database providers',
     icon: Database
   },
   email: {
+    id: 4,
     title: 'Email providers',
     icon: Mail
   },
+  tools: {
+    id: 6,
+    title: 'Frameworks & Tools',
+    icon: Hammer
+  },
   payment: {
+    id: 5, 
     title: 'Payment providers',
     icon: CreditCard
   },
   more: {
+    id: 0,
     title: 'Other providers',
     icon: Library
   }
@@ -83,8 +97,9 @@ const providerTypeMap = {
 const fetchProviders = async () => {
   try {
     isLoading.value = true
-    const category = providerType.value === 'all' ? undefined : providerType.value
-    const data = await providersService.getAll({ category })
+    // Get the category ID from the providerTypeMap based on the route parameter
+    const categoryId = providerType.value === 'all' ? undefined : providerTypeMap[providerType.value]?.id
+    const data = await providersService.getAll({ category: categoryId })
     providers.value = data.map(provider => ({
       id: provider.id.toString(),
       title: provider.name,

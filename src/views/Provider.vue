@@ -133,6 +133,7 @@ const handleNotify = () => {
             </div>
           </div>
         </div>
+        <!-- TODO: list all recent changes from this provider, all sources combined -->
       </div>
       <div v-else class="py-2 text-muted-foreground">
         No sources available for this provider yet.

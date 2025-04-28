@@ -1,88 +1,64 @@
 <script setup>
+// functions
 import { ref, computed, onMounted, watch, reactive, onBeforeUnmount } from 'vue'
 import { supabase } from '../lib/supabase';
-import Header from '@/components/Header.vue'
-import { Skeleton } from '@/components/ui/skeleton'
-import { useAuthDrawer } from '@/composables/useAuthDrawer'
-import AuthDrawer from '@/components/AuthDrawer.vue'
 import { changesService } from '@/api/services/changes.service'
 import { changelogsService } from '@/api/services/changelogs.service'
-import { Button } from '@/components/ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Badge } from '@/components/ui/badge'
-import { 
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
-import MarkdownIt from 'markdown-it'
-import {
-  ArrowDown,
-  Zap,
-  HeartCrack,
-  Shield,
-  BatteryCharging,
-  Package,
-  FileWarning,
-  FileText,
-  Library,
-  ChevronDown,
-  ChevronUp,
-  ThumbsUp,
-  ThumbsDown
-} from 'lucide-vue-next'
 import { authStore } from '../stores/auth'
 import { feedbackService } from '@/api/services/feedback.service';
+import { useAuthDrawer } from '@/composables/useAuthDrawer'
+import MarkdownIt from 'markdown-it'
+import { useRouter } from 'vue-router';
+// components
+import Header from '@/components/Header.vue'
+import { Skeleton } from '@/components/ui/skeleton'
+import AuthDrawer from '@/components/AuthDrawer.vue'
+import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
+import { Tooltip,TooltipContent,TooltipProvider,TooltipTrigger} from '@/components/ui/tooltip'
+import { ArrowDown, Zap, HeartCrack, Shield, BatteryCharging, Package, FileWarning, FileText, Library, ChevronDown, ChevronUp, ThumbsUp, ThumbsDown } from 'lucide-vue-next'
 import { toast } from '@/components/ui/toast'
 
-// check feedback storage
-const getFeedbackKey = (changeId) => `feedback_${changeId}`
-const feedbackGiven = reactive({});
-
-// Prop declaration from router
+// Props declaration from router
 const props = defineProps({
-  type: {
+  type: { // allows to filter the feed by type of changes
     type: String,
     default: 'all'
-  },
+  }, // tells which changelog should be loaded in the feed
   changelogId: {
     type: String,
     default: null
   }
 })
 
-// Local storage key for persisting selected changelog
+// Define router
+const router = useRouter();
+
+// Define local storage key for persisting one changelog selected by user
 const SELECTED_CHANGELOG_KEY = 'superchange_selected_changelog'
 
 // Get saved changelog from localStorage or use default
 const getSavedChangelogId = () => {
-  // If props.changelogId is provided, it takes precedence
+  // 1. If props.changelogId is provided, it takes precedence, as this one comes from /changelogs or /changelog
   if (props.changelogId) return props.changelogId
   
-  // Check if we're on a public changelog route
+  // 2. Check if we're on a public changelog route
   const isPublicChangelogRoute = window.location.pathname.startsWith('/changelog/');
-  
   // Don't use localStorage for public changelog routes
   if (isPublicChangelogRoute) return 'default';
   
-  // Otherwise try to get from localStorage
+  // 3. Otherwise get from localStorage, return value or 'default' if this key isn't yet set
   const saved = localStorage.getItem(SELECTED_CHANGELOG_KEY)
   return saved || 'default'
 }
 
-// Props
-const selectedChangelogId = ref(getSavedChangelogId())
-const feedType = computed(() => props.type || 'all')
+// Define what is the changelog we will be using and showing
+const selectedChangelogId = ref(getSavedChangelogId()) // 'default' if nothing, otherwise string value in user local data
+
+// Define what is the type of changes to fetch and display
+const feedType = computed(() => props.type || 'all') // default to 'all' or value in router
 
 const feedTypeMap = {
   all: {
@@ -129,22 +105,6 @@ const currentFeedConfig = computed(() => ({
 
 // create a drawer
 const { isOpen, options, open } = useAuthDrawer()
-const handleLoadMore = async () => {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    open({
-      title: 'Sign in to view more',
-      description: 'Members can search history and create alerts',
-      onSuccess: () => {
-        limit.value += 3; // Increase limit by 3 months
-        fetchChanges();
-      }
-    });
-  } else {
-    limit.value += 3; // Increase limit by 3 months
-    fetchChanges();
-  }
-}
 
 // API updates state
 const updates = ref([])
@@ -174,8 +134,11 @@ const fetchChangelogs = async () => {
     // Clean up invalid changelog ID from localStorage
     const savedChangelogId = localStorage.getItem(SELECTED_CHANGELOG_KEY)
     if (savedChangelogId && savedChangelogId !== 'default') {
+      // Check if the saved changelog still exists
+      console.log('Checking changelog id', savedChangelogId)
       const changelogExists = logs.some(log => log.changelog_id === savedChangelogId)
       if (!changelogExists) {
+        console.warn('Invalid changelog ID in localStorage, cleaning up');
         localStorage.removeItem(SELECTED_CHANGELOG_KEY)
         selectedChangelogId.value = 'default'
       }
@@ -188,52 +151,7 @@ const fetchChangelogs = async () => {
   }
 }
 
-// Creation of changelog dropdown menu
-const changelogSelectItems = computed(() => {
-  // Check if we're on a public changelog route
-  const isPublicChangelogRoute = window.location.pathname.startsWith('/changelog/');
-  
-  // For public routes, fetch the public changelog info
-  if (isPublicChangelogRoute && props.changelogId) {
-    // Return minimal items while loading
-    if (isLoading.value) {
-      return {
-        items: [{ value: 'default', label: 'Superchange (default)' }],
-        buttonText: 'Loading...'
-      };
-    }
-    
-    // Return public changelog info
-    return {
-      items: [
-        { value: 'default', label: 'Superchange (default)' },
-        { value: props.changelogId, label: `${props.changelogId} (shared)` }
-      ],
-      buttonText: 'Create a changelog'
-    };
-  }
-  
-  // For authenticated users, show their changelogs
-  if (!userChangelogs.value || userChangelogs.value.length === 0) {
-    return {
-      items: [{ value: 'default', label: 'Superchange (default)' }],
-      buttonText: 'Customize this log!'
-    };
-  }
-  
-  return {
-    items: [
-      { value: 'default', label: 'Superchange (default)' },
-      ...userChangelogs.value.map(log => ({
-        value: log.changelog_id,
-        label: log.name
-      }))
-    ],
-    buttonText: 'Add a changelog'
-  };
-});
-
-// Fetch changes from API
+// Fetch changes from API according to type and changelog requested
 const fetchChanges = async () => {
   isLoading.value = true
   error.value = null
@@ -289,6 +207,11 @@ const fetchChanges = async () => {
   }
 }
 
+// ***
+// DISPLAY MANAGEMENT
+// ***
+
+// Organize all found updates in months before display
 const groupedUpdates = computed(() => {
   const groups = {};
   
@@ -308,14 +231,37 @@ const groupedUpdates = computed(() => {
   );
 });
 
-// Markdown parser for beautiful changes
+// Members can load more updates in the feed
+const handleLoadMore = async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    open({
+      title: 'Sign in to view more',
+      description: 'Members can search history and create alerts',
+      onSuccess: () => {
+        limit.value += 3; // Increase limit by 3 months
+        fetchChanges();
+      }
+    });
+  } else {
+    limit.value += 3; // Increase limit by 3 months
+    fetchChanges();
+  }
+}
+
+// Handle item click
+const handleItemClick = (item) => {
+    expandedRowId.value = expandedRowId.value === item.id ? null : item.id
+}
+
+// Markdown parser for cleaner changes data
 const md = new MarkdownIt({
   html: false,
   breaks: true,
   linkify: true
 })
 
-// Function to strip markdown formatting
+// Strip markdown formatting
 const stripMarkdown = (content) => {
   if (!content) return '';
   return content
@@ -326,7 +272,7 @@ const stripMarkdown = (content) => {
     .replace(/\[(.*?)\]\(.*?\)/g, '$1'); // links
 }
 
-// Function to render markdown content
+// Render markdown content
 const renderMarkdown = (content) => {
   if (!content) return '';
   return md.render(content);
@@ -339,13 +285,57 @@ const checkMobile = () => {
   isMobile.value = window.innerWidth < 768
 }
 
+// ***
+// FEEDBACK MANAGEMENT
+// ***
+
+// Creates a local storage key for storing feedback
+const getFeedbackKey = (changeId) => `feedback_${changeId}`
+
+// Local state on feedbacks
+const feedbackGiven = reactive({});
+
+// computed property to check feedback status
+const hasGivenFeedback = (changeId) => {
+    return feedbackGiven[getFeedbackKey(changeId)] !== undefined
+}
+
+// Handle feedback on summaries
+const provideFeedback = async (itemId, value) => {
+  try {
+    // Store immediately in client storage
+    const storageKey = getFeedbackKey(itemId)
+    localStorage.setItem(storageKey, value.toString())
+    feedbackGiven[storageKey] = value.toString()
+    
+    // also send to server
+    await feedbackService.createChangeFeedback({
+      changeId: itemId,
+      feedback: value,
+      userId: authStore.session?.user?.id
+    })
+    // Show toast
+    toast({
+            title: 'Feedback received.',
+            description: 'Thank you so much for your contribution!',
+            duration: 3000
+        })
+  } catch (err) {
+    console.error('Failed to submit feedback:', err)
+  }
+}
+
+// ***
+// HOOKS
+// ***
+
 // Component mount
 onMounted(() => {
-  // Load changelogs owned by user
+  // Load changelogs, either owned by user or default Superchange
   fetchChangelogs()
   // Load changes
   fetchChanges()
-  // Load existing feedback from storage
+  // Load all existing feedback from storage
   Object.keys(localStorage).forEach(key => {
     if (key.startsWith('feedback_')) {
       feedbackGiven[key] = localStorage.getItem(key)
@@ -360,7 +350,56 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', checkMobile)
 })
 
-// refresh data when route changes
+// ***
+// CHANGELOG MANAGEMENT
+// ***
+
+// Creation of changelog dropdown menu
+const changelogSelectItems = computed(() => {
+  // Check if we're on a public changelog route
+  const isPublicChangelogRoute = window.location.pathname.startsWith('/changelog/');
+  
+  // For public routes, fetch the public changelog info
+  if (isPublicChangelogRoute && props.changelogId) {
+    // Return minimal items while loading
+    if (isLoading.value) {
+      return {
+        items: [{ value: 'default', label: 'Superchange' }],
+        buttonText: 'Loading...'
+      };
+    }
+    
+    // Return public changelog info
+    return {
+      items: [
+        { value: 'default', label: 'Superchange' },
+        { value: props.changelogId, label: `${props.changelogId} (shared)` }
+      ],
+      buttonText: 'Create a changelog'
+    };
+  }
+  
+  // For authenticated users, show their changelogs
+  if (!userChangelogs.value || userChangelogs.value.length === 0) {
+    return {
+      items: [{ value: 'default', label: 'Superchange' }],
+      buttonText: 'Customize this log!'
+    };
+  }
+  
+  return {
+    items: [
+      ...userChangelogs.value.map(log => ({
+        value: log.changelog_id,
+        label: log.name
+      })),
+      { value: 'default', label: 'Superchange' }
+    ],
+    buttonText: 'Add a changelog'
+  };
+});
+
+// refresh data when props type change, so that we filter the updates
 watch(feedType, () => {
   fetchChanges()
 })
@@ -377,21 +416,23 @@ watch(
   }
 )
 
-// Watch for route changes to update selectedChangelogId
-watch(
-  () => props.changelogId,
-  (newChangelogId) => {
-    if (newChangelogId) {
-      selectedChangelogId.value = newChangelogId
-      // Only update localStorage if user is authenticated
-      if (authStore.session) {
-        localStorage.setItem(SELECTED_CHANGELOG_KEY, newChangelogId)
-      }
-    } else {
-      selectedChangelogId.value = 'default'
-    }
-  }
-)
+// TODO: CHECK THIS IT MIGHT NOT BE FUNCTIONING
+
+// // Watch for route changes to update selectedChangelogId
+// watch(
+//   () => props.changelogId,
+//   (newChangelogId) => {
+//     if (newChangelogId) {
+//       selectedChangelogId.value = newChangelogId
+//       // Only update localStorage if user is authenticated
+//       if (authStore.session) {
+//         localStorage.setItem(SELECTED_CHANGELOG_KEY, newChangelogId)
+//       }
+//     } else {
+//       // selectedChangelogId.value = 'default'
+//     }
+//   }
+// )
 
 // Refresh data when changelog is switching
 watch(selectedChangelogId, () => {
@@ -424,51 +465,14 @@ watch(selectedChangelogId, () => {
       }
     }
   } else {
+    console.log("Switched to Superchange");
     // If user selects 'default', go back to the main feed with current type
-    router.push(`/feed/${feedType.value || 'all'}`);
+    router.push(`/feed/${feedType.value || 'all'}`); // may or may not be executed in case we are already on feed/all
+    fetchChanges(); // in case
   }
   // Fetch changes will be triggered by the route change
 });
 
-
-// Import router
-import { useRouter } from 'vue-router';
-const router = useRouter();
-
-// Handle item click
-const handleItemClick = (item) => {
-    expandedRowId.value = expandedRowId.value === item.id ? null : item.id
-}
-
-// computed property to check feedback status
-const hasGivenFeedback = (changeId) => {
-    return feedbackGiven[getFeedbackKey(changeId)] !== undefined
-}
-
-// Handle feedback on summaries
-const provideFeedback = async (itemId, value) => {
-  try {
-    // Store immediately in client storage
-    const storageKey = getFeedbackKey(itemId)
-    localStorage.setItem(storageKey, value.toString())
-    feedbackGiven[storageKey] = value.toString()
-    
-    // also send to server
-    await feedbackService.createChangeFeedback({
-      changeId: itemId,
-      feedback: value,
-      userId: authStore.session?.user?.id
-    })
-    // Show toast
-    toast({
-            title: 'Feedback received.',
-            description: 'Thank you so much for your contribution!',
-            duration: 3000
-        })
-  } catch (err) {
-    console.error('Failed to submit feedback:', err)
-  }
-}
 </script>
 <template>
 
@@ -490,7 +494,7 @@ const provideFeedback = async (itemId, value) => {
           </SelectTrigger>
           <SelectContent class="border-0">
             <SelectGroup>
-              <SelectLabel>Changelogs</SelectLabel>
+              <!-- TODO: CHECK THIS TEMPLATE, KEY AND VALUE BOTH USE ITEM.VALUE IT'S ODD -->
               <template v-for="item in changelogSelectItems.items" :key="item.value">
                 <SelectItem :value="item.value">
                   {{ item.label }}
