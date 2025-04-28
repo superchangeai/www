@@ -9,7 +9,7 @@ import {
   Bell,
   Cloud,
   Contact,
-  CreditCard,
+  Layers,
   FileText,
   Github,
   HeartCrack,
@@ -48,7 +48,8 @@ const Providers = ref([
   { type: 'databases', label: 'Databases', icon: Database },
   { type: 'email', label: 'Email', icon: Mail },
   { type: 'tools', label: 'Frameworks & Tools', icon: Hammer },
-  { type: 'payment', label: 'Payment', icon: CreditCard },
+  { type: 'workspaces', label: 'Workspaces', icon: Layers },
+
 //   { type: 'more', label: 'More', icon: Ellipsis },
 ])
 

@@ -33,6 +33,7 @@ import {
   CreditCard,
   Mail,
   Library,
+  Layers,
   Zap,
   Hammer,
   Database
@@ -49,7 +50,7 @@ const providerType = computed(() => route.params.type || 'all')
 const providerTypeMap = {
   all: {
     id: null,
-    title: 'All providers',
+    title: 'All providers on Superchange',
     icon: Zap
   },
   ai: {
@@ -86,6 +87,11 @@ const providerTypeMap = {
     id: 5, 
     title: 'Payment providers',
     icon: CreditCard
+  },
+  workspaces: {
+    id: 9,
+    title: 'Workspaces',
+    icon: Layers
   },
   more: {
     id: 0,
