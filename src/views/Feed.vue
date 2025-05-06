@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Tooltip,TooltipContent,TooltipProvider,TooltipTrigger} from '@/components/ui/tooltip'
-import { ArrowDown, Zap, HeartCrack, Shield, BatteryCharging, Package, FileWarning, FileText, Library, ChevronDown, ChevronUp, ThumbsUp, ThumbsDown } from 'lucide-vue-next'
+import { Zap, HeartCrack, Shield, BatteryCharging, Package, FileWarning, FileText, Library, ChevronDown, ChevronUp, ThumbsUp, ThumbsDown } from 'lucide-vue-next'
 import { toast } from '@/components/ui/toast'
 
 // Props declaration from router

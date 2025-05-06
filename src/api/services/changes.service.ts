@@ -17,7 +17,7 @@ export const changesService = {
   /**
    * Get all changes with optional pagination and filtering
    */
-  getAll: async (params?: { limit?: number; classification?: string; changelogId?: string }) => {
+  getAll: async (params?: { limit?: number; classification?: string; changelogId?: string; provider_id?: number }) => {
     const response = await apiClient.get<Change[]>('/changes', { params });
     return response.data;
   },

@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
 import { providersService } from '@/api/services/providers.service';
+import { changesService } from '@/api/services/changes.service';
 import {
   Card,
   CardContent,
@@ -17,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { useAuthDrawer } from '@/composables/useAuthDrawer'
 import AuthDrawer from '@/components/AuthDrawer.vue'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Badge } from '@/components/ui/badge'
 import { authStore } from '@/stores/auth'
 import { useHead } from '@unhead/vue';
 
@@ -26,6 +28,8 @@ const provider = computed(() => route.params.id);
 const currentProvider = ref({ title: '', sources: [] });
 const isLoading = ref(true);
 const headData = ref({});
+const providerChanges = ref([]);
+const isLoadingChanges = ref(false);
 // Initialize head in setup context
 useHead(headData);
 
@@ -62,8 +66,26 @@ onMounted(async () => {
     currentProvider.value = { title: 'Error loading provider', sources: [] };
   } finally {
     isLoading.value = false;
+    // After provider is loaded, fetch its changes
+    fetchProviderChanges();
   }
 });
+
+// Fetch changes for this provider
+const fetchProviderChanges = async () => {
+  try {
+    isLoadingChanges.value = true;
+    const data = await changesService.getAll({
+      provider_id: Number(provider.value),
+      limit: 10 // Get the last 10 changes
+    });
+    providerChanges.value = data;
+  } catch (error) {
+    console.error('Error fetching provider changes:', error);
+  } finally {
+    isLoadingChanges.value = false;
+  }
+};
 
 const { isOpen, options, open } = useAuthDrawer()
 const handleNotify = () => {
@@ -129,17 +151,12 @@ const handleNotify = () => {
               <a :href="sourceItem.source" target="_blank" class="hover:underline text-black dark:text-white">{{ sourceItem.source }}</a>
             </div>
             <div class="text-xs text-muted-foreground whitespace-nowrap shrink-0 text-left">
-              Latest read: {{ new Date(sourceItem.last_snapshot_at).toLocaleString() }}
+              Latest scan: {{ new Date(sourceItem.last_snapshot_at).toLocaleString() }}
             </div>
           </div>
         </div>
-        <!-- TODO: list all recent changes from this provider, all sources combined -->
-      </div>
-      <div v-else class="py-2 text-muted-foreground">
-        No sources available for this provider yet.
-      </div>
 
-      <Card class="provider-card relative overflow-hidden my-10" v-if="!isLoading">
+        <Card class="provider-card relative overflow-hidden my-10" v-if="!isLoading">
         <CardHeader>
           <h3 class="text-lg font-semibold">Never miss critical updates from {{ currentProvider.title }}</h3>
           <p class="text-muted-foreground text-sm">We will let you know when something comes up</p>
@@ -165,6 +182,49 @@ const handleNotify = () => {
           </svg>
         </div>
       </Card>
+
+        <!-- Changes from this provider -->
+        <div class="mt-8 text-left">
+          <h2 class="font-semibold mb-4">Recent changes from {{ currentProvider.title }}:</h2>
+          
+          <!-- Changes loading state -->
+          <div v-if="isLoadingChanges" class="space-y-4">
+            <div v-for="i in 3" :key="i" class="py-4 border-b">
+              <div class="flex flex-col gap-2">
+                <Skeleton class="h-5 w-32" />
+                <Skeleton class="h-4 w-full" />
+                <Skeleton class="h-4 w-3/4" />
+              </div>
+            </div>
+          </div>
+          
+          <!-- Changes content -->
+          <div v-else-if="providerChanges.length > 0" class="space-y-4">
+            <div v-for="change in providerChanges" :key="change.id" class="py-4 border-b">
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2">
+                  <Badge :variant="change.classification === 'breaking' ? 'destructive' : 
+                                  change.classification === 'security' ? 'warning' : 
+                                  change.classification === 'new_feature' ? 'default' : 'outline'">
+                    {{ change.classification.replace('_', ' ') }}
+                  </Badge>
+                  <span class="text-xs text-muted-foreground">{{ new Date(change.timestamp).toLocaleString('en-GB', { day: '2-digit', month: 'long', year: 'numeric'}) }}</span>
+                </div>
+                <p class="text-sm font-medium">{{ change.diff.summary }}</p>
+                <p class="text-xs text-muted-foreground">Source: <a :href="change.source?.url">{{ change.source?.url }}</a></p>
+              </div>
+            </div>
+          </div>
+          <div v-else class="py-4 text-muted-foreground">
+            No recent changes detected for this provider.
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="py-2 text-muted-foreground">
+        No sources available for this provider yet.
+      </div>
+
       <AuthDrawer
           v-model:isOpen="isOpen"
           v-bind="options"
