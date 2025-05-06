@@ -415,25 +415,6 @@ watch(
     fetchChanges()
   }
 )
-
-// TODO: CHECK THIS IT MIGHT NOT BE FUNCTIONING
-
-// // Watch for route changes to update selectedChangelogId
-// watch(
-//   () => props.changelogId,
-//   (newChangelogId) => {
-//     if (newChangelogId) {
-//       selectedChangelogId.value = newChangelogId
-//       // Only update localStorage if user is authenticated
-//       if (authStore.session) {
-//         localStorage.setItem(SELECTED_CHANGELOG_KEY, newChangelogId)
-//       }
-//     } else {
-//       // selectedChangelogId.value = 'default'
-//     }
-//   }
-// )
-
 // Refresh data when changelog is switching
 watch(selectedChangelogId, () => {
   // Check if we're on a public changelog route
@@ -486,7 +467,7 @@ watch(selectedChangelogId, () => {
       <template #changelog>
         <h3 class="text-sm">Changelog:</h3>
         <Select class="shadow-none" v-model="selectedChangelogId">
-          <SelectTrigger class="pl-6 shadow-none">
+          <SelectTrigger class="shadow-none">
             <Skeleton v-if="isLoading" class="h-4 w-20" />
             <div v-else>
               <SelectValue placeholder="default" />
