@@ -28,13 +28,15 @@
                 <div v-for="(changelog, index) in changelogs" :key="index" class="py-2 border-b">
                     <div class="flex items-center">
                         <div class="text-sm flex-1 text-left">
-                            {{ changelog.name }}
-                            <Badge v-if="changelog.is_public" class="ml-2">Public</Badge>
+                            <a :href="`/changelogs/${changelog.changelog_id}`">{{ changelog.name }}</a>
+                            <Badge v-if="changelog.is_public" class="ml-2"><a :href="`/changelogs/${changelog.changelog_id}`">Public</a></Badge>
                             <Badge v-else variant="secondary" class="ml-2">Private</Badge>
                 
                             <span class="text-xs text-muted-foreground ml-2">
-                            {{ changelog.providers?.length || 0 }} {{ (changelog.providers?.length || 0) > 1 ? 'providers' : 'provider' }}
-                            </span>
+                                <a :href="`/changelogs/${changelog.id}/edit`">
+                                {{ changelog.providers?.length || 0 }} {{ (changelog.providers?.length || 0) > 1 ? 'providers' : 'provider' }}
+                                </a>
+                        </span>
                         </div>
                             
                         <div class="text-xs whitespace-nowrap shrink-0 ml-4">
@@ -48,6 +50,9 @@
                                     <div class="flex flex-col">
                                         <router-link :to="`/changelogs/${changelog.changelog_id}`" class="p-2 hover:bg-muted text-sm no-underline text-inherit">
                                             View
+                                        </router-link>
+                                        <router-link :to="`/changelogs/${changelog.id}/edit`" class="p-2 hover:bg-muted text-sm no-underline text-inherit">
+                                            Edit
                                         </router-link>
                                         <button 
                                             @click="openShareDialog(changelog.id, changelog.changelog_id)" 

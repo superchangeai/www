@@ -118,6 +118,12 @@ export const router = createRouter({
       meta: { requiresAuth: true, title: 'Superchange.ai | Create a custom changelog', }
     },
     {
+      path: '/changelogs/:id/edit',
+      name: 'edit-changelog',
+      component: () => import('@/views/ChangelogEdit.vue'),
+      meta: { requiresAuth: true, title: 'Superchange.ai | Edit changelog', }
+    },
+    {
       path: '/changelogs/:changelogId',
       name: 'changelog-details',
       component: () => import('@/views/Feed.vue'),

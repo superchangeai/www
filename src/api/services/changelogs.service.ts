@@ -54,11 +54,24 @@ export const changelogsService = {
   },
 
   /**
-   * Get a specific changelog by ID
+   * Get a specific changelog and its changes by ID
    */
   getById: async (id: number, params?: { page?: number; limit?: number; classification?: string }) => {
     try {
       const response = await apiClient.get<ChangelogWithChanges>(`/changelogs/${id}`, { params });
+      console.log(response.data); 
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error, `Failed to fetch changelog with ID ${id}`);
+    }
+  },
+
+  /**
+   * Get a specific changelog by ID
+   */
+  get: async (id: number) => {
+    try {
+      const response = await apiClient.get<Changelog>(`/changelogs/id/${id}`);
       console.log(response.data); 
       return response.data;
     } catch (error) {
