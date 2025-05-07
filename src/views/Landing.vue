@@ -23,11 +23,7 @@
 
       <section id="features" class="feature-section">
         <h2 class="section-heading px-3">
-          One single changelog with updates from <br> 
-          <span class="provider-animation-container">
-            <span class="provider-name" ref="providerNameElement">{{currentProvider}}</span>
-          </span> 
-          
+          One single changelog to stay on top of your providers          
         </h2>
 
         <div class="changelog-demo block md:hidden">
@@ -188,104 +184,4 @@
 <script setup>
     import { Button } from '@/components/ui/button'
     import { Badge } from '@/components/ui/badge'
-    import { ref, onMounted, onBeforeUnmount } from 'vue'
-    import { providersService } from '@/api/services/providers.service'
-
-    const providerNameElement = ref(null)
-    const providers = ref([])
-    const currentProvider = ref('OpenAI')
-    const currentIndex = ref(0)
-    let animationInterval = null
-
-    onMounted(async () => {
-      try {
-        // Fetch providers and sort by ID
-        const fetchedProviders = await providersService.getAll()
-        providers.value = fetchedProviders.sort((a, b) => a.id - b.id)
-        
-        // Start the animation interval
-        animationInterval = setInterval(() => {
-          // Add the exit animation class
-          if (providerNameElement.value) {
-            providerNameElement.value.classList.add('provider-exit')
-          }
-          
-          // After exit animation completes, update the provider and start entry animation
-          setTimeout(() => {
-            // Move to next provider
-            currentIndex.value = (currentIndex.value + 1) % providers.value.length
-            // If no providers were fetched, use a default
-            currentProvider.value = providers.value.length > 0 
-              ? providers.value[currentIndex.value].name 
-              : 'OpenAI'
-            
-            // Reset animations and add entry class
-            if (providerNameElement.value) {
-              providerNameElement.value.classList.remove('provider-exit')
-              providerNameElement.value.classList.add('provider-entry')
-              
-              // Remove the entry class after animation completes
-              setTimeout(() => {
-                if (providerNameElement.value) {
-                  providerNameElement.value.classList.remove('provider-entry')
-                }
-              }, 500)
-            }
-          }, 500) // This should be half of the total interval time
-        }, 2500)
-      } catch (error) {
-        console.error('Failed to fetch providers:', error)
-      }
-    })
-
-    onBeforeUnmount(() => {
-      // Clear the interval when component is unmounted
-      if (animationInterval) {
-        clearInterval(animationInterval)
-      }
-    })
 </script>
-
-<style scoped>
-.provider-animation-container {
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-  vertical-align: bottom;
-}
-
-.provider-name {
-  display: inline-block;
-  position: relative;
-}
-
-.provider-entry {
-  animation: slideInFromBottom 0.2s ease forwards;
-}
-
-.provider-exit {
-  animation: slideOutToTop 0.1s ease forwards;
-}
-
-@keyframes slideInFromBottom {
-  0% {
-    opacity: 0;
-    transform: translateY(100%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideOutToTop {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-100%);
-  }
-}
-</style>
