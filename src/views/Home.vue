@@ -204,7 +204,7 @@
     }
 
     .feature-section {
-      padding: 5rem 0;
+      padding: 4rem 0;
       position: relative;
     }
     .feature-section::before {

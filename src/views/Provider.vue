@@ -21,6 +21,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { authStore } from '@/stores/auth'
 import { useHead } from '@unhead/vue';
+import MarkdownIt from 'markdown-it'
 
 
 const route = useRoute();
@@ -32,7 +33,28 @@ const providerChanges = ref([]);
 const isLoadingChanges = ref(false);
 // Initialize head in setup context
 useHead(headData);
+// Markdown parser for cleaner changes data
+const md = new MarkdownIt({
+  html: false,
+  breaks: true,
+  linkify: true
+})
+// Strip markdown formatting
+const stripMarkdown = (content) => {
+  if (!content) return '';
+  return content
+    .replace(/\*\*(.*?)\*\*/g, '$1') // bold
+    .replace(/\*(.*?)\*/g, '$1')      // italic
+    .replace(/`(.*?)`/g, '$1')        // code
+    .replace(/#+\s/g, '')            // headers
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1'); // links
+}
 
+// Render markdown content
+const renderMarkdown = (content) => {
+  if (!content) return '';
+  return md.render(content);
+}
 
 onMounted(async () => {
   try {
@@ -210,18 +232,18 @@ const handleNotify = () => {
                   </Badge>
                   <span class="text-xs text-muted-foreground">{{ new Date(change.timestamp).toLocaleString('en-GB', { day: '2-digit', month: 'long', year: 'numeric'}) }}</span>
                 </div>
-                <p class="text-sm font-medium">{{ change.diff.summary }}</p>
+                <div class="text-sm font-medium summary" v-html="renderMarkdown(change.diff?.summary || change.explanation || 'No summary available')"></div>
                 <p class="text-xs text-muted-foreground">Source: <a :href="change.source?.url">{{ change.source?.url }}</a></p>
               </div>
             </div>
           </div>
-          <div v-else class="py-4 text-muted-foreground">
+          <div v-else class="py-4 text-sm text-muted-foreground">
             No recent changes detected for this provider.
           </div>
         </div>
       </div>
 
-      <div v-else class="py-2 text-muted-foreground">
+      <div v-else class="py-2 text-sm text-muted-foreground">
         No sources available for this provider yet.
       </div>
 
@@ -235,6 +257,7 @@ const handleNotify = () => {
   </div>
 </template>
 <style scoped>
+
 .provider-card {
   min-height: 150px;
 }

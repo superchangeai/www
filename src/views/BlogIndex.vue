@@ -5,33 +5,31 @@
         </header>
         <main>
             <div class="container mx-auto px-8 py-8 text-left">
-                <ul>
-                    <li v-for="post in posts" :key="post.slug" class="mb-6 border-b py-10">
-                        <!-- Category tag with gradient -->
-                        <div v-if="post.tags && post.tags.length" class="mb-1">
-                            <span class="text-sm font-medium category-tag">
-                                {{ post.tags[0] }}
-                            </span>
-                        </div>
-                        
-                        <!-- Post title -->
-                        <router-link :to="`/blog/${post.slug}`" class="block">
-                            <h2 class="text-xxl font-semibold">
-                            {{ post.title }}
-                            </h2>
-                        </router-link>
-                        
-                        <!-- Post date -->
-                        <span v-if="post.date" class="text-sm text-muted-foreground">
-                            {{ new Date(post.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric'}) }}
+                <article v-for="post in posts" :key="post.slug" class="mb-6 border-b py-10">
+                    <!-- Category tag with gradient -->
+                    <div v-if="post.tags && post.tags.length" class="mb-1">
+                        <span class="text-sm font-medium category-tag">
+                            {{ post.tags[0] }}
                         </span>
-                        
-                        <!-- Post description -->
-                        <p v-if="post.description" class="mt-2 text-muted-foreground">
-                            {{ post.description }}
-                        </p>
-                    </li>
-                </ul>
+                    </div>
+                    
+                    <!-- Post title -->
+                    <router-link :to="`/blog/${post.slug}`" class="block">
+                        <h2 class="text-xxl font-semibold">
+                        {{ post.title }}
+                        </h2>
+                    </router-link>
+                    
+                    <!-- Post date -->
+                    <span v-if="post.date" class="text-sm text-muted-foreground">
+                        {{ new Date(post.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric'}) }}
+                    </span>
+                    
+                    <!-- Post description -->
+                    <p v-if="post.description" class="mt-2 text-muted-foreground">
+                        {{ post.description }}
+                    </p>
+                </article>
             </div>
         </main>
         <footer class="container mx-auto px-8 py-8 text-left">

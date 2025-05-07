@@ -332,12 +332,15 @@ watch(() => props.slug, (newSlug) => {
 }
 
 /* --- Table Styles --- */
-:deep(table) {
+/* Table container with horizontal scroll */
+:deep(.content table) {
+  display: block;
   width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-collapse: collapse;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
-  border: 1px solid hsl(var(--border));
 }
 
 :deep(th), :deep(td) {
@@ -345,6 +348,7 @@ watch(() => props.slug, (newSlug) => {
   padding: 8px 12px;
   text-align: left;
   font-size: 0.8em;
+  min-width: 100px;
 }
 
 :deep(th) {
