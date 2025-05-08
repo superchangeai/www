@@ -17,8 +17,12 @@
                 <!-- <router-link to="/terms" class="footer-link">Terms</router-link> -->
             </div>
         </div>
-        <div class="copyright pb-10">
-            &copy; 2025 Superchange.ai. All rights reserved.
+        <div class="copyright pb-5">
+            <span>&copy; 2025 Superchange.ai. All rights reserved.</span>
+            <a href="https://startupfa.me/s/superchangeai?utm_source=www.superchange.ai" target="_blank">
+                <img src="https://startupfa.me/badges/featured/dark-small.webp" alt="Featured on Startup Fame" width="154" class="hidden dark:inline" />
+                <img src="https://startupfa.me/badges/featured/light-small.webp" alt="Featured on Startup Fame" width="154" class="inline dark:hidden" />
+            </a>
         </div>
     </div>
 </template>

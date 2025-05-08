@@ -15,7 +15,7 @@ export default defineConfig({
   plugins: [vue(),Sitemap(
     {
       hostname: 'https://www.superchange.ai',
-      dynamicRoutes: ['/', '/blog', '/privacy', '/feed', '/providers'],
+      dynamicRoutes: ['/', '/blog', '/privacy', '/feed', '/providers', '/providers/ai', '/providers/cloud', '/providers/crm', 'providers/databases', 'providers/email', 'providers/tools', 'providers/workspaces' ],
       exclude: ['/signup', '/login', '/alerts'],
       changefreq: 'daily',
       priority: 1.0,

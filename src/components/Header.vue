@@ -96,7 +96,17 @@
             </PopoverContent>
           </Popover>
           <Button v-if="showHelpButton" variant="ghost" size="icon">
-            <HelpCircle class="h-5 w-5" />
+            <Sheet>
+              <SheetTrigger><HelpCircle class="h-5 w-5" /></SheetTrigger>
+              <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Work in progress</SheetTitle>
+                <SheetDescription>
+                  Soon useful pointers and user guide will be published here.
+                </SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+            </Sheet>
           </Button>
           <div v-if="authStore.session?.user && !isMobile" class="flex items-center gap-2">
             <router-link to="/settings/profile" title="Go to your profile">
@@ -115,6 +125,7 @@ import { ListFilter, HelpCircle, X, Loader2, LogOut} from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useColorMode } from '@vueuse/core'
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
