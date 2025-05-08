@@ -97,7 +97,7 @@
           </Popover>
           <Button v-if="showHelpButton" variant="ghost" size="icon">
             <Sheet>
-              <SheetTrigger><HelpCircle class="h-5 w-5" /></SheetTrigger>
+              <SheetTrigger><HelpCircle class="h-5 w-5 text-muted-foreground" /></SheetTrigger>
               <SheetContent>
               <SheetHeader>
                 <SheetTitle>Work in progress</SheetTitle>
