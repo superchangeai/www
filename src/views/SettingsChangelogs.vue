@@ -27,15 +27,17 @@
             <div v-else-if="changelogs && changelogs.length > 0">
                 <div v-for="(changelog, index) in changelogs" :key="index" class="py-2 border-b">
                     <div class="flex items-center">
-                        <div class="text-sm flex-1 text-left">
+                        <div class="text-sm flex-1 text-left flex gap-2 items-center">
+                            <Badge v-if="changelog.is_public" class="ml-2"><a :href="`/changelog/${changelog.changelog_id}`">Public</a></Badge>
+                            <Badge v-else variant="secondary" class="ml-2"><a :href="`/changelogs/${changelog.changelog_id}`">Private</a></Badge>
+                            <span>
                             <a :href="`/changelogs/${changelog.changelog_id}`">{{ changelog.name }}</a>
-                            <Badge v-if="changelog.is_public" class="ml-2"><a :href="`/changelogs/${changelog.changelog_id}`">Public</a></Badge>
-                            <Badge v-else variant="secondary" class="ml-2">Private</Badge>
-                
-                            <span class="text-xs text-muted-foreground ml-2">
+                            <div class="inline-block p-1">·</div>
+                            <span class="text-xs text-muted-foreground">
                                 <a :href="`/changelogs/${changelog.id}/edit`">
                                 {{ changelog.providers?.length || 0 }} {{ (changelog.providers?.length || 0) > 1 ? 'providers' : 'provider' }}
                                 </a>
+                            </span>
                         </span>
                         </div>
                             

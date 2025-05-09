@@ -1,9 +1,10 @@
 <template>
     <div class="border-b border-border pt-5 pb-4 flex items-center justify-between px-4 md:px-10">
-      <h1 class="flex items-center gap-2 min-h-9 shrink-none flex-none">
+      <div class="flex items-center justify-between gap-2 min-h-9 min-w-9 shrink-none flex-none">
         <slot name="changelog">
         </slot>
         <component :is="icon" class="w-5 h-5 shrink-0" />
+        <h1 class="flex items-center gap-2">
         <RouterLink 
           v-if="isDefaultTitle" 
           to="/feed" 
@@ -17,7 +18,8 @@
         <span v-if="isLoading" class="ml-2">
           <Loader2 v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
         </span>
-      </h1>
+        </h1>
+      </div>
       <div class="flex items-center gap-2">
           <slot name="actions">
           </slot>

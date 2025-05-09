@@ -14,12 +14,14 @@ import Header from '@/components/Header.vue'
 import { Skeleton } from '@/components/ui/skeleton'
 import AuthDrawer from '@/components/AuthDrawer.vue'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Tooltip,TooltipContent,TooltipProvider,TooltipTrigger} from '@/components/ui/tooltip'
-import { Zap, HeartCrack, Shield, BatteryCharging, Package, FileWarning, FileText, Library, ChevronDown, ChevronUp, ThumbsUp, ThumbsDown, ArrowDown } from 'lucide-vue-next'
+import { Zap, HeartCrack, Shield, BatteryCharging, Package, FileText, Library, ChevronDown, ChevronUp, ThumbsUp, ThumbsDown, ArrowDown, BookOpenText } from 'lucide-vue-next'
+// import { Dialog,DialogClose, DialogContent,DialogDescription,DialogFooter,DialogHeader,DialogTitle,DialogTrigger, } from '@/components/ui/dialog'
 import { toast } from '@/components/ui/toast'
+import ChangelogProvidersDialog from '@/components/ChangelogProvidersDialog.vue'
 
 // Props declaration from router
 const props = defineProps({
@@ -148,8 +150,9 @@ const fetchChangelogs = async () => {
   }
 
   try {
-    await changelogsService.getAll()
-    userChangelogs.value = await changelogsService.getAll()
+    
+    const logs = await changelogsService.getAll()
+    userChangelogs.value = logs
     // Clean up invalid changelog ID from localStorage
     const savedChangelogId = localStorage.getItem(SELECTED_CHANGELOG_KEY)
     if (savedChangelogId && savedChangelogId !== 'default') {
@@ -393,7 +396,6 @@ const changelogSelectItems = computed(() => {
           label: log.name + ' (shared)'
         })),
         { value: 'default', label: 'Superchange' }
-        // { value: props.changelogId, label: `${props.changelogId} (shared)` }
       ],
       buttonText: 'Create a changelog'
     };
@@ -486,7 +488,6 @@ watch(selectedChangelogId, () => {
     >
       <template #changelog>
         <h3 class="hidden md:inline text-sm">Changelog:</h3>
-        <FileText class="inline md:hidden text-muted-foreground" />
         <Select class="shadow-none" v-model="selectedChangelogId">
           <SelectTrigger class="shadow-none">
             <Skeleton v-if="isLoading" class="h-4 w-20" />
@@ -496,7 +497,6 @@ watch(selectedChangelogId, () => {
           </SelectTrigger>
           <SelectContent class="border-0">
             <SelectGroup>
-              <!-- TODO: CHECK THIS TEMPLATE, KEY AND VALUE BOTH USE ITEM.VALUE IT'S ODD -->
               <template v-for="item in changelogSelectItems.items" :key="item.value">
                 <SelectItem :value="item.value">
                   {{ item.label }}
@@ -512,6 +512,17 @@ watch(selectedChangelogId, () => {
             </SelectGroup>
           </SelectContent>
         </Select>
+                
+        <ChangelogProvidersDialog v-if="!error"
+  :selected-changelog-id="selectedChangelogId"
+  :providers="
+    isPublicChangelogRoute 
+      ? publicChangelog[0]?.providers || []
+      : userChangelogs.find(l => l.changelog_id === selectedChangelogId)?.providers || []
+  "
+/>
+
+<span v-if="isPublicChangelog">Public</span>
       </template>
     </Header> 
     <!-- Skeleton loading state -->

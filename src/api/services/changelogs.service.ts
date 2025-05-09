@@ -136,7 +136,6 @@ export const changelogsService = {
   getPublic: async (changelogId: string, params?: { page?: number; limit?: number; classification?: string }) => {
     try {
       const response = await apiClient.get<PublicChangelog>(`/changelogs/public/${changelogId}`, { params });
-      console.log(response.data); 
       return response.data;
     } catch (error) {
       throw handleApiError(error, `Failed to fetch public changelog with ID ${changelogId}`);
