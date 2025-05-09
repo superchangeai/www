@@ -112,13 +112,33 @@ const isLoading = ref(false)
 const error = ref(null)
 const limit = ref(3) // 3 months limit by default
 const userChangelogs = ref([])
+const publicChangelog = ref([])
 
 // Detail view state
 const selectedChangeId = ref(null)
 const expandedRowId = ref(null)
 
+// Check if we're on a public changelog route
+const isPublicChangelogRoute = window.location.pathname.startsWith('/changelog/');
+
 // Fetch changelogs from API
 const fetchChangelogs = async () => {
+  
+  isLoading.value = true
+  if (isPublicChangelogRoute) {
+    try {
+      const response = await changelogsService.getPublic(selectedChangelogId.value);
+      publicChangelog.value = Array.isArray(response) ? response : [response];
+      userChangelogs.value = []
+  } catch (error) {
+    console.error('Failed to fetch public changelog:', error)
+    userChangelogs.value = [] // Set empty array on error
+  } finally {
+    isLoading.value = false
+  }
+    return
+  }
+
   // Only fetch changelogs if user is authenticated
   if (!authStore.session) {
     userChangelogs.value = []
@@ -126,11 +146,10 @@ const fetchChangelogs = async () => {
     localStorage.removeItem(SELECTED_CHANGELOG_KEY)
     return
   }
-  
-  isLoading.value = true
+
   try {
-    const logs = await changelogsService.getAll()
-    userChangelogs.value = logs
+    await changelogsService.getAll()
+    userChangelogs.value = await changelogsService.getAll()
     // Clean up invalid changelog ID from localStorage
     const savedChangelogId = localStorage.getItem(SELECTED_CHANGELOG_KEY)
     if (savedChangelogId && savedChangelogId !== 'default') {
@@ -159,9 +178,6 @@ const fetchChanges = async () => {
     const classification = feedType.value === 'all' || !feedTypeMap[feedType.value] 
       ? undefined 
       : feedTypeMap[feedType.value].slug;
-    
-    // Check if we're on a public changelog route
-    const isPublicChangelogRoute = window.location.pathname.startsWith('/changelog/');
     
     // Prepare params for API request
     const params = { classification, limit: limit.value };
@@ -372,8 +388,12 @@ const changelogSelectItems = computed(() => {
     // Return public changelog info
     return {
       items: [
-        { value: 'default', label: 'Superchange' },
-        { value: props.changelogId, label: `${props.changelogId} (shared)` }
+        ...publicChangelog.value?.map(log => ({
+          value: log.changelog_id,
+          label: log.name + ' (shared)'
+        })),
+        { value: 'default', label: 'Superchange' }
+        // { value: props.changelogId, label: `${props.changelogId} (shared)` }
       ],
       buttonText: 'Create a changelog'
     };
