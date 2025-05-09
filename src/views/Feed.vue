@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Tooltip,TooltipContent,TooltipProvider,TooltipTrigger} from '@/components/ui/tooltip'
-import { Zap, HeartCrack, Shield, BatteryCharging, Package, FileWarning, FileText, Library, ChevronDown, ChevronUp, ThumbsUp, ThumbsDown } from 'lucide-vue-next'
+import { Zap, HeartCrack, Shield, BatteryCharging, Package, FileWarning, FileText, Library, ChevronDown, ChevronUp, ThumbsUp, ThumbsDown, ArrowDown } from 'lucide-vue-next'
 import { toast } from '@/components/ui/toast'
 
 // Props declaration from router
@@ -237,7 +237,7 @@ const handleLoadMore = async () => {
   if (!session) {
     open({
       title: 'Sign in to view more',
-      description: 'Members can search history and create alerts',
+      description: 'Members can search historical data beyond 3 months',
       onSuccess: () => {
         limit.value += 3; // Increase limit by 3 months
         fetchChanges();
@@ -465,7 +465,8 @@ watch(selectedChangelogId, () => {
       :show-help-button="true"
     >
       <template #changelog>
-        <h3 class="text-sm">Changelog:</h3>
+        <h3 class="hidden md:inline text-sm">Changelog:</h3>
+        <FileText class="inline md:hidden text-muted-foreground" />
         <Select class="shadow-none" v-model="selectedChangelogId">
           <SelectTrigger class="shadow-none">
             <Skeleton v-if="isLoading" class="h-4 w-20" />
@@ -525,7 +526,7 @@ watch(selectedChangelogId, () => {
     <!-- Group updates by month -->
     <div v-else v-for="(monthUpdates, month) in groupedUpdates" :key="month" class="py-2">
       <div class="py-2 flex items-center px-4 md:px-11">
-        <h2 class="font-semibold cursor-pointer">
+        <h2 class="font-semibold cursor-pointer" :id="`${month.toLowerCase().replace(' ', '-')}`">
           <a :href="`#${month.toLowerCase().replace(' ', '-')}`" class="text-black dark:text-white">{{ month }}</a>
         </h2>
       </div>
@@ -635,16 +636,14 @@ watch(selectedChangelogId, () => {
       </div>
     </div>
 
-    <!-- Load more -->
-    <!-- ADD THIS ONCE WE HAVE 3 MONTHS OF DATA OR MORE v-if="Object.keys(groupedUpdates).length > 3" --> 
-    <!--
-    <div class="p-4 flex justify-center align-center">
+    
+    <div v-if="Object.keys(groupedUpdates).length > 3" class="p-4 flex justify-center align-center">
       <Button variant="ghost" class="text-muted-foreground flex justify-center items-center text-sm" @click="handleLoadMore">
         <ArrowDown class="h-4 w-4 mr-2" />
         <span>Load more</span>
       </Button>
     </div>
-    -->
+   
     <AuthDrawer
       v-model:isOpen="isOpen"
       v-bind="options"
