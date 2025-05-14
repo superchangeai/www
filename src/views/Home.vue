@@ -10,10 +10,10 @@
         <nav class="flex gap-4 items-center">
           <!-- Desktop Navigation -->
           <div class="hidden md:hidden lg:flex gap-6 items-center">
-            <a href="/#features" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">AI classification</a>
-            <a href="/#alerts" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Smart alerts</a>
-            <a href="/#custom" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Custom changelog</a>
-            <a href="/#roadmap" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200">Roadmap</a>
+            <a href="#features" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200" @click="scrollToSection('#features')">AI classification</a>
+            <a href="#alerts" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200" @click="scrollToSection('#alerts')">Smart alerts</a>
+            <a href="#custom" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200" @click="scrollToSection('#custom')">Custom changelog</a>
+            <a href="#roadmap" class="text-muted-foreground text-sm hover:text-foreground transition-colors duration-200" @click="scrollToSection('#roadmap')">Roadmap</a>
             <a href="https://github.com/superchangeai" class="hidden md:flex text-muted-foreground text-sm hover:text-foreground transition-colors duration-200 flex gap-2 items-center" aria-label="Contribute to Superchange on Github">
                             <svg
                             width="24"

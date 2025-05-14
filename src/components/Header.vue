@@ -3,7 +3,7 @@
       <div class="flex items-center justify-between gap-2 min-h-9 min-w-9 shrink-none flex-none">
         <slot name="changelog">
         </slot>
-        <component :is="icon" class="w-5 h-5 shrink-0" />
+        <component v-if="icon" :is="icon" class="w-5 h-5 shrink-0" />
         <h1 class="flex items-center gap-2">
         <RouterLink 
           v-if="isDefaultTitle" 

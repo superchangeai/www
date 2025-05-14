@@ -13,7 +13,7 @@
         <div v-if="authStore.session?.user" class="flex items-center gap-2">
               <router-link to="/settings/profile" title="Go to your profile">
                 <div class="h-6 w-6 rounded-full bg-primary flex items-center justify-center text-xs font-medium text-primary-foreground cursor-pointer hover:opacity-80">
-                  {{ authStore.session?.user?.email?.[0].toUpperCase() || '?' }}
+                  {{ authStore.session?.user?.user_metadata.name?.[0].toUpperCase() || authStore.session?.user?.user_metadata.user_name?.[0].toUpperCase() || authStore.session?.user?.email?.[0].toUpperCase() || '?' }}
                 </div>
               </router-link>
               <button @click="logout" title="Sign out 👋"><LogOut class="h-4 w-4 opacity-70" /></button>

@@ -481,7 +481,6 @@ watch(selectedChangelogId, () => {
 
     <Header 
       :title="'none'"
-      :icon="false"
       :is-loading="currentFeedConfig.isLoading"
       :show-filter-button="false" 
       :show-help-button="true"
@@ -521,8 +520,6 @@ watch(selectedChangelogId, () => {
       : userChangelogs.find(l => l.changelog_id === selectedChangelogId)?.providers || []
   "
 />
-
-<span v-if="isPublicChangelog">Public</span>
       </template>
     </Header> 
     <!-- Skeleton loading state -->
