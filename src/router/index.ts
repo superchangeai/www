@@ -7,10 +7,6 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/feed',
-      redirect: '/feed/all'
-    },
-    {
       path: '/providers',
       redirect: '/providers/all'
     },
@@ -44,7 +40,7 @@ export const router = createRouter({
       ]
     },
     {
-      path: '/feed/:type',
+      path: '/feed/',
       name: 'feed',
       component: () => import('@/views/Feed.vue'),
       props: true,
@@ -52,6 +48,19 @@ export const router = createRouter({
         title: 'Superchange.ai | Changelog Feed',
         description: 'Explore the latest changelog updates from various providers.',
         ogImage: 'https://superchange.ai/superchange-small.png',
+        helpDoc: 'how-to-browse-changes'
+      },
+    },
+    {
+      path: '/feed/:type',
+      name: 'feed-filter',
+      component: () => import('@/views/Feed.vue'),
+      props: true,
+      meta: {
+        title: 'Superchange.ai | Changelog Feed',
+        description: 'Explore the latest changelog updates from various providers.',
+        ogImage: 'https://superchange.ai/superchange-small.png',
+        helpDoc: 'how-to-filter-changes'
       },
     },
     {
@@ -63,6 +72,7 @@ export const router = createRouter({
         title: 'Superchange.ai | Providers',
         description: 'Browse all tech providers and their changelog updates.',
         ogImage: 'https://superchange.ai/superchange-small.png',
+        helpDoc: 'how-to-track-providers'
       },
     },
     {
@@ -93,6 +103,7 @@ export const router = createRouter({
         description: 'Keep up with your providers, never miss a critical change again!',
         ogImage: 'https://superchange.ai/superchange-small.png',
         ogUrl: 'https://superchange.ai/alerts',
+        helpDoc: 'how-to-use-smart-alerts'
       }
     },
     {
@@ -102,20 +113,22 @@ export const router = createRouter({
       props: true,
       meta: { 
         requiresAuth: true,
-        title: 'Superchange.ai | Create an alert' }
+        title: 'Superchange.ai | Create an alert',
+        helpDoc: 'how-to-set-up-an-alert' 
+      }
     },
     {
       path: '/changelogs',
       name: 'changelogs',
       component: () => import('@/views/Feed.vue'),
       props: { type: 'changelogs' },
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true, helpDoc: 'how-to-browse-changes' }
     },
     {
       path: '/changelogs/new',
       name: 'create-changelog',
       component: () => import('@/views/ChangelogCreate.vue'),
-      meta: { requiresAuth: true, title: 'Superchange.ai | Create a custom changelog', }
+      meta: { requiresAuth: true, title: 'Superchange.ai | Create a custom changelog', helpDoc: 'how-to-create-a-custom-changelog' }
     },
     {
       path: '/changelogs/:id/edit',
@@ -132,7 +145,7 @@ export const router = createRouter({
         requiresAuth: true, 
         title: 'Superchange.ai | A changelog for everything you build on', 
         description: 'Keep up with your providers, never miss a critical change again!',
-        ogImage: 'https://superchange.ai/superchange-small.png' }
+        ogImage: 'https://superchange.ai/superchange-small.png', helpDoc: 'how-to-browse-changes' }
     },
     {
       path: '/changelogs/:changelogId/:type',
@@ -153,7 +166,8 @@ export const router = createRouter({
       meta: { 
         title: 'Superchange.ai | A changelog for everything you build on', 
         description: 'Keep up with your providers, never miss a critical change again!',
-        ogImage: 'https://superchange.ai/superchange-small.png'
+        ogImage: 'https://superchange.ai/superchange-small.png',
+        helpDoc: 'how-to-browse-changes'
       }
     },
     {
@@ -198,16 +212,19 @@ export const router = createRouter({
           path: 'changelogs',
           name: 'settings-changelogs',
           component: () => import('@/views/SettingsChangelogs.vue'),
+          meta: { helpDoc: 'how-to-configure-changelogs' },
         },
         {
           path: 'channels',
           name: 'settings-channels',
           component: () => import('@/views/SettingsChannels.vue'),
+          meta: { helpDoc: 'how-to-configure-channels' },
         },
         {
           path: 'channels/new',
           name: 'settings-channels-create',
           component: () => import('@/views/ChannelCreate.vue'),
+          meta: { helpDoc: 'how-to-set-up-a-channel' },
         },
         {
           path: 'channels/edit',
@@ -236,6 +253,7 @@ export const router = createRouter({
         description: 'Get started with Superchange: build your own changelogs and create custom alerts.',
         ogImage: 'https://superchange.ai/superchange-small.png',
         ogUrl: 'https://superchange.ai/signup',
+        helpDoc: 'how-to-become-a-member'
       },
     },
     {

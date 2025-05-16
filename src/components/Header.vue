@@ -101,13 +101,15 @@
             <Sheet>
               <SheetTrigger><HelpCircle class="h-5 w-5 text-muted-foreground" /></SheetTrigger>
               <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Work in progress</SheetTitle>
-                <SheetDescription>
-                  Soon useful pointers and user guide will be published here.
-                </SheetDescription>
-              </SheetHeader>
-            </SheetContent>
+                <SheetHeader>
+                  <SheetDescription v-if="!currentHelpDoc">
+                    No help documentation available for this page.
+                  </SheetDescription>
+                </SheetHeader>
+                <div class="mt-4">
+                  <HelpContent v-if="currentHelpDoc" :docPath="currentHelpDoc" />
+                </div>
+              </SheetContent>
             </Sheet>
           </Button>
           <div v-if="authStore.session?.user && !isMobile" class="flex items-center gap-2">
@@ -129,6 +131,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import HelpContent from '@/components/HelpContent.vue'
 import { useColorMode } from '@vueuse/core'
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
@@ -153,7 +156,9 @@ const props = defineProps({
 })
 
 const isDefaultTitle = computed(() => props.title === import.meta.env.VITE_APP_TITLE)
-
+const currentHelpDoc = computed(() => {
+  return router.currentRoute.value.meta.helpDoc || null;
+});
 
 // Define emits
 const emit = defineEmits(['filter-applied', 'filter-cleared'])
@@ -233,6 +238,7 @@ onMounted(() => {
   useColorMode()
   checkMobile()
   window.addEventListener('resize', checkMobile)
+  // Get the current help document from route metadata
 });
 
 onBeforeUnmount(() => {
