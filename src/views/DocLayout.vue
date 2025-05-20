@@ -57,6 +57,14 @@
               </ul>
             </nav>
             <h3 class="font-semibold">Is this helpful?</h3>
+            <div class="flex gap-2 mt-2">
+              <Button variant="outline" size="sm" @click="provideDocFeedback(1)">
+                <ThumbsUp class="h-4 w-4 mr-2" /> Yes
+              </Button>
+              <Button variant="outline" size="sm" @click="provideDocFeedback(-1)">
+                <ThumbsDown class="h-4 w-4 mr-2" /> No
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -70,7 +78,10 @@ import { useColorMode } from '@vueuse/core'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 useColorMode()
-import { ChevronDown, ExternalLink } from 'lucide-vue-next';
+import { ChevronDown, ExternalLink, ThumbsUp, ThumbsDown } from 'lucide-vue-next';
+import { feedbackService } from '@/api/services/feedback.service';
+import { toast } from '@/components/ui/toast';
+import { authStore } from '@/stores/auth';
 import DocSidebar from '@/components/DocSidebar.vue';
 
 const showMobileSidebar = ref(false);
@@ -89,5 +100,32 @@ const toggleSidebar = () => {
 
 const updateTableOfContents = (toc: TocItem[]) => {
   tableOfContents.value = toc;
+};
+
+const provideDocFeedback = async (value: number) => {
+  try {
+    // Get the current page URL to use as an identifier for the feedback
+    const pageURL = window.location.href;
+    console.log(pageURL);
+
+    await feedbackService.createDocFeedback({
+      docUrl: pageURL, // Using pagePath as a unique identifier for the doc page
+      feedback: value,
+      userId: authStore.session?.user?.id,
+    });
+    toast({
+      title: 'Feedback received.',
+      description: 'Thank you for your contribution!',
+      duration: 3000,
+    });
+  } catch (err) {
+    console.error('Failed to submit feedback:', err);
+    toast({
+      title: 'Error',
+      description: 'Failed to submit feedback. Please try again later.',
+      variant: 'destructive',
+      duration: 3000,
+    });
+  }
 };
 </script>

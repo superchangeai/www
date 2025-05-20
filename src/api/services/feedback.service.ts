@@ -19,6 +19,12 @@ export interface ChangeFeedback {
   userId?: string | null;
 }
 
+export interface DocFeedback {
+  docUrl: string;
+  feedback: number;
+  userId?: string | null;
+}
+
 export const feedbackService = {
   /**
    * Submit global feedback about the application
@@ -59,6 +65,22 @@ export const feedbackService = {
   createProvidersFeedback: async ({ providers, userId }: ProvidersFeedback) => {
     const response = await apiClient.post('/feedback/providers', {
       providers,
+      userId
+    });
+    return response.data;
+  },
+
+  /**
+   * Submit feedback for a documentation page
+   * @param {string} docUrl - The URL of the documentation page
+   * @param {number} feedback - The feedback value (1 for helpful, -1 for not helpful)
+   * @param {string|null} userId - Optional user ID if authenticated
+   * @returns {Promise<Object>} The created feedback record
+   */
+  createDocFeedback: async ({ docUrl, feedback, userId }: DocFeedback) => {
+    const response = await apiClient.post('/feedback/doc', {
+      docUrl,
+      feedback,
       userId
     });
     return response.data;
