@@ -5,7 +5,7 @@
     </header>
     <main class="flex-grow">
       <div class="container mx-auto px-8 py-8 text-left">
-        <!-- Breadcrumb added here -->
+        <!-- Breadcrumb -->
         <Breadcrumb class="mb-4">
           <BreadcrumbList>
             <BreadcrumbItem>

@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
 })
 
 // Define the prefixes/paths where the sidebar should be hidden
-const noSidebarPrefixes = ['/login', '/signup', '/privacy', '/blog']
+const noSidebarPrefixes = ['/login', '/signup', '/privacy', '/blog', '/docs']
 
 // Helper function to determine if the sidebar should be hidden
 const shouldHideSidebar = (path: string, routeName: string | symbol | null | undefined): boolean => {

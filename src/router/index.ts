@@ -7,6 +7,66 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/docs',
+      component: () => import('@/views/DocLayout.vue'),
+      children: [
+        {
+          path: '',
+          redirect: '/docs/introduction'
+        },
+        {
+          path: 'introduction',
+          name: 'doc-introduction',
+          component: () => import('@/views/Doc.vue'),
+          props: { slug: 'introduction' },
+          meta: {
+            title: 'Superchange.ai | Documentation',
+            description: 'Learn how to use Superchange.ai effectively.'
+          }
+        },
+        {
+          path: 'faq',
+          name: 'doc-faq',
+          component: () => import('@/views/Doc.vue'),
+          props: { slug: 'faq' },
+          meta: {
+            title: 'Superchange.ai | FAQ',
+            description: 'Frequently asked questions about Superchange.ai.'
+          }
+        },
+        {
+          path: 'feature-requests',
+          name: 'doc-feature-requests',
+          component: () => import('@/views/Doc.vue'),
+          props: { slug: 'feature-requests' },
+          meta: {
+            title: 'Superchange.ai | Feature Requests',
+            description: 'Request new features for Superchange.ai.'
+          }
+        },
+        {
+          path: 'contribute',
+          name: 'doc-contribute',
+          component: () => import('@/views/Doc.vue'),
+          props: { slug: 'contribute' },
+          meta: {
+            title: 'Superchange.ai | Contribute',
+            description: 'Learn how to contribute to Superchange.ai.'
+          }
+        },
+        {
+          path: 'how-to/:slug',
+          name: 'doc-how-to',
+          component: () => import('@/views/Doc.vue'),
+          props: true,
+          meta: {
+            title: 'Superchange.ai | How-to Guides',
+            description: 'Step-by-step guides for using Superchange.ai features.'
+          }
+        }
+      ]
+    },
+    {
       path: '/providers',
       redirect: '/providers/all'
     },

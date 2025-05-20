@@ -5,11 +5,12 @@ date: "2025-05-16"
 author: "Superchange.ai"
 ---
 
-Becoming a Superchange member takes less than a minute, and unlocks powerful features like custom changelogs and alerts.  
+Becoming a Superchange member takes less than a minute, and unlocks powerful features like custom changelogs and alerts. [Join now](https://www.superchange.ai/signup)!
+
 
 <hr>
 
-## You’ve got two sign-up options:
+## Two sign-up options
 
 ### 1. **Use your GitHub account**  
 Fastest route. We use GitHub as your identity provider — no passwords, no extra steps.  
@@ -22,8 +23,6 @@ Prefer to keep Superchange separate from your main inbox? Go old-school:
 - Confirm via a verification link sent to your inbox  
 
 That’s it — you’re in.
-
-[Join now](https://www.superchange.ai/signup)
 
 <hr>
 
