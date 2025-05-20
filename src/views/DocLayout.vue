@@ -106,7 +106,6 @@ const provideDocFeedback = async (value: number) => {
   try {
     // Get the current page URL to use as an identifier for the feedback
     const pageURL = window.location.href;
-    console.log(pageURL);
 
     await feedbackService.createDocFeedback({
       docUrl: pageURL, // Using pagePath as a unique identifier for the doc page
