@@ -1,13 +1,13 @@
 <template>
-    <form @submit.prevent="handleSubmit" class="flex gap-2 flex-col md:flex-row items-start justify-between w-full">
-        <Input
+    <form @submit.prevent="handleSubmit">
+        <Textarea
         v-model="providers"
-        class="basis-3/4 w-full min-h-[30px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed"
-        placeholder="Which provider(s) would you like to see on Superchange?"
+        class="min-h-[30px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed"
+        placeholder="Name drop providers here"
         />
-        <Button variant="secondary" class="basis-1/4 w-full m-0 py-2 font-normal">
+        <Button variant="secondary" class="my-2 font-normal">
             <MessageSquare class="h-4 w-4" />
-            {{ isSubmitting ? 'Sending...' : 'Request provider' }}
+            {{ isSubmitting ? 'Sending...' : 'Send request' }}
         </Button>
     </form>
 </template>
@@ -15,7 +15,7 @@
 <script setup>
 import { ref } from 'vue'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { MessageSquare } from 'lucide-vue-next'
 import { feedbackService } from '@/api/services/feedback.service';
 import { authStore } from '../stores/auth'
@@ -40,8 +40,8 @@ const handleSubmit = async () => {
     } catch (error) {
         console.error('Error submitting provider request:', error)
         toast({
-            title: 'Error',
-            description: 'Failed to send this request',
+            title: 'Error with this request',
+            description: error.response?.data?.error || 'Failed to send this request',
             variant: 'destructive',
             duration: 3000
         })

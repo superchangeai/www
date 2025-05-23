@@ -236,11 +236,10 @@ const handleNotify = () => {
       <br>
       <Card class="providercta-card relative overflow-hidden" id="more">
         <CardHeader class="relative z-10">
-          <h3 class="text-lg font-semibold flex gap-2 items-center justify-center text-center"><img src="/super.svg" alt="Superchange.ai logo" class="h-6 mr-2" /> Bring new providers here</h3>
-          <p class="text-muted-foreground text-sm">APIs? Frameworks? AI tools? We will grow this list with you. Please tell us who you would want to track!</p>
+          <h3 class="text-lg font-semibold flex gap-2 items-center justify-center mb-2"><img src="/super.svg" alt="Superchange.ai logo" class="h-6 mr-2" /> Bring new providers to Superchange</h3>
+          <p class="text-muted-foreground text-sm">APIs? Frameworks? AI tools? We will grow this list with you. <br> Please tell us who you would want to track!</p>
         </CardHeader>
-        <CardContent class="flex gap-2 relative z-10">
-          
+        <CardContent class="relative z-10 max-w-[600px] m-auto">
           <ProvidersFeedback />
         </CardContent>
         <div class="providercta-card-bg absolute inset-0 pointer-events-none">
